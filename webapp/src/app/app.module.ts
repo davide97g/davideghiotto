@@ -7,13 +7,19 @@ import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AboutMeComponent } from './pages/about-me/about-me.component';
+import { ContactMeComponent } from './pages/contact-me/contact-me.component';
+import { ProjectsComponent } from './pages/projects/projects.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     NotFoundComponent,
-    MenuComponent
+    MenuComponent,
+    AboutMeComponent,
+    ContactMeComponent,
+    ProjectsComponent
   ],
   imports: [
     BrowserModule,
