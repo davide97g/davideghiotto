@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { faRocket } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
 	selector: 'app-home',
@@ -7,6 +8,7 @@ import { Router } from '@angular/router';
 	styleUrls: ['./home.component.sass'],
 })
 export class HomeComponent implements OnInit {
+	faRocket = faRocket;
 	constructor(public router: Router) {}
 
 	ngOnInit(): void {}
