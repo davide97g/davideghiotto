@@ -1,1 +1,24 @@
-<p>menu works!</p>
+<mat-toolbar color="accent">
+	<span (click)="router.navigateByUrl('home')" class="clickable">
+		<h1>{{ title }}</h1>
+	</span>
+	<span class="fill-remaining-space"></span>
+	<span>
+		<button color="primary" mat-raised-button (click)="router.navigateByUrl('home')">
+			Home
+			<mat-icon color="accent">home</mat-icon>
+		</button>
+		<button color="primary" mat-raised-button (click)="router.navigateByUrl('about-me')">
+			About me
+			<mat-icon color="accent">person</mat-icon>
+		</button>
+		<button color="primary" mat-raised-button (click)="router.navigateByUrl('projects')">
+			Projects
+			<mat-icon color="accent">code</mat-icon>
+		</button>
+		<button color="primary" mat-raised-button (click)="router.navigateByUrl('contact-me')">
+			Contact me
+			<mat-icon color="accent">person</mat-icon>
+		</button>
+	</span>
+</mat-toolbar>
