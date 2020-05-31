@@ -15,6 +15,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AboutMeComponent } from './pages/about-me/about-me.component';
 import { ContactMeComponent } from './pages/contact-me/contact-me.component';
 import { ProjectsComponent } from './pages/projects/projects.component';
+import { InfoComponent } from './pages/info/info.component';
 
 @NgModule({
 	declarations: [
@@ -25,6 +26,7 @@ import { ProjectsComponent } from './pages/projects/projects.component';
 		AboutMeComponent,
 		ContactMeComponent,
 		ProjectsComponent,
+		InfoComponent,
 	],
 	imports: [
 		BrowserModule,

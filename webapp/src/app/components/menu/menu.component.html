@@ -1,4 +1,4 @@
-<mat-toolbar color="accent">
+<mat-toolbar color="primary">
 	<span (click)="router.navigateByUrl('home')" class="clickable">
 		<h1>{{ title }}</h1>
 	</span>
@@ -18,7 +18,11 @@
 		</button>
 		<button color="primary" mat-raised-button (click)="router.navigateByUrl('contact-me')">
 			Contact me
-			<mat-icon color="accent">person</mat-icon>
+			<mat-icon color="accent">mail</mat-icon>
+		</button>
+		<button color="primary" mat-raised-button (click)="router.navigateByUrl('info')">
+			Info
+			<mat-icon color="accent">info</mat-icon>
 		</button>
 	</span>
 </mat-toolbar>
