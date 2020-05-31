@@ -16,6 +16,7 @@ import { AboutMeComponent } from './pages/about-me/about-me.component';
 import { ContactMeComponent } from './pages/contact-me/contact-me.component';
 import { ProjectsComponent } from './pages/projects/projects.component';
 import { InfoComponent } from './pages/info/info.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
 	declarations: [
@@ -35,6 +36,7 @@ import { InfoComponent } from './pages/info/info.component';
 		MatButtonModule,
 		MatToolbarModule,
 		MatIconModule,
+		FontAwesomeModule,
 	],
 	providers: [],
 	bootstrap: [AppComponent],
