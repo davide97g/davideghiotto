@@ -1,0 +1,14 @@
+{
+	"name": "template",
+	"version": "1.0.0",
+	"description": "Template website",
+	"main": "index.js",
+	"scripts": {
+		"build": "gulp"
+	},
+	"author": "Davide Ghiotto",
+	"license": "MIT",
+	"devDependencies": {
+		"gulp": "^4.0.2"
+	}
+}
