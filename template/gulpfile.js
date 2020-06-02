@@ -1,13 +1,15 @@
 const gulp = require('gulp');
+const log = require('fancy-log');
+const colors = require('colors');
 
 /**
  *
  * @param {String[]} paths
  */
 function copyFolders(paths) {
-	console.info('copying folders');
+	log('Copying ' + 'folders'.blue + '...');
 	paths.forEach(path => {
-		console.log('copying ' + path);
+		log('-  ' + colors.green(path));
 		gulp.src(path + '/**/*').pipe(gulp.dest('../dist/' + path));
 	});
 }
@@ -16,9 +18,9 @@ function copyFolders(paths) {
  * @param {[]} files
  */
 function copyFiles(files) {
-	console.info('copying files');
+	log('Copying ' + 'files'.blue);
 	files.forEach(file => {
-		console.log('copying ' + file);
+		log('-  ' + colors.green(file));
 		gulp.src(file).pipe(gulp.dest('../dist/'));
 	});
 }
