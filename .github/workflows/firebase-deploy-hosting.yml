@@ -10,9 +10,10 @@ jobs:
         steps:
             - uses: actions/checkout@master
             - uses: actions/setup-node@master
-            - run: cd template && npm install && npm run build
+            - run: cd template && npm install
+            - run: cd template && npm run build
             - uses: w9jds/firebase-action@master
-            with:
-                args: deploy --only hosting
-            env:
-                FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+              with:
+                  args: deploy --only hosting
+              env:
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
