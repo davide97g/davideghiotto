@@ -25,7 +25,7 @@ function copyFiles(files) {
 	});
 }
 
-const folders = ['assets', 'images'];
+const folders = ['assets', 'images', 'pages'];
 const files = ['index.html', 'LICENSE.txt', 'README.txt'];
 
 exports.default = async () => {
