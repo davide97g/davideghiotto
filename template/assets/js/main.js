@@ -127,4 +127,61 @@ function getAge() {
 			windowMargin: breakpoints.active('<=small') ? 0 : 50,
 		});
 	});
+
+	var ctx = document.getElementById('myChart').getContext('2d');
+	var chart = new Chart(ctx, {
+		// The type of chart we want to create
+		type: 'line',
+
+		// The data for our dataset
+		data: {
+			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+			datasets: [
+				{
+					label: 'My First dataset',
+					backgroundColor: 'rgb(255, 99, 132)',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [0, 10, 5, 2, 20, 30, 45],
+				},
+			],
+		},
+
+		// Configuration options go here
+		options: {},
+	});
+
+	new Chart(document.getElementById('myChart'), {
+		type: 'radar',
+		data: {
+			labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
+			datasets: [
+				{
+					label: 'Skills',
+					data: [65, 59, 90, 81, 56, 55, 40],
+					fill: true,
+					backgroundColor: 'rgba(255, 99, 132, 0.2)',
+					borderColor: 'rgb(255, 99, 132)',
+					pointBackgroundColor: 'rgb(255, 99, 132)',
+					pointBorderColor: '#fff',
+					pointHoverBackgroundColor: '#fff',
+					pointHoverBorderColor: 'rgb(255, 99, 132)',
+				},
+			],
+		},
+		options: {
+			elements: { line: { tension: 0, borderWidth: 3 } },
+			scale: {
+				angleLines: {
+					display: false,
+				},
+				ticks: {
+					suggestedMin: 0,
+					suggestedMax: 100,
+				},
+			},
+			legend: {
+				display: false,
+			},
+		},
+	});
 })(jQuery);
