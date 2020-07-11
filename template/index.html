@@ -79,10 +79,16 @@
 				<ul class="actions">
 					<!-- <li><a href="pages/cv.html" class="button">View complete CV</a></li> -->
 					<li>
-						<a href="pages/life-calendar.html" class="button primary"
+						<a
+							href="pages/life-calendar.html"
+							class="button primary"
+							style="margin-top: 10px;"
 							>How I want to spend my life</a
 						>
-						<a href="pages/cv.html" class="button primary">Curriculum Vitae</a>
+						<!-- for now just direct download, later I'll use a dedicated page with web-version of the CV -->
+						<a href="assets/pdf/CV.pdf" class="button primary" style="margin-top: 10px;"
+							>Curriculum Vitae</a
+						>
 					</li>
 				</ul>
 			</section>
@@ -90,7 +96,14 @@
 			<!-- Skills -->
 			<section id="skills">
 				<h2>Skills</h2>
-				<canvas id="languagesChart"></canvas>
+				<div class="row">
+					<div class="col-12">
+						<canvas id="languagesChart"></canvas>
+					</div>
+					<div class="col-12">
+						<canvas id="topicsChart"></canvas>
+					</div>
+				</div>
 			</section>
 
 			<!-- Projects -->
