@@ -2692,7 +2692,7 @@ input[type='button']:disabled,
 	justify-content: space-between;
 	background-color: #1f1815;
 	background-attachment: scroll, scroll;
-	background-image: url('images/overlay.png'), url('../../images/bg-minimal.jpg');
+	background-image: url('images/overlay.png'), url('../../images/fulls/06.-Wisteria_1.jpg');
 	background-position: top left, top left;
 	background-repeat: repeat, no-repeat;
 	background-size: auto, 150%;
@@ -3185,7 +3185,7 @@ body.is-touch .poptrox-popup .closer {
 	#footer {
 		background-attachment: scroll;
 		background-color: #1f1815;
-		background-image: url('images/overlay.png'), url('../../images/bg-minimal.jpg');
+		background-image: url('images/overlay.png'), url('../../images/fulls/05.-Flax.jpg');
 		background-position: top left, bottom center;
 		background-repeat: repeat, no-repeat;
 		background-size: auto, cover;
