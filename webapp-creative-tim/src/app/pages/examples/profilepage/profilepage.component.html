@@ -1,17 +1,12 @@
 <nav
 	class="navbar navbar-expand-lg fixed-top navbar-transparent"
-	color-on-scroll="100"
+	color-on-scroll="200"
 	id="navbar-top"
 >
 	<div class="container">
 		<div class="navbar-translate">
-			<a
-				class="navbar-brand"
-				[routerLink]="['/home']"
-				placement="bottom"
-				tooltip="Designed and Coded by Creative Tim"
-			>
-				<span> D•G </span> Web Developer + Data Scientist
+			<a class="navbar-brand" [routerLink]="['/home']" placement="bottom">
+				<span> Davide Ghiotto </span>
 			</a>
 			<button
 				aria-controls="navigation-index"
@@ -83,17 +78,6 @@
 						<p class="d-lg-none d-xl-none">Instagram</p>
 					</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" [routerLink]="['/home']"> Back to Kit </a>
-				</li>
-				<li class="nav-item">
-					<a
-						class="nav-link"
-						href="https://github.com/creativetimofficial/blk-design-system-angular/issues"
-					>
-						Have an issue?
-					</a>
-				</li>
 			</ul>
 		</div>
 	</div>
@@ -108,133 +92,117 @@
 			<div class="row">
 				<div class="col-lg-6 col-md-6">
 					<h1 class="profile-title text-left">Davide Ghiotto</h1>
-					<h5 class="text-on-back">01</h5>
+					<h5 class="text-on-back">1</h5>
 					<p class="profile-description">
-						Offices parties lasting outward nothing age few resolve. Impression to
-						discretion understood to we interested he excellence. Him remarkably use
-						projection collecting. Going about eat forty world has round miles.
+						Junior Full Stack Developer with 1 year of experience implementing custom
+						Angular Web Applications and core Java microservices, for large scale use in
+						the banking sector. <br />
+						<br />
+						Developed reusable components and effective models to keep the pace with
+						continuous delivery of high quality products. <br />
+						<br />
+						Core competences include: Angular Framework, Java 8, Node.js, web API,
+						TypeScript, JavaScript, SQL, Oracle Database, Spring, Git, HTML, CSS, Sass.
 					</p>
 					<div class="btn-wrapper profile pt-3">
-						<a
-							class="btn btn-icon btn-twitter btn-round mr-1"
-							href="https://twitter.com/creativetim"
+						<!-- <a
+							class="btn btn-icon btn-instagram btn-round mr-1"
+							href="https://www.instagram.com/davideghiotto"
 							target="_blank"
 						>
-							<i class="fab fa-twitter"> </i>
+							<i class="fab fa-instagram"> </i>
 						</a>
 						<a
 							class="btn btn-icon btn-facebook btn-round mr-1"
-							href="https://www.facebook.com/creativetim"
+							href="https://www.facebook.com/davide.ghiotto.1/"
 							target="_blank"
 						>
 							<i class="fab fa-facebook-square"> </i>
 						</a>
 						<a
-							class="btn btn-icon btn-dribbble btn-round"
-							href="https://dribbble.com/creativetim"
+							class="btn btn-icon btn-linkedin btn-round"
+							href="https://www.linkedin.com/in/davide-ghiotto/"
 							target="_blank"
 						>
-							<i class="fab fa-dribbble"> </i>
-						</a>
+							<i class="fab fa-linkedin"> </i>
+						</a> -->
 					</div>
 				</div>
-				<div class="col-lg-4 col-md-6 ml-auto mr-auto">
+				<div class="col-lg-6 col-md-6 ml-auto mr-auto">
 					<div class="card card-coin card-plain">
 						<div class="card-header">
 							<img
-								class="img-center img-fluid rounded-circle"
+								class="img-center img-fluid rounded-circle shadow-lg"
 								src="assets/img/davide.jpg"
 							/>
 
-							<h4 class="title">Transactions</h4>
+							<h4 class="title">Profile</h4>
+							<a href="./assets/pdf/CV.pdf">
+								<button class="btn btn-simple btn-primary">Download CV</button>
+							</a>
 						</div>
 						<div class="card-body">
 							<tabset
 								class="nav-tabs-danger justify-content-center tab-subcategories"
 							>
-								<tab heading="Wallet">
-									<div class="table-responsive">
+								<tab heading="Tech skills">
+									<div class="table-responsive" style="overflow: hidden">
 										<table class="table tablesorter" id="plain-table">
 											<thead class="text-danger">
 												<tr>
-													<th class="header">COIN</th>
-													<th class="header">AMOUNT</th>
-													<th class="header">VALUE</th>
+													<th class="header">SKILL</th>
+													<th class="header">EXPERIENCE</th>
 												</tr>
 											</thead>
 											<tbody>
 												<tr>
-													<td>BTC</td>
-													<td>7.342</td>
-													<td>48,870.75 USD</td>
+													<td>Angular</td>
+													<td>2 years</td>
 												</tr>
 												<tr>
-													<td>ETH</td>
-													<td>30.737</td>
-													<td>64,53.30 USD</td>
+													<td>Node.js</td>
+													<td>2 years</td>
 												</tr>
 												<tr>
-													<td>XRP</td>
-													<td>19.242</td>
-													<td>18,354.96 USD</td>
+													<td>Typescript</td>
+													<td>2 years</td>
+												</tr>
+												<tr>
+													<td>Firebase</td>
+													<td>1 year</td>
+												</tr>
+												<tr>
+													<td>Java</td>
+													<td>1 year</td>
+												</tr>
+												<tr>
+													<td>SQL (MySQL, Oracle)</td>
+													<td>6 months</td>
+												</tr>
+												<tr>
+													<td>Python</td>
+													<td>1 year</td>
+												</tr>
+												<tr>
+													<td>Git</td>
+													<td>2 years</td>
 												</tr>
 											</tbody>
 										</table>
 									</div>
 								</tab>
-								<tab heading="Send">
-									<div class="row">
-										<label class="col-sm-3 col-form-label"> Pay to </label>
-										<div class="col-sm-9">
-											<div class="form-group">
-												<input
-													class="form-control"
-													placeholder="e.g. 1Nasd92348hU984353hfid"
-													type="text"
-												/>
-
-												<span class="form-text">
-													Please enter a valid address.
-												</span>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<label class="col-sm-3 col-form-label"> Amount </label>
-										<div class="col-sm-9">
-											<div class="form-group">
-												<input
-													class="form-control"
-													placeholder="1.587"
-													type="text"
-												/>
-											</div>
-										</div>
-									</div>
-									<button
-										class="btn btn-simple btn-danger btn-icon btn-round float-right"
-										type="submit"
-									>
-										<i class="tim-icons icon-send"> </i>
-									</button>
-								</tab>
-								<tab heading="News">
-									<div class="table-responsive">
+								<tab heading="Soft skills">
+									<div class="table-responsive" style="overflow: hidden">
 										<table class="table tablesorter" id="plain-table">
-											<thead class="text-danger">
-												<tr>
-													<th class="header">Latest Crypto News</th>
-												</tr>
-											</thead>
 											<tbody>
 												<tr>
-													<td>The Daily: Nexo to Pay on Stable...</td>
+													<td>Autonomous learning</td>
 												</tr>
 												<tr>
-													<td>Venezuela Begins Public of Nation...</td>
+													<td>Curiosity driven</td>
 												</tr>
 												<tr>
-													<td>PR: BitCanna â Dutch Blockchain...</td>
+													<td>Drive to excellence</td>
 												</tr>
 											</tbody>
 										</table>
@@ -257,7 +225,7 @@
 								<img alt="First slide" class="d-block" src="assets/img/denys.jpg" />
 
 								<div class="carousel-caption d-none d-md-block">
-									<h5>Big City Life, United States</h5>
+									<h5>Gym Webapp</h5>
 								</div>
 							</slide>
 							<slide>
@@ -268,7 +236,7 @@
 								/>
 
 								<div class="carousel-caption d-none d-md-block">
-									<h5>Somewhere Beyond, United States</h5>
+									<h5>Life in weeks</h5>
 								</div>
 							</slide>
 							<slide>
@@ -279,7 +247,7 @@
 								/>
 
 								<div class="carousel-caption d-none d-md-block">
-									<h5>Stocks, United States</h5>
+									<h5>Machine Learning Models</h5>
 								</div>
 							</slide>
 						</carousel>
@@ -287,7 +255,7 @@
 				</div>
 				<div class="col-md-5">
 					<h1 class="profile-title text-left">Projects</h1>
-					<h5 class="text-on-back">02</h5>
+					<h5 class="text-on-back">2</h5>
 					<p class="profile-description text-left">
 						An artist of considerable range, Ryan â the name taken by Melbourne-raised,
 						Brooklyn-based Nick Murphy â writes, performs and records all of his own
@@ -295,12 +263,11 @@
 						artist of considerable range.
 					</p>
 					<div class="btn-wrapper pt-3">
-						<button class="btn btn-simple btn-danger mr-1" href="javascript:void(0)">
-							<i class="tim-icons icon-book-bookmark"> </i> Bookmark
-						</button>
-						<button class="btn btn-simple btn-info" href="javascript:void(0)">
-							<i class="tim-icons icon-bulb-63"> </i> Check it!
-						</button>
+						<a href="https://github.com/davide97g/">
+							<button class="btn btn-simple btn-info">
+								<i class="fab fa-github"> </i> Visit Github Profile
+							</button>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -313,30 +280,15 @@
 					<div class="card card-plain">
 						<div class="card-header">
 							<h1 class="profile-title text-left">Contact</h1>
-							<h5 class="text-on-back">03</h5>
+							<h5 class="text-on-back">3</h5>
 						</div>
 						<div class="col-md-4 ml-auto">
-							<div class="info info-horizontal">
-								<div class="icon icon-danger">
-									<i class="tim-icons icon-square-pin"> </i>
-								</div>
-								<div class="description">
-									<h4 class="info-title">Find us at the office</h4>
-									<p>
-										Bld Mihail Kogalniceanu, nr. 8, <br />
-
-										7652 Bucharest, <br />
-
-										Romania
-									</p>
-								</div>
-							</div>
 							<div class="info info-horizontal">
 								<div class="icon icon-danger">
 									<i class="tim-icons icon-mobile"> </i>
 								</div>
 								<div class="description">
-									<h4 class="info-title">Give us a ring</h4>
+									<h4 class="info-title">Give me a ring</h4>
 									<p>
 										Davide Ghiotto <br />
 
@@ -354,44 +306,6 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-3"><h1 class="title">D•G</h1></div>
-				<div class="col-md-3">
-					<ul class="nav">
-						<li class="nav-item">
-							<a class="nav-link" [routerLink]="['/home']"> Home </a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" [routerLink]="['/landing']"> Landing </a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" [routerLink]="['/register']"> Register </a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" [routerLink]="['/profile']"> Profile </a>
-						</li>
-					</ul>
-				</div>
-				<div class="col-md-3">
-					<ul class="nav">
-						<li class="nav-item">
-							<a class="nav-link" href="https://creative-tim.com/contact-us">
-								Contact Us
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="https://creative-tim.com/about-us">
-								About Us
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="https://creative-tim.com/blog"> Blog </a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="https://opensource.org/licenses/MIT">
-								License
-							</a>
-						</li>
-					</ul>
-				</div>
 				<div class="col-md-3">
 					<h3 class="title">Follow me:</h3>
 					<div class="btn-wrapper profile">
