@@ -10,8 +10,8 @@ jobs:
         steps:
             - uses: actions/checkout@master
             - uses: actions/setup-node@master
-            - run: cd template && npm install
-            - run: cd template && npm run build
+            - run: cd webapp && npm install
+            - run: cd webapp && npm run build
             - uses: w9jds/firebase-action@master
               with:
                   args: deploy --only hosting
