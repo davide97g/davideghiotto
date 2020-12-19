@@ -1,24 +1,29 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
-import { HomeComponent } from '@pages/home/home.component';
-import { NotFoundComponent } from '@pages/not-found/not-found.component';
-import { AboutMeComponent } from '@pages/about-me/about-me.component';
-import { ContactMeComponent } from '@pages/contact-me/contact-me.component';
-import { ProjectsComponent } from '@pages/projects/projects.component';
-import { InfoComponent } from '@pages/info/info.component';
+
+import { IndexComponent } from './pages/index/index.component';
+import { ProfilepageComponent } from './pages/examples/profilepage/profilepage.component';
+import { RegisterpageComponent } from './pages/examples/registerpage/registerpage.component';
+import { LandingpageComponent } from './pages/examples/landingpage/landingpage.component';
 
 const routes: Routes = [
-	{ path: 'info', component: InfoComponent },
-	{ path: 'contact-me', component: ContactMeComponent },
-	{ path: 'about-me', component: AboutMeComponent },
-	{ path: 'projects', component: ProjectsComponent },
-	{ path: 'home', component: HomeComponent },
 	{ path: '', redirectTo: 'home', pathMatch: 'full' },
-	{ path: '**', component: NotFoundComponent },
+	{ path: 'home', component: ProfilepageComponent },
+	// { path: 'profile', component: ProfilepageComponent },
+	// { path: 'register', component: RegisterpageComponent },
+	// { path: 'landing', component: LandingpageComponent },
 ];
 
 @NgModule({
-	imports: [RouterModule.forRoot(routes)],
-	exports: [RouterModule],
+	imports: [
+		CommonModule,
+		BrowserModule,
+		RouterModule.forRoot(routes, {
+			useHash: true,
+		}),
+	],
+	exports: [],
 })
 export class AppRoutingModule {}
