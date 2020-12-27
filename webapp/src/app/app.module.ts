@@ -45,7 +45,7 @@ import { FooterComponent } from './components/footer/footer.component';
 		// BsDropdownModule.forRoot(),
 		// ProgressbarModule.forRoot(),
 		// TooltipModule.forRoot(),
-		// CollapseModule.forRoot(),
+		CollapseModule.forRoot(),
 		// TabsModule.forRoot(),
 		PagesModule,
 		// PaginationModule.forRoot(),
