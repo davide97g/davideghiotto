@@ -26,6 +26,7 @@ import { LandingpageComponent } from './pages/landingpage/landingpage.component'
 import { APP_BASE_HREF } from '@angular/common';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 @NgModule({
 	declarations: [
 		AppComponent,
@@ -53,6 +54,7 @@ import { FooterComponent } from './components/footer/footer.component';
 		// BsDatepickerModule.forRoot(),
 		// CarouselModule.forRoot(),
 		// ModalModule.forRoot()
+		MatSnackBarModule,
 	],
 	providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
 	bootstrap: [AppComponent],

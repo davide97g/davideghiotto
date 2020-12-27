@@ -24,6 +24,7 @@
 						"tsConfig": "src/tsconfig.app.json",
 						"assets": ["src/favicon.ico", "src/assets"],
 						"styles": [
+							"./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
 							"src/styles.scss",
 							"src/assets/css/nucleo-icons.css",
 							"node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
@@ -84,7 +85,10 @@
 						"polyfills": "src/polyfills.ts",
 						"tsConfig": "src/tsconfig.spec.json",
 						"karmaConfig": "src/karma.conf.js",
-						"styles": ["src/styles.scss"],
+						"styles": [
+							"./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+							"src/styles.scss"
+						],
 						"scripts": [],
 						"assets": ["src/favicon.ico", "src/assets"]
 					}
