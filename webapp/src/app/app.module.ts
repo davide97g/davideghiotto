@@ -23,9 +23,12 @@ import { IndexComponent } from './pages/index/index.component';
 import { ProfilepageComponent } from './pages/profilepage/profilepage.component';
 import { RegisterpageComponent } from './pages/registerpage/registerpage.component';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
+import { APP_BASE_HREF } from '@angular/common';
+import { TopBarComponent } from './components/top-bar/top-bar.component';
 @NgModule({
 	declarations: [
 		AppComponent,
+		TopBarComponent,
 		// IndexComponent,
 		// ProfilepageComponent,
 		// RegisterpageComponent,
@@ -49,7 +52,7 @@ import { LandingpageComponent } from './pages/landingpage/landingpage.component'
 		// CarouselModule.forRoot(),
 		// ModalModule.forRoot()
 	],
-	providers: [],
+	providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}

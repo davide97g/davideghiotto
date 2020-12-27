@@ -21,6 +21,7 @@ import { IndexComponent } from './index/index.component';
 import { ProfilepageComponent } from './profilepage/profilepage.component';
 import { RegisterpageComponent } from './registerpage/registerpage.component';
 import { LandingpageComponent } from './landingpage/landingpage.component';
+import { InvestmentsComponent } from './investments/investments.component';
 
 @NgModule({
 	imports: [
@@ -46,6 +47,7 @@ import { LandingpageComponent } from './landingpage/landingpage.component';
 		ProfilepageComponent,
 		RegisterpageComponent,
 		LandingpageComponent,
+		InvestmentsComponent,
 	],
 	exports: [IndexComponent, ProfilepageComponent, RegisterpageComponent, LandingpageComponent],
 	providers: [],

@@ -7,23 +7,19 @@ import { IndexComponent } from './pages/index/index.component';
 import { ProfilepageComponent } from './pages/profilepage/profilepage.component';
 import { RegisterpageComponent } from './pages/registerpage/registerpage.component';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
+import { InvestmentsComponent } from './pages/investments/investments.component';
 
 const routes: Routes = [
-	{ path: '', redirectTo: 'home', pathMatch: 'full' },
+	{ path: 'index', component: IndexComponent },
+	{ path: 'register', component: RegisterpageComponent },
+	{ path: 'landing', component: LandingpageComponent },
+	{ path: 'investments', component: InvestmentsComponent },
 	{ path: 'home', component: ProfilepageComponent },
-	// { path: 'profile', component: ProfilepageComponent },
-	// { path: 'register', component: RegisterpageComponent },
-	// { path: 'landing', component: LandingpageComponent },
+	{ path: '', redirectTo: 'home', pathMatch: 'full' },
 ];
 
 @NgModule({
-	imports: [
-		CommonModule,
-		BrowserModule,
-		RouterModule.forRoot(routes, {
-			useHash: true,
-		}),
-	],
-	exports: [],
+	imports: [CommonModule, BrowserModule, RouterModule.forRoot(routes)],
+	exports: [RouterModule],
 })
 export class AppRoutingModule {}
