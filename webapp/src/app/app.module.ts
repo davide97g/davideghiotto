@@ -25,10 +25,12 @@ import { RegisterpageComponent } from './pages/registerpage/registerpage.compone
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
 import { APP_BASE_HREF } from '@angular/common';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
+import { FooterComponent } from './components/footer/footer.component';
 @NgModule({
 	declarations: [
 		AppComponent,
 		TopBarComponent,
+		FooterComponent,
 		// IndexComponent,
 		// ProfilepageComponent,
 		// RegisterpageComponent,
