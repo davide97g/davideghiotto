@@ -67,6 +67,21 @@ export class InvestmentsComponent implements OnInit {
 			});
 	}
 
+	refreshPortfolio() {
+		this.http
+			.get(this.host + 'portfolio/refresh')
+			.toPromise()
+			.then((res: any) => {
+				this.utils.openSnackBar('Refresh complete!', 'Updating Portfolio...');
+				console.info(res);
+				this.getPortfolio();
+			})
+			.catch(err => {
+				this.utils.openSnackBar('Portfolio refresh failed', 'Please, try again.');
+				console.error(err);
+			});
+	}
+
 	renderChartPortfolio(portfolio: Portfolio) {
 		var canvas: any = document.getElementById('chartPortfolio');
 		var ctx = canvas.getContext('2d');
