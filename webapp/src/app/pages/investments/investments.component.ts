@@ -12,13 +12,17 @@ import { UtilsService } from 'src/app/services/utils.service';
 export class InvestmentsComponent implements OnInit {
 	isCollapsed = true;
 	chartPerformance: Chart = null;
+	chartPortfolio: Chart = null;
 	performance: PerformanceMonth[] = [];
+	portfolio: Portfolio = null;
 	host: string = 'https://ultra-degiro.herokuapp.com/';
 	constructor(private http: HttpClient, private utils: UtilsService) {}
 
 	ngOnInit() {
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.add('landing-page');
+		// call API
+		this.getPortfolio();
 		this.getPerformance();
 	}
 
@@ -27,19 +31,35 @@ export class InvestmentsComponent implements OnInit {
 		body.classList.remove('landing-page');
 	}
 
+	getPortfolio() {
+		this.http
+			.get(this.host + 'portfolio')
+			.toPromise()
+			.then((res: any) => {
+				this.utils.openSnackBar('Downloaded complete!', 'Take a look at Portfolio');
+				console.info(res.portfolio);
+				this.portfolio = res.portfolio;
+				if (this.portfolio) this.renderChartPortfolio(this.portfolio);
+			})
+			.catch(err => {
+				this.utils.openSnackBar('Portfolio download failed', 'Please, try again.');
+				this.portfolio = null;
+				console.error(err);
+			});
+	}
+
 	getPerformance() {
 		this.http
 			.get(this.host + 'performance')
 			.toPromise()
 			.then((res: any) => {
-				this.utils.openSnackBar('Downloaded complete!', 'Take a look at Performance');
-				console.info(res);
-				this.performance = res;
-				this.renderChartPerformance(this.performance);
+				// this.utils.openSnackBar('Downloaded complete!', 'Take a look at Performance');
+				this.performance = res.performance;
+				if (this.performance) this.renderChartPerformance(this.performance);
 			})
 			.catch(err => {
 				this.utils.openSnackBar(
-					'No response',
+					'Performance download failed',
 					'Check your internet connection or server status'
 				);
 				this.performance = null;
@@ -47,10 +67,110 @@ export class InvestmentsComponent implements OnInit {
 			});
 	}
 
-	renderChartPortfolio(portfolio: Portfolio) {}
+	renderChartPortfolio(portfolio: Portfolio) {
+		var canvas: any = document.getElementById('chartPortfolio');
+		var ctx = canvas.getContext('2d');
+		var gradientFill = ctx.createLinearGradient(0, 350, 0, 50);
+		gradientFill.addColorStop(0, 'rgba(228, 76, 196, 0.0)');
+		gradientFill.addColorStop(1, 'rgba(228, 76, 196, 0.14)');
+
+		if (this.chartPortfolio) this.chartPortfolio.destroy();
+		this.chartPortfolio = new Chart(ctx, {
+			type: 'doughnut',
+			responsive: true,
+			data: {
+				labels: portfolio.stocks.map(s => s.name),
+				datasets: [
+					{
+						label: 'Portfolio of ' + portfolio.date,
+						fill: true,
+						// backgroundColor: gradientFill,
+						backgroundColor: [
+							'rgb(255, 99, 132)',
+							'rgb(75, 192, 192)',
+							'rgb(255, 205, 86)',
+							'rgb(201, 203, 207)',
+							'rgb(54, 162, 235)',
+							'coral',
+						],
+						borderColor: '#e44cc4',
+						borderWidth: 2,
+						borderDash: [],
+						borderDashOffset: 0.0,
+						pointBackgroundColor: '#e44cc4',
+						pointBorderColor: 'rgba(255,255,255,0)',
+						pointHoverBackgroundColor: '#be55ed',
+						//pointHoverBorderColor:'rgba(35,46,55,1)',
+						pointBorderWidth: 20,
+						pointHoverRadius: 4,
+						pointHoverBorderWidth: 15,
+						pointRadius: 4,
+						data: portfolio.stocks.map(
+							stock =>
+								Math.round(
+									(stock.last * stock.quantity * 10000) / portfolio.total
+								) / 100
+						),
+					},
+				],
+			},
+			options: {
+				maintainAspectRatio: false,
+				legend: {
+					display: false,
+				},
+
+				tooltips: {
+					backgroundColor: '#fff',
+					titleFontColor: '#ccc',
+					bodyFontColor: '#666',
+					bodySpacing: 4,
+					xPadding: 12,
+					mode: 'nearest',
+					intersect: 0,
+					position: 'nearest',
+				},
+				responsive: true,
+				scales: {
+					yAxes: [
+						{
+							barPercentage: 1.6,
+							gridLines: {
+								drawBorder: false,
+								color: 'rgba(0,0,0,0.0)',
+								zeroLineColor: 'transparent',
+							},
+							ticks: {
+								display: false,
+								suggestedMin: 0,
+								suggestedMax: 350,
+								padding: 20,
+								fontColor: '#9a9a9a',
+							},
+						},
+					],
+
+					xAxes: [
+						{
+							barPercentage: 1.6,
+							gridLines: {
+								drawBorder: false,
+								color: 'rgba(0,0,0,0)',
+								zeroLineColor: 'transparent',
+							},
+							ticks: {
+								padding: 20,
+								fontColor: '#9a9a9a',
+							},
+						},
+					],
+				},
+			},
+		});
+	}
 
 	renderChartPerformance(performance: PerformanceMonth[]) {
-		var canvas: any = document.getElementById('chartBig');
+		var canvas: any = document.getElementById('chartPerformance');
 		var ctx = canvas.getContext('2d');
 		var gradientFill = ctx.createLinearGradient(0, 350, 0, 50);
 		gradientFill.addColorStop(0, 'rgba(228, 76, 196, 0.0)');

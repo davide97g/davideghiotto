@@ -87,7 +87,9 @@
 								<hr class="line-success" />
 
 								<p>
-									This financial journey started thanks to
+									For me it's important to have someone who can explain complex
+									things and guide me to more reasonable choices. This financial
+									journey started thanks to
 									<strong>Darko Ivanovski</strong> and his YouTube Channel. You
 									can find everything you need and more there!
 								</p>
@@ -119,6 +121,37 @@
 
 		<section class="section">
 			<img class="path" src="assets/img/path4.png" />
+
+			<div class="col-md-12">
+				<div class="card card-chart card-plain">
+					<div class="card-header">
+						<div class="row">
+							<div class="col-sm-6 text-left">
+								<hr class="line-primary" />
+
+								<h5 class="card-category">All my current stocks</h5>
+								<h2 class="card-title">Portfolio</h2>
+							</div>
+						</div>
+					</div>
+					<div *ngIf="portfolio" class="card-body">
+						<div class="chart-area"><canvas id="chartPorfolio"> </canvas></div>
+					</div>
+					<div *ngIf="!portfolio" class="card-body" style="text-align: center">
+						<div class="btn-wrapper mb-3">
+							<p>Seems like something is not working properly... 😥💀</p>
+							<p class="category text-info d-inline mr-1">Reload Portfolio</p>
+							<a
+								class="btn btn-link btn-sm"
+								id="reload-portfolio"
+								(click)="getPortfolio()"
+							>
+								<i class="tim-icons icon-minimal-right"> </i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
 
 			<div class="container">
 				<div class="row row-grid justify-content-between">
@@ -261,7 +294,7 @@
 					</div>
 				</div>
 				<div *ngIf="performance" class="card-body">
-					<div class="chart-area"><canvas id="chartBig"> </canvas></div>
+					<div class="chart-area"><canvas id="chartPerformance"> </canvas></div>
 				</div>
 				<div *ngIf="!performance" class="card-body" style="text-align: center">
 					<div class="btn-wrapper mb-3">
