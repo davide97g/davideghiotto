@@ -14,7 +14,7 @@ export class InvestmentsComponent implements OnInit {
 	chartPerformance: Chart = null;
 	chartPortfolio: Chart = null;
 	performance: PerformanceMonth[] = [];
-	portfolio: Portfolio = null;
+	portfolio: Portfolio = { total: 0, stocks: [], date: new Date().toLocaleDateString() };
 	host: string = 'https://ultra-degiro.herokuapp.com/';
 	constructor(private http: HttpClient, private utils: UtilsService) {}
 
@@ -86,25 +86,20 @@ export class InvestmentsComponent implements OnInit {
 						fill: true,
 						// backgroundColor: gradientFill,
 						backgroundColor: [
-							'rgb(255, 99, 132)',
-							'rgb(75, 192, 192)',
-							'rgb(255, 205, 86)',
-							'rgb(201, 203, 207)',
-							'rgb(54, 162, 235)',
-							'coral',
+							'#03045e',
+							'#023e8a',
+							'#0077b6',
+							'#0096c7',
+							'#00b4d8',
+							'#48cae4',
+							'#90e0ef',
+							'#ade8f4',
+							'#caf0f8',
 						],
-						borderColor: '#e44cc4',
-						borderWidth: 2,
-						borderDash: [],
-						borderDashOffset: 0.0,
-						pointBackgroundColor: '#e44cc4',
+						borderColor: 'white',
+						borderWidth: 1,
 						pointBorderColor: 'rgba(255,255,255,0)',
 						pointHoverBackgroundColor: '#be55ed',
-						//pointHoverBorderColor:'rgba(35,46,55,1)',
-						pointBorderWidth: 20,
-						pointHoverRadius: 4,
-						pointHoverBorderWidth: 15,
-						pointRadius: 4,
 						data: portfolio.stocks.map(
 							stock =>
 								Math.round(
@@ -117,9 +112,11 @@ export class InvestmentsComponent implements OnInit {
 			options: {
 				maintainAspectRatio: false,
 				legend: {
-					display: false,
+					display: true,
+					labels: {
+						fontColor: 'whitesmoke',
+					},
 				},
-
 				tooltips: {
 					backgroundColor: '#fff',
 					titleFontColor: '#ccc',
@@ -131,40 +128,6 @@ export class InvestmentsComponent implements OnInit {
 					position: 'nearest',
 				},
 				responsive: true,
-				scales: {
-					yAxes: [
-						{
-							barPercentage: 1.6,
-							gridLines: {
-								drawBorder: false,
-								color: 'rgba(0,0,0,0.0)',
-								zeroLineColor: 'transparent',
-							},
-							ticks: {
-								display: false,
-								suggestedMin: 0,
-								suggestedMax: 350,
-								padding: 20,
-								fontColor: '#9a9a9a',
-							},
-						},
-					],
-
-					xAxes: [
-						{
-							barPercentage: 1.6,
-							gridLines: {
-								drawBorder: false,
-								color: 'rgba(0,0,0,0)',
-								zeroLineColor: 'transparent',
-							},
-							ticks: {
-								padding: 20,
-								fontColor: '#9a9a9a',
-							},
-						},
-					],
-				},
 			},
 		});
 	}
