@@ -132,7 +132,8 @@
 								<h5 class="card-category">All my current stocks</h5>
 								<h2 class="card-title">
 									Portfolio
-									{{ portfolio ? portfolio.total + ' $' : '' }}
+									{{ portfolio ? portfolio.total + ' $' : '' }} (last update
+									{{ portfolio ? portfolio.date : '' }})
 								</h2>
 							</div>
 						</div>

@@ -33,7 +33,7 @@ export class InvestmentsComponent implements OnInit {
 
 	getPortfolio() {
 		this.http
-			.get(this.host + 'portfolio')
+			.get(this.host + 'refresh-portfolio')
 			.toPromise()
 			.then((res: any) => {
 				this.utils.openSnackBar('Downloaded complete!', 'Take a look at Portfolio');
