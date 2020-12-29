@@ -89,6 +89,9 @@ export class InvestmentsComponent implements OnInit {
 		gradientFill.addColorStop(0, 'rgba(228, 76, 196, 0.0)');
 		gradientFill.addColorStop(1, 'rgba(228, 76, 196, 0.14)');
 
+		// ? sort the stocks from highest to lowest
+		this.portfolio.stocks = this.portfolio.stocks.sort((s1, s2) => s2.value - s1.value);
+
 		if (this.chartPortfolio) this.chartPortfolio.destroy();
 		this.chartPortfolio = new Chart(ctx, {
 			type: 'doughnut',
