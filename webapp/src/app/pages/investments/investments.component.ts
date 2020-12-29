@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import Chart from 'chart.js';
 import { Portfolio, performance, PerformanceMonth } from 'src/app/models/portfolio.model';
+import { ApiService } from 'src/app/services/api.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
@@ -15,8 +15,7 @@ export class InvestmentsComponent implements OnInit {
 	chartPortfolio: Chart = null;
 	performance: PerformanceMonth[] = [];
 	portfolio: Portfolio = { total: 0, stocks: [], date: new Date().toLocaleDateString() };
-	host: string = 'https://ultra-degiro.herokuapp.com/';
-	constructor(private http: HttpClient, private utils: UtilsService) {}
+	constructor(private utils: UtilsService, private api: ApiService) {}
 
 	ngOnInit() {
 		var body = document.getElementsByTagName('body')[0];
@@ -32,54 +31,38 @@ export class InvestmentsComponent implements OnInit {
 	}
 
 	getPortfolio() {
-		this.http
-			.get(this.host + 'refresh-portfolio')
-			.toPromise()
-			.then((res: any) => {
-				this.utils.openSnackBar('Downloaded complete!', 'Take a look at Portfolio');
-				console.info(res.portfolio);
-				this.portfolio = res.portfolio;
+		this.api
+			.getPortfolio()
+			.then((portfolio: Portfolio) => {
+				this.portfolio = portfolio;
 				if (this.portfolio) this.renderChartPortfolio(this.portfolio);
 			})
 			.catch(err => {
-				this.utils.openSnackBar('Portfolio download failed', 'Please, try again.');
 				this.portfolio = null;
 				console.error(err);
 			});
 	}
 
 	getPerformance() {
-		this.http
-			.get(this.host + 'performance')
-			.toPromise()
-			.then((res: any) => {
-				// this.utils.openSnackBar('Downloaded complete!', 'Take a look at Performance');
-				this.performance = res.performance;
+		this.api
+			.getPerformance()
+			.then((performance: PerformanceMonth[]) => {
+				this.performance = performance;
 				if (this.performance) this.renderChartPerformance(this.performance);
 			})
 			.catch(err => {
-				this.utils.openSnackBar(
-					'Performance download failed',
-					'Check your internet connection or server status'
-				);
 				this.performance = null;
 				console.error(err);
 			});
 	}
 
 	refreshPortfolio() {
-		this.http
-			.get(this.host + 'portfolio/refresh')
-			.toPromise()
+		this.api
+			.refreshPortfolio()
 			.then((res: any) => {
-				this.utils.openSnackBar('Refresh complete!', 'Updating Portfolio...');
-				console.info(res);
-				this.getPortfolio();
+				if (res) this.getPortfolio();
 			})
-			.catch(err => {
-				this.utils.openSnackBar('Portfolio refresh failed', 'Please, try again.');
-				console.error(err);
-			});
+			.catch(err => console.error(err));
 	}
 
 	renderChartPortfolio(portfolio: Portfolio) {
