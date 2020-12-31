@@ -14,7 +14,13 @@ export class InvestmentsComponent implements OnInit {
 	chartPerformance: Chart = null;
 	chartPortfolio: Chart = null;
 	performance: PerformanceMonth[] = [];
-	portfolio: Portfolio = { total: 0, stocks: [], date: new Date().toLocaleDateString() };
+	portfolio: Portfolio = {
+		total: 0,
+		stocks: [],
+		date: new Date().toLocaleDateString(),
+		full_date: '',
+	};
+	portfolios: Portfolio[] = [];
 	constructor(private utils: UtilsService, private api: ApiService) {}
 
 	ngOnInit() {
@@ -23,6 +29,7 @@ export class InvestmentsComponent implements OnInit {
 		// call API
 		this.getPortfolio();
 		this.getPerformance();
+		this.getPortfolioAll();
 	}
 
 	ngOnDestroy() {
@@ -43,12 +50,26 @@ export class InvestmentsComponent implements OnInit {
 			});
 	}
 
+	getPortfolioAll() {
+		this.api
+			.getPortfolioAll()
+			.then((portfolios: Portfolio[]) => {
+				this.portfolios = portfolios;
+				console.info(this.portfolios);
+				if (this.portfolios) this.renderChartPerformance(this.portfolios);
+			})
+			.catch(err => {
+				this.portfolio = null;
+				console.error(err);
+			});
+	}
+
 	getPerformance() {
 		this.api
 			.getPerformance()
 			.then((performance: PerformanceMonth[]) => {
 				this.performance = performance;
-				if (this.performance) this.renderChartPerformance(this.performance);
+				// if (this.performance) this.renderChartPerformance(this.performance);
 			})
 			.catch(err => {
 				this.performance = null;
@@ -56,9 +77,9 @@ export class InvestmentsComponent implements OnInit {
 			});
 	}
 
-	refreshPortfolio() {
+	updatePortfolio() {
 		this.api
-			.refreshPortfolio()
+			.updatePortfolio()
 			.then((res: any) => {
 				if (res) this.getPortfolio();
 			})
@@ -80,7 +101,7 @@ export class InvestmentsComponent implements OnInit {
 			type: 'doughnut',
 			responsive: true,
 			data: {
-				labels: portfolio.stocks.map(s => s.name),
+				labels: portfolio.stocks.map(s => s.tick),
 				datasets: [
 					{
 						label: 'Portfolio of ' + portfolio.date,
@@ -133,7 +154,7 @@ export class InvestmentsComponent implements OnInit {
 		});
 	}
 
-	renderChartPerformance(performance: PerformanceMonth[]) {
+	renderChartPerformance(portfolios: Portfolio[]) {
 		var canvas: any = document.getElementById('chartPerformance');
 		var ctx = canvas.getContext('2d');
 		var gradientFill = ctx.createLinearGradient(0, 350, 0, 50);
@@ -145,7 +166,7 @@ export class InvestmentsComponent implements OnInit {
 			type: 'line',
 			responsive: true,
 			data: {
-				labels: performance.map(p => p.month + ' ' + p.year),
+				labels: portfolios.map(p => p.date),
 				datasets: [
 					{
 						label: 'Total €',
@@ -163,7 +184,7 @@ export class InvestmentsComponent implements OnInit {
 						pointHoverRadius: 4,
 						pointHoverBorderWidth: 15,
 						pointRadius: 4,
-						data: performance.map(p => p.total),
+						data: portfolios.map(p => p.total),
 					},
 				],
 			},

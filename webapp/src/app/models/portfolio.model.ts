@@ -1,10 +1,13 @@
 export interface Stock {
-	name: string;
-	code: string;
-	quantity: number;
+	ISIN: string;
+	PMC: number;
+	currency: string;
 	last: number;
-	value?: number;
-	valueEuro: number;
+	market: string;
+	name: string;
+	quantity: number;
+	tick: string;
+	value: number;
 }
 
 /*
@@ -22,6 +25,7 @@ export interface Portfolio {
 	total: number;
 	stocks: Stock[];
 	date: string;
+	full_date: string;
 }
 
 export interface PerformanceMonth {

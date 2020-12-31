@@ -11,14 +11,34 @@ export class ApiService {
 
 	async getPortfolio() {
 		return await this.http
-			.get(this.host + 'portfolio/update')
+			.get(this.host + 'portfolio')
 			.toPromise()
 			.then((res: any) => {
-				// this.utils.openSnackBar('Downloaded complete!', 'Take a look at Portfolio');
+				console.info(res.portfolio);
 				return res.portfolio;
 			})
 			.catch(err => {
 				this.utils.openSnackBar('Portfolio download failed', 'Please, try again.');
+				console.error(err);
+				return null;
+			});
+	}
+
+	async updatePortfolio() {
+		return await this.http
+			.get(this.host + 'portfolio/update')
+			.toPromise()
+			.then((res: any) => {
+				if (res && res.message) {
+					this.utils.openSnackBar('Update Complete', res.message);
+					return res.message;
+				} else {
+					this.utils.openSnackBar('Portfolio update failed', 'Please, try again.');
+					return false;
+				}
+			})
+			.catch(err => {
+				this.utils.openSnackBar('Portfolio update failed', 'Please, try again.');
 				console.error(err);
 				return null;
 			});
@@ -39,18 +59,33 @@ export class ApiService {
 			});
 	}
 
-	async refreshPortfolio() {
+	async getPortfolioAll() {
 		return await this.http
-			.get(this.host + 'portfolio/refresh')
+			.get(this.host + 'portfolio/all')
 			.toPromise()
-			.then((res: any) => {
-				// this.utils.openSnackBar('Refresh complete!', 'Updating Portfolio...');
-				return true;
-			})
+			.then((res: any) => res.portfolios)
 			.catch(err => {
-				this.utils.openSnackBar('Portfolio refresh failed', 'Please, try again.');
+				this.utils.openSnackBar(
+					'Portfolios download failed',
+					'Check your internet connection or server status'
+				);
 				console.error(err);
 				return null;
 			});
 	}
+
+	// async refreshPortfolio() {
+	// 	return await this.http
+	// 		.get(this.host + 'portfolio/refresh')
+	// 		.toPromise()
+	// 		.then((res: any) => {
+	// 			// this.utils.openSnackBar('Refresh complete!', 'Updating Portfolio...');
+	// 			return true;
+	// 		})
+	// 		.catch(err => {
+	// 			this.utils.openSnackBar('Portfolio refresh failed', 'Please, try again.');
+	// 			console.error(err);
+	// 			return null;
+	// 		});
+	// }
 }
