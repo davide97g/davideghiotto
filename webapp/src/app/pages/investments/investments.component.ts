@@ -138,6 +138,10 @@ export class InvestmentsComponent implements OnInit {
 					labels: {
 						fontColor: 'whitesmoke',
 					},
+					onClick: function (event, legendItem) {
+						// console.info(legendItem);
+						window.open('https://finance.yahoo.com/quote/' + legendItem.text);
+					},
 				},
 				tooltips: {
 					backgroundColor: '#fff',
