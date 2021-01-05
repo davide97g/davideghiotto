@@ -1,1 +1,3 @@
-<p>university works!</p>
+<div *ngIf="exams && exams.length > 0">
+	<div *ngFor="let exam of exams">{{ exam.id }} | {{ exam.name }} |{{exam.mark}</div>
+</div>

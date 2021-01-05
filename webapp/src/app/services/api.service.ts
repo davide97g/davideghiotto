@@ -74,6 +74,21 @@ export class ApiService {
 			});
 	}
 
+	async getExams() {
+		return await this.http
+			.get(this.host + 'exams')
+			.toPromise()
+			.then((res: any) => {
+				console.info(res.exams);
+				return res.exams;
+			})
+			.catch(err => {
+				this.utils.openSnackBar('Exams download failed', 'Please, try again.');
+				console.error(err);
+				return null;
+			});
+	}
+
 	// async refreshPortfolio() {
 	// 	return await this.http
 	// 		.get(this.host + 'portfolio/refresh')
