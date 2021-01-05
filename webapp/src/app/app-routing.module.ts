@@ -8,12 +8,14 @@ import { ProfilepageComponent } from './pages/profilepage/profilepage.component'
 import { RegisterpageComponent } from './pages/registerpage/registerpage.component';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
 import { InvestmentsComponent } from './pages/investments/investments.component';
+import { UniversityComponent } from './pages/university/university.component';
 
 const routes: Routes = [
 	{ path: 'index', component: IndexComponent },
 	{ path: 'register', component: RegisterpageComponent },
 	{ path: 'landing', component: LandingpageComponent },
 	{ path: 'investments', component: InvestmentsComponent },
+	{ path: 'university', component: UniversityComponent },
 	{ path: 'home', component: ProfilepageComponent },
 	{ path: '', redirectTo: 'home', pathMatch: 'full' },
 ];
