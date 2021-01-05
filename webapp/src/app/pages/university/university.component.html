@@ -1,3 +1,111 @@
-<div *ngIf="exams && exams.length > 0">
-	<div *ngFor="let exam of exams">{{ exam.id }} | {{ exam.name }} |{{exam.mark}</div>
+<div class="wrapper">
+	<section class="section section-lg" id="portfolio">
+		<section class="section">
+			<div class="col-md-12">
+				<div class="card card-chart card-plain">
+					<div class="card-header">
+						<div class="row">
+							<div class="col-sm-6 text-left">
+								<hr class="line-primary" />
+
+								<h5 class="card-category">All my current stocks</h5>
+								<h2 class="card-title">Exams Marks</h2>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container">
+				<div class="row row-grid justify-content-between">
+					<div class="col-md-6 mt-lg-7">
+						<div *ngIf="exams.length > 0" class="card-body">
+							<div class="chart-area" style="height: 500px">
+								<canvas id="chartExams"> </canvas>
+							</div>
+						</div>
+						<div *ngIf="exams.length == 0" class="card-body" style="text-align: center">
+							<div class="btn-wrapper mb-3">
+								<p>Seems like something is not working properly... 😥💀</p>
+								<p class="category text-info d-inline mr-1">Reload Exams</p>
+								<a
+									class="btn btn-link btn-sm"
+									id="reload-exams"
+									(click)="getExams()"
+								>
+									<i class="tim-icons icon-minimal-right"> </i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="pl-md-5">
+							<h1>
+								Large <br />
+
+								Achivements
+							</h1>
+							<p>
+								I should be capable of drawing a single stroke at the present
+								moment; and yet I feel that I never was a greater artist than now.
+							</p>
+							<br />
+
+							<p>
+								When, while the lovely valley teems with vapour around me, and the
+								meridian sun strikes the upper surface of the impenetrable foliage
+								of my trees, and but a few stray.
+							</p>
+							<br />
+						</div>
+					</div>
+				</div>
+				<div class="row row-grid justify-content-between">
+					<div class="col-md-5 mt-5">
+						<div class="pl-md-5">
+							<h1>Single Exam <em> Mark </em></h1>
+							<p>Here the complete list of my exams.</p>
+							<br />
+							<p>
+								<!-- For every stock you can find all the basic product info (ticker,
+								market, ISIN) along with the total <em>unrealized</em> Profit/Loss
+								(also in percentage), and the number of shares I own. -->
+							</p>
+						</div>
+					</div>
+					<div class="col-md-5 mt-lg-5">
+						<div class="row" *ngFor="let exam of exams">
+							<div class="col-lg-12 col-sm-12 px-2 py-2">
+								<div class="card card-stats">
+									<div class="card-body">
+										<div class="row">
+											<div class="col-7 col-md-8">
+												<div class="text-left">
+													<h3 class="card-title">
+														{{ exam.name }}
+													</h3>
+													<p>
+														{{ exam.id }} | {{ exam.year }} |
+														{{ exam.cfu }}
+													</p>
+												</div>
+											</div>
+											<div class="col-5 col-md-4">
+												<div class="numbers">
+													<!-- <p></p> -->
+													<p [class]="'card-category ' + 'text-success'">
+														{{ exam.mark }}
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</section>
 </div>

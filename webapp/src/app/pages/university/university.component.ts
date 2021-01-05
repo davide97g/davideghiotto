@@ -14,6 +14,10 @@ export class UniversityComponent implements OnInit {
 	constructor(private utils: UtilsService, private api: ApiService) {}
 
 	ngOnInit(): void {
+		this.getExams();
+	}
+
+	getExams() {
 		this.api
 			.getExams()
 			.then((exams: Exam[]) => {
