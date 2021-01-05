@@ -3,7 +3,6 @@ import { Exam } from 'src/app/models/exam.model';
 import { ApiService } from 'src/app/services/api.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import Chart from 'chart.js';
-import { parse } from 'path';
 
 @Component({
 	selector: 'app-university',
