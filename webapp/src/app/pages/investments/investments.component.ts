@@ -21,6 +21,7 @@ export class InvestmentsComponent implements OnInit {
 		full_date: '',
 	};
 	portfolios: Portfolio[] = [];
+	currentExchangeUSD: number = null;
 	constructor(private utils: UtilsService, private api: ApiService) {}
 
 	ngOnInit() {
@@ -30,11 +31,24 @@ export class InvestmentsComponent implements OnInit {
 		this.getPortfolio();
 		this.getPerformance();
 		this.getPortfolioAll();
+		this.api
+			.getCurrentExchange()
+			.then((value: number) => (this.currentExchangeUSD = value))
+			.catch(err => console.error(err));
 	}
 
 	ngOnDestroy() {
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove('landing-page');
+	}
+
+	computePL(quantity: number, PMC: number, last: number) {
+		const value = Math.round(((last - PMC) * quantity * 100) / this.currentExchangeUSD) / 100;
+		return value > 0 ? '+' + value : '' + value;
+	}
+	computePLPercentage(quantity: number, PMC: number, last: number) {
+		const value = Math.round(((last - PMC) * 10000) / last) / 100;
+		return value > 0 ? '+' + value : '' + value;
 	}
 
 	getPortfolio() {

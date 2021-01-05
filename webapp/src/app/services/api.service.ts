@@ -9,6 +9,22 @@ export class ApiService {
 	host: string = 'https://ultra-degiro.herokuapp.com/';
 	constructor(private http: HttpClient, private utils: UtilsService) {}
 
+	async getCurrentExchange() {
+		return await this.http
+			.get('https://api.exchangeratesapi.io/latest?symbols=USD')
+			.toPromise()
+			.then((res: any) => {
+				console.info(res);
+				const value = res.rates && res.rates.USD ? res.rates.USD : null;
+				return value;
+			})
+			.catch(err => {
+				this.utils.openSnackBar('Portfolio download failed', 'Please, try again.');
+				console.error(err);
+				return null;
+			});
+	}
+
 	async getPortfolio() {
 		return await this.http
 			.get(this.host + 'portfolio')
