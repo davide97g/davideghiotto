@@ -22,6 +22,7 @@ import { ProfilepageComponent } from './profilepage/profilepage.component';
 import { RegisterpageComponent } from './registerpage/registerpage.component';
 import { LandingpageComponent } from './landingpage/landingpage.component';
 import { InvestmentsComponent } from './investments/investments.component';
+import { UniversityComponent } from './university/university.component';
 
 @NgModule({
 	imports: [
@@ -48,8 +49,9 @@ import { InvestmentsComponent } from './investments/investments.component';
 		RegisterpageComponent,
 		LandingpageComponent,
 		InvestmentsComponent,
+		UniversityComponent,
 	],
-	exports: [IndexComponent, ProfilepageComponent, RegisterpageComponent, LandingpageComponent],
+	exports: [IndexComponent, ProfilepageComponent, RegisterpageComponent, LandingpageComponent, UniversityComponent, InvestmentsComponent],
 	providers: [],
 })
 export class PagesModule {}
