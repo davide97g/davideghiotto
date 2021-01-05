@@ -27,11 +27,14 @@ import { APP_BASE_HREF } from '@angular/common';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 @NgModule({
 	declarations: [
 		AppComponent,
 		TopBarComponent,
 		FooterComponent,
+		ProgressBarComponent,
 		// IndexComponent,
 		// ProfilepageComponent,
 		// RegisterpageComponent,
@@ -55,6 +58,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 		// CarouselModule.forRoot(),
 		// ModalModule.forRoot()
 		MatSnackBarModule,
+		MatProgressBarModule,
 	],
 	providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
 	bootstrap: [AppComponent],

@@ -4,5 +4,5 @@ export interface Exam {
 	mark: string;
 	date: string;
 	year: string;
-	cfu: number;
+	cfu: string;
 }

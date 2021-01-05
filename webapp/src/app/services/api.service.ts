@@ -91,18 +91,18 @@ export class ApiService {
 	}
 
 	async getExams() {
-		return await this.http
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
 			.get(this.host + 'exams')
 			.toPromise()
-			.then((res: any) => {
-				console.info(res.exams);
-				return res.exams;
-			})
+			.then((res: any) => res.exams)
 			.catch(err => {
 				this.utils.openSnackBar('Exams download failed', 'Please, try again.');
 				console.error(err);
 				return null;
 			});
+		this.utils.asyncOperation.next(false);
+		return res;
 	}
 
 	// async refreshPortfolio() {
