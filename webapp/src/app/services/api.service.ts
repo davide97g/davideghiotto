@@ -10,7 +10,8 @@ export class ApiService {
 	constructor(private http: HttpClient, private utils: UtilsService) {}
 
 	async getCurrentExchange() {
-		return await this.http
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
 			.get('https://api.exchangeratesapi.io/latest?symbols=USD')
 			.toPromise()
 			.then((res: any) => {
@@ -23,10 +24,13 @@ export class ApiService {
 				console.error(err);
 				return null;
 			});
+		this.utils.asyncOperation.next(false);
+		return res;
 	}
 
 	async getPortfolio() {
-		return await this.http
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
 			.get(this.host + 'portfolio')
 			.toPromise()
 			.then((res: any) => {
@@ -38,10 +42,13 @@ export class ApiService {
 				console.error(err);
 				return null;
 			});
+		this.utils.asyncOperation.next(false);
+		return res;
 	}
 
 	async updatePortfolio() {
-		return await this.http
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
 			.get(this.host + 'portfolio/update')
 			.toPromise()
 			.then((res: any) => {
@@ -58,10 +65,13 @@ export class ApiService {
 				console.error(err);
 				return null;
 			});
+		this.utils.asyncOperation.next(false);
+		return res;
 	}
 
 	async getPerformance() {
-		return await this.http
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
 			.get(this.host + 'performance')
 			.toPromise()
 			.then((res: any) => res.performance)
@@ -73,10 +83,13 @@ export class ApiService {
 				console.error(err);
 				return null;
 			});
+		this.utils.asyncOperation.next(true);
+		return res;
 	}
 
 	async getPortfolioAll() {
-		return await this.http
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
 			.get(this.host + 'portfolio/all')
 			.toPromise()
 			.then((res: any) => res.portfolios)
@@ -88,6 +101,8 @@ export class ApiService {
 				console.error(err);
 				return null;
 			});
+		this.utils.asyncOperation.next(false);
+		return res;
 	}
 
 	async getExams() {
@@ -105,18 +120,18 @@ export class ApiService {
 		return res;
 	}
 
-	// async refreshPortfolio() {
-	// 	return await this.http
-	// 		.get(this.host + 'portfolio/refresh')
-	// 		.toPromise()
-	// 		.then((res: any) => {
-	// 			// this.utils.openSnackBar('Refresh complete!', 'Updating Portfolio...');
-	// 			return true;
-	// 		})
-	// 		.catch(err => {
-	// 			this.utils.openSnackBar('Portfolio refresh failed', 'Please, try again.');
-	// 			console.error(err);
-	// 			return null;
-	// 		});
-	// }
+	async updateExams() {
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
+			.post(this.host + 'exams/update', {})
+			.toPromise()
+			.then((res: any) => res.message)
+			.catch(err => {
+				this.utils.openSnackBar('Exams update failed', 'Please, try again.');
+				console.error(err);
+				return null;
+			});
+		this.utils.asyncOperation.next(false);
+		return res;
+	}
 }
