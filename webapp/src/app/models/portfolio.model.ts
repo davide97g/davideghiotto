@@ -16,6 +16,7 @@ export interface Stock {
 
 export interface Portfolio {
 	total: number;
+	invested: number;
 	stocks: Stock[];
 	date: string;
 	full_date: string;

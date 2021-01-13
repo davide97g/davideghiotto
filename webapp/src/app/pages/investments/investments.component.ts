@@ -16,6 +16,7 @@ export class InvestmentsComponent implements OnInit {
 	performance: PerformanceMonth[] = [];
 	portfolio: Portfolio = {
 		total: 0,
+		invested: 0,
 		stocks: [],
 		date: new Date().toLocaleDateString(),
 		full_date: '',
@@ -175,9 +176,21 @@ export class InvestmentsComponent implements OnInit {
 	renderChartPerformance(portfolios: Portfolio[]) {
 		var canvas: any = document.getElementById('chartPerformance');
 		var ctx = canvas.getContext('2d');
-		var gradientFill = ctx.createLinearGradient(0, 350, 0, 50);
+		var gradientFill = ctx.createLinearGradient(0, 500, 0, 50);
 		gradientFill.addColorStop(0, 'rgba(228, 76, 196, 0.0)');
 		gradientFill.addColorStop(1, 'rgba(228, 76, 196, 0.14)');
+		var gradientFillInvested = ctx.createLinearGradient(0, 500, 0, 50);
+		gradientFillInvested.addColorStop(0, 'rgba(29, 140, 248, 0.0)');
+		gradientFillInvested.addColorStop(1, 'rgba(29, 140, 248, 0.14)');
+		portfolios.forEach(p => {
+			if (!p.invested) {
+				p.invested = 0;
+				p.stocks.forEach(s => {
+					p.invested += s.PMC * s.quantity;
+				});
+			}
+			p.invested /= this.currentExchangeUSD;
+		});
 
 		if (this.chartPerformance) this.chartPerformance.destroy();
 		this.chartPerformance = new Chart(ctx, {
@@ -204,17 +217,35 @@ export class InvestmentsComponent implements OnInit {
 						pointRadius: 4,
 						data: portfolios.map(p => p.total),
 					},
+					{
+						label: 'Invested €',
+						fill: true,
+						backgroundColor: gradientFillInvested,
+						borderColor: '#1d8cf8',
+						borderWidth: 2,
+						borderDash: [],
+						borderDashOffset: 0.0,
+						pointBackgroundColor: '#1d8cf8',
+						pointBorderColor: 'rgba(255,255,255,0)',
+						pointHoverBackgroundColor: '#1d8cf8',
+						//pointHoverBorderColor:'rgba(35,46,55,1)',
+						pointBorderWidth: 20,
+						pointHoverRadius: 4,
+						pointHoverBorderWidth: 15,
+						pointRadius: 4,
+						data: portfolios.map(p => p.invested),
+					},
 				],
 			},
 			options: {
 				maintainAspectRatio: false,
 				legend: {
-					display: false,
+					display: true,
 				},
 
 				tooltips: {
 					backgroundColor: '#fff',
-					titleFontColor: '#ccc',
+					titleFontColor: '#222222',
 					bodyFontColor: '#666',
 					bodySpacing: 4,
 					xPadding: 12,
@@ -233,9 +264,8 @@ export class InvestmentsComponent implements OnInit {
 								zeroLineColor: 'transparent',
 							},
 							ticks: {
-								display: false,
-								suggestedMin: 0,
-								suggestedMax: 350,
+								display: true,
+								suggestedMin: 5000,
 								padding: 20,
 								fontColor: '#9a9a9a',
 							},
@@ -251,8 +281,9 @@ export class InvestmentsComponent implements OnInit {
 								zeroLineColor: 'transparent',
 							},
 							ticks: {
+								// display: false,
 								padding: 20,
-								fontColor: '#9a9a9a',
+								// fontColor: '#9a9a9a',
 							},
 						},
 					],
