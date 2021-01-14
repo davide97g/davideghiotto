@@ -190,6 +190,7 @@ export class InvestmentsComponent implements OnInit {
 				});
 			}
 			p.invested /= this.currentExchangeUSD;
+			p.invested = Math.round(p.invested * 100) / 100;
 		});
 
 		if (this.chartPerformance) this.chartPerformance.destroy();
@@ -220,6 +221,7 @@ export class InvestmentsComponent implements OnInit {
 					{
 						label: 'Invested €',
 						fill: true,
+						lineTension: 0,
 						backgroundColor: gradientFillInvested,
 						borderColor: '#1d8cf8',
 						borderWidth: 2,
