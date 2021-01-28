@@ -54,7 +54,7 @@
 								<div class="icon icon-primary">
 									<i class="tim-icons icon-money-coins"> </i>
 								</div>
-								<h4 class="info-title">Low Commission</h4>
+								<h4 class="info-title">Passive</h4>
 								<hr class="line-primary" />
 
 								<p>
@@ -68,7 +68,7 @@
 								<div class="icon icon-warning">
 									<i class="tim-icons icon-chart-pie-36"> </i>
 								</div>
-								<h4 class="info-title">High Incomes</h4>
+								<h4 class="info-title"></h4>
 								<hr class="line-warning" />
 
 								<p>
@@ -83,13 +83,14 @@
 								<div class="icon icon-success">
 									<i class="tim-icons icon-single-02"> </i>
 								</div>
-								<h4 class="info-title">Verified People</h4>
+								<h4 class="info-title">Trust</h4>
 								<hr class="line-success" />
 
 								<p>
-									For me it's important to have someone who can explain complex
-									things and guide me to more reasonable choices. This financial
-									journey started thanks to
+									It's fundamental not to lose money investing in the stock
+									market. For me it's important to have someone who can explain
+									complex things and guide me to more reasonable choices. This
+									financial journey started thanks to
 									<strong>Darko Ivanovski</strong> and his YouTube Channel. You
 									can find everything you need and more there!
 								</p>
@@ -283,7 +284,7 @@
 
 		<div class="col-md-12">
 			<div class="card card-chart card-plain">
-				<div class="card-header">
+				<!-- <div class="card-header">
 					<div class="row">
 						<div class="col-sm-6 text-left">
 							<hr class="line-primary" />
@@ -291,6 +292,33 @@
 							<h5 class="card-category">Total Investments</h5>
 							<h2 class="card-title">Performance</h2>
 						</div>
+					</div>
+				</div> -->
+				<div class="card card-chart">
+					<div class="card-header">
+						<h5 class="card-category">Performance</h5>
+						<h3 class="card-title">
+							<p class="text-primary">
+								<i class="tim-icons icon-spaceship text-primary"></i>
+								Total Portfolio:
+								{{
+									portfolios && portfolios.length > 0
+										? portfolios[portfolios.length - 1].total
+										: '?'
+								}}
+								€
+							</p>
+							<p class="text-info">
+								<i class="tim-icons icon-coins text-info"></i>
+								Total Invested:
+								{{
+									portfolios && portfolios.length > 0
+										? portfolios[portfolios.length - 1].invested
+										: '?'
+								}}
+								€
+							</p>
+						</h3>
 					</div>
 				</div>
 				<div *ngIf="performance" class="card-body">

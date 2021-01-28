@@ -47,6 +47,7 @@ export class InvestmentsComponent implements OnInit {
 		const value = Math.round(((last - PMC) * quantity * 100) / this.currentExchangeUSD) / 100;
 		return value > 0 ? '+' + value : '' + value;
 	}
+
 	computePLPercentage(quantity: number, PMC: number, last: number) {
 		const value = Math.round(((last - PMC) * 10000) / last) / 100;
 		return value > 0 ? '+' + value : '' + value;
@@ -201,7 +202,7 @@ export class InvestmentsComponent implements OnInit {
 				labels: portfolios.map(p => p.date),
 				datasets: [
 					{
-						label: 'Total €',
+						label: 'Portfolio €',
 						fill: true,
 						backgroundColor: gradientFill,
 						borderColor: '#e44cc4',
