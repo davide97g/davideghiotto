@@ -15,7 +15,7 @@ export class ApiService {
 			.get('https://api.exchangeratesapi.io/latest?symbols=USD')
 			.toPromise()
 			.then((res: any) => {
-				console.info(res);
+				// console.info(res);
 				const value = res.rates && res.rates.USD ? res.rates.USD : null;
 				return value;
 			})
@@ -34,7 +34,7 @@ export class ApiService {
 			.get(this.host + 'portfolio')
 			.toPromise()
 			.then((res: any) => {
-				console.info(res.portfolio);
+				// console.info(res.portfolio);
 				return res.portfolio;
 			})
 			.catch(err => {

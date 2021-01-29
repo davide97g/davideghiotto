@@ -71,7 +71,7 @@ export class InvestmentsComponent implements OnInit {
 			.getPortfolioAll()
 			.then((portfolios: Portfolio[]) => {
 				this.portfolios = portfolios;
-				console.info(this.portfolios);
+				// console.info(this.portfolios);
 				if (this.portfolios) this.renderChartPerformance(this.portfolios);
 			})
 			.catch(err => {
@@ -139,10 +139,7 @@ export class InvestmentsComponent implements OnInit {
 						pointBorderColor: 'rgba(255,255,255,0)',
 						pointHoverBackgroundColor: '#be55ed',
 						data: portfolio.stocks.map(
-							stock =>
-								Math.round(
-									(stock.last * stock.quantity * 10000) / portfolio.total
-								) / 100
+							stock => Math.round((stock.value * 10000) / portfolio.total) / 100
 						),
 					},
 				],
