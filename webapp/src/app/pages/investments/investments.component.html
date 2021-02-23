@@ -155,7 +155,7 @@
 							<div class="col-sm-6 text-left">
 								<hr class="line-primary" />
 
-								<h5 class="card-category">All my current stocks</h5>
+								<h5 class="card-category">Graphical summary</h5>
 								<h2 class="card-title">
 									Portfolio
 									{{ portfolio ? portfolio.total + ' €' : '' }}
@@ -245,85 +245,72 @@
 						</div>
 					</div>
 				</div>
-				<div class="row row-grid justify-content-between">
-					<div class="col-md-5 mt-5">
-						<div class="pl-md-5">
-							<h1>Single Stock <em> Performance </em></h1>
-							<p>Here the complete list of my stocks.</p>
-							<br />
-							<p>
-								For every stock you can find all the basic product info (ticker,
-								market, ISIN) along with the total <em>unrealized</em> Profit/Loss
-								(also in percentage), and the number of shares I own.
-							</p>
-						</div>
-					</div>
-					<div class="col-md-5 mt-lg-5">
-						<div class="row" *ngFor="let stock of portfolio.stocks">
-							<div class="col-lg-12 col-sm-12 px-2 py-2">
-								<div class="card card-stats">
-									<div class="card-body">
-										<div class="row">
-											<div class="col-7 col-md-8">
-												<div class="text-left">
-													<h3 class="card-title">
-														{{ stock.name }}
-													</h3>
-													<p>
-														{{ stock.tick }} | {{ stock.market }} |
-														{{ stock.ISIN }}
-														<a
-															class="nav-link"
-															[href]="
-																'https://finance.yahoo.com/quote/' +
-																stock.tick
-															"
-															placement="bottom"
-															target="_blank"
-															tooltip="Open in Yahoo Finance"
-															style="display: inline-block"
-														>
-															<i class="fab fa-yahoo"></i>
-														</a>
-													</p>
-												</div>
-											</div>
-											<div class="col-5 col-md-4">
-												<div class="numbers">
-													<p
-														[class]="
-															'card-title ' +
-															(stock.unrealizedRelativePl > 0
-																? 'text-success'
-																: 'text-danger')
-														"
-													>
-														{{ stock.unrealizedRelativePl }}
-														$
-													</p>
-													<!-- <p></p> -->
-													<p
-														[class]="
-															'card-category ' +
-															(stock.totalPl > 0
-																? 'text-success'
-																: 'text-danger')
-														"
-													>
-														{{ stock.totalPl }}
-														%
-													</p>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
+			</div>
+		</section>
+	</section>
+
+	<section class="section section-lg" id="stock-table">
+		<!-- title -->
+		<div class="col-md-12">
+			<div class="card card-chart card-plain">
+				<div class="card-header">
+					<div class="row">
+						<div class="col-sm-6 text-left">
+							<hr class="line-success" />
+							<h5 class="card-category">All my current stocks</h5>
+							<h2 class="card-title">Portfolio Stocks Details</h2>
+							<h5 class="card-category" *ngIf="portfolio && portfolio.date">
+								last update: {{ portfolio.date }}
+							</h5>
 						</div>
 					</div>
 				</div>
 			</div>
-		</section>
+		</div>
+		<!-- table -->
+		<div class="col-lg-10 col-md-6 ml-auto mr-auto">
+			<div class="card card-coin card-plain">
+				<div class="card-body">
+					<div class="table-responsive" style="overflow: hidden">
+						<table class="table tablesorter" id="plain-table">
+							<thead>
+								<tr>
+									<th class="header no-height">Stock</th>
+									<th class="header no-height">Quantity</th>
+									<th class="header no-height">Price</th>
+									<th class="header no-height">Value</th>
+									<th class="header no-height">PMC</th>
+									<th class="header no-height">total P/L</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let stock of portfolio.stocks">
+									<td>{{ stock.name }}</td>
+									<td>{{ stock.quantity }}</td>
+									<td>{{ stock.last }}</td>
+									<td>{{ stock.value | currency: '€ ' }}</td>
+									<td>{{ stock.PMC }}</td>
+									<td>
+										<p
+											[class]="
+												stock.totalPl > 0 ? 'text-success' : 'text-danger'
+											"
+										>
+											{{
+												stock.value -
+													stock.value / (1 + stock.totalPl / 100)
+													| currency: '€ '
+											}}
+											( {{ stock.totalPl }} % )
+										</p>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 	</section>
 
 	<!-- performance -->
