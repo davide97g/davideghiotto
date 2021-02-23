@@ -343,7 +343,8 @@
 										? portfolios[portfolios.length - 1].total
 										: '?'
 								}}
-								€
+								€ ( {{ difference > 0 ? '+' : '' }}
+								{{ difference | currency: ' € ' }} )
 							</p>
 							<p class="text-info">
 								<i class="tim-icons icon-coins text-info"></i>

@@ -21,6 +21,7 @@ export class InvestmentsComponent implements OnInit {
 		date: new Date().toLocaleDateString(),
 		full_date: '',
 	};
+	difference: number = 0;
 	portfolios: Portfolio[] = [];
 	currentExchangeUSD: number = null;
 	constructor(private utils: UtilsService, private api: ApiService) {}
@@ -71,7 +72,6 @@ export class InvestmentsComponent implements OnInit {
 			.getPortfolioAll()
 			.then((portfolios: Portfolio[]) => {
 				this.portfolios = portfolios;
-				// console.info(this.portfolios);
 				if (this.portfolios) this.renderChartPerformance(this.portfolios);
 			})
 			.catch(err => {
@@ -190,6 +190,10 @@ export class InvestmentsComponent implements OnInit {
 			p.invested /= this.currentExchangeUSD;
 			p.invested = Math.round(p.invested * 100) / 100;
 		});
+
+		this.difference =
+			this.portfolios[this.portfolios.length - 1].total -
+			this.portfolios[this.portfolios.length - 1].invested;
 
 		if (this.chartPerformance) this.chartPerformance.destroy();
 		this.chartPerformance = new Chart(ctx, {
