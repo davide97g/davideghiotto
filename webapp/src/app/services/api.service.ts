@@ -6,7 +6,8 @@ import { UtilsService } from './utils.service';
 	providedIn: 'root',
 })
 export class ApiService {
-	host: string = 'https://ultra-degiro.herokuapp.com/';
+	host_degiro: string = 'https://ultra-degiro.herokuapp.com/';
+	host_uniweb: string = 'https://uniweb-api.herokuapp.com/';
 	constructor(private http: HttpClient, private utils: UtilsService) {}
 
 	async getCurrentExchange() {
@@ -31,7 +32,7 @@ export class ApiService {
 	async getPortfolio() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.get(this.host + 'portfolio')
+			.get(this.host_degiro + 'portfolio')
 			.toPromise()
 			.then((res: any) => {
 				// console.info(res.portfolio);
@@ -49,7 +50,7 @@ export class ApiService {
 	async updatePortfolio() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.get(this.host + 'portfolio/update')
+			.get(this.host_degiro + 'portfolio/update')
 			.toPromise()
 			.then((res: any) => {
 				if (res && res.message) {
@@ -72,7 +73,7 @@ export class ApiService {
 	async getPerformance() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.get(this.host + 'performance')
+			.get(this.host_degiro + 'performance')
 			.toPromise()
 			.then((res: any) => res.performance)
 			.catch(err => {
@@ -90,7 +91,7 @@ export class ApiService {
 	async getPortfolioAll() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.get(this.host + 'portfolio/all')
+			.get(this.host_degiro + 'portfolio/all')
 			.toPromise()
 			.then((res: any) => res.portfolios)
 			.catch(err => {
@@ -108,7 +109,7 @@ export class ApiService {
 	async getExams() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.get(this.host + 'exams')
+			.get(this.host_uniweb + 'exams')
 			.toPromise()
 			.then((res: any) => res.exams)
 			.catch(err => {
@@ -123,7 +124,7 @@ export class ApiService {
 	async updateExams() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.post(this.host + 'exams/update', {})
+			.post(this.host_uniweb + 'exams/update', {})
 			.toPromise()
 			.then((res: any) => res.message)
 			.catch(err => {
