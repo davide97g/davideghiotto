@@ -10,6 +10,8 @@ export class ApiService {
 	host_uniweb: string = 'https://uniweb-api.herokuapp.com/';
 	constructor(private http: HttpClient, private utils: UtilsService) {}
 
+	// ? investments
+
 	async getCurrentExchange() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
@@ -84,7 +86,7 @@ export class ApiService {
 				console.error(err);
 				return null;
 			});
-		this.utils.asyncOperation.next(true);
+		this.utils.asyncOperation.next(false);
 		return res;
 	}
 
@@ -105,6 +107,8 @@ export class ApiService {
 		this.utils.asyncOperation.next(false);
 		return res;
 	}
+
+	// ? university
 
 	async getExams() {
 		this.utils.asyncOperation.next(true);

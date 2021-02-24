@@ -10,9 +10,11 @@ import { UtilsService } from '../../services/utils.service';
 	providedIn: 'root',
 })
 export class ProgressBarComponent implements OnInit {
-	visible: boolean = true;
+	counter: number = 0;
 	constructor(private utils: UtilsService) {
-		this.utils.asyncOperation.subscribe((value: boolean) => (this.visible = value));
+		this.utils.asyncOperation.subscribe((value: boolean) =>
+			value ? (this.counter += 1) : (this.counter -= 1)
+		);
 	}
 	ngOnInit(): void {}
 }
