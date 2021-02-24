@@ -8,6 +8,7 @@ import { UtilsService } from './utils.service';
 export class ApiService {
 	host_degiro: string = 'https://ultra-degiro.herokuapp.com/';
 	host_uniweb: string = 'https://uniweb-api.herokuapp.com/';
+	host_sir_tracker: string = 'https://sir-tracker.herokuapp.com/';
 	constructor(private http: HttpClient, private utils: UtilsService) {}
 
 	// ? investments
@@ -133,6 +134,23 @@ export class ApiService {
 			.then((res: any) => res.message)
 			.catch(err => {
 				this.utils.openSnackBar('Exams update failed', 'Please, try again.');
+				console.error(err);
+				return null;
+			});
+		this.utils.asyncOperation.next(false);
+		return res;
+	}
+
+	// ? physique
+
+	async getWeightRecords() {
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
+			.get(this.host_sir_tracker + 'records')
+			.toPromise()
+			.then((res: any) => res.records)
+			.catch(err => {
+				this.utils.openSnackBar('Records download failed', 'Please, try again.');
 				console.error(err);
 				return null;
 			});
