@@ -1,20 +1,17 @@
 {
-	"name": "blk-design-system-angular",
-	"version": "1.1.0",
+	"name": "davideghiotto-webapp",
+	"version": "2.0",
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
 		"build": "ng build",
 		"build:prod": "ng build --prod",
-		"description": "BLK Design System Angular: Free Angular Design System For Bootstrap 4 and Angular",
-		"test": "ng test",
-		"lint": "ng lint",
-		"e2e": "ng e2e",
+		"description": "Angular - Firebase webapp - Personal Portfolio Davide Ghiotto",
 		"install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/creativetimofficial/blk-design-system-angular.git"
+		"url": "git+https://github.com/davide97g/davideghiotto"
 	},
 	"keywords": [
 		"design system",
@@ -57,12 +54,9 @@
 		"blk design system",
 		"blk design system angular"
 	],
-	"author": "Creative Tim <hello@creative-tim.com> (https://www.creative-tim.com/)",
+	"author": "Davide Ghiotto",
 	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/creativetimofficial/blk-design-system-angular/issues"
-	},
-	"homepage": "https://demos.creative-tim.com/blk-design-system-angular/",
+	"homepage": "https://davideghiotto.it",
 	"private": false,
 	"dependencies": {
 		"@angular/animations": "9.0.6",

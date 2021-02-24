@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js';
-import { Portfolio, performance, PerformanceMonth } from 'src/app/models/portfolio.model';
+import { Portfolio, PerformanceMonth } from 'src/app/models/portfolio.model';
 import { ApiService } from 'src/app/services/api.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
