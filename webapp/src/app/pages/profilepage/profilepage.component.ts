@@ -11,14 +11,21 @@ export class ProfilepageComponent implements OnInit, OnDestroy {
 	isCollapsed = true;
 	projects: Project[] = [
 		{
-			title: 'Machine Learning',
+			title: 'Market Value Soccer Players',
+			github: 'https://github.com/davide97g/statistical-learning',
+			img: 'assets/img/projects/screen_statistical_learning.png',
+			tags: ['soccer', 'statistical-learning'],
+			website: 'https://davide97g.github.io/statistical-learning/',
+		},
+		{
+			title: 'Fashion MNIST',
 			github: 'https://github.com/davide97g/ml-modules',
 			img: 'assets/img/projects/screen_ml_modules.png',
 			tags: ['machine-learning', 'mnist'],
 			website: null,
 		},
 		{
-			title: 'Zeus Code',
+			title: 'Dynamic QR',
 			github: null,
 			img: 'assets/img/projects/screen_zeuscode.png',
 			tags: ['qr', 'firebase', 'angular'],
