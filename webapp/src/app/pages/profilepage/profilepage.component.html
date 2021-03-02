@@ -84,7 +84,7 @@
 													<td>2 years</td>
 												</tr>
 												<tr>
-													<td>Typescript</td>
+													<td>Javascript</td>
 													<td>2 years</td>
 												</tr>
 												<tr>
@@ -93,7 +93,7 @@
 												</tr>
 												<tr>
 													<td>Java</td>
-													<td>1 year</td>
+													<td>2 years</td>
 												</tr>
 												<tr>
 													<td>SQL (MySQL, Oracle)</td>
@@ -138,58 +138,18 @@
 			</div>
 		</div>
 	</div>
-	<div class="section">
+
+	<section class="section section-lg" id="projects">
 		<div class="container">
-			<div class="row justify-content-between">
-				<div class="col-md-6">
-					<div class="row justify-content-between align-items-center">
-						<carousel [showIndicators]="true">
-							<slide>
-								<a href="https://zeuscode.it">
-									<img
-										alt="First slide"
-										class="d-block"
-										src="assets/img/projects/screen_zeuscode.png"
-									/>
-								</a>
-							</slide>
-							<slide>
-								<a href="https://life-4-weeks.web.app/">
-									<img
-										alt="Second slide"
-										class="d-block"
-										src="assets/img/projects/screen_life_in_weeks.png"
-									/>
-								</a>
-							</slide>
-							<slide>
-								<a href="https://github.com/davide97g/ml-modules">
-									<img
-										alt="Third slide"
-										class="d-block"
-										src="assets/img/projects/screen_ml_modules.png"
-									/>
-								</a>
-							</slide>
-							<slide>
-								<a href="https://github.com/davide97g/machine-learning">
-									<img
-										alt="Third slide"
-										class="d-block"
-										src="assets/img/projects/screen_machine_learning.jpg"
-									/>
-								</a>
-							</slide>
-						</carousel>
-					</div>
-				</div>
-				<div class="col-md-5">
-					<h1 class="profile-title text-left">Projects</h1>
+			<div class="row justify-content-center">
+				<div class="col-lg-12">
+					<h1 class="profile-title">Projects</h1>
 					<h5 class="text-on-back">2</h5>
-					<p class="profile-description text-left">
-						Here it's a list of my major projects. Foreach of it you can find the
-						relative repository on Github and see the code.
+					<p class="profile-description">
+						Here it's a list of my favourite projects. <br />
+						You can find the relative repository on Github.
 					</p>
+
 					<div class="btn-wrapper pt-3">
 						<a href="https://github.com/davide97g/">
 							<button class="btn btn-simple btn-info">
@@ -197,8 +157,32 @@
 							</button>
 						</a>
 					</div>
+
+					<div class="row row-grid justify-content-center">
+						<div class="col-lg-4" *ngFor="let project of projects">
+							<div class="info">
+								<h4 class="info-title">{{ project.title }}</h4>
+								<hr class="line-primary" />
+								<div class="btn-wrapper pb-3">
+									<a [href]="project.github" *ngIf="project.github">
+										<button class="btn btn-simple btn-primary">
+											<i class="fab fa-github"> </i> Github
+										</button>
+									</a>
+									<a [href]="project.website" *ngIf="project.website">
+										<button class="btn btn-simple btn-primary">
+											<i class="fas fa-rocket"> </i> Website
+										</button>
+									</a>
+								</div>
+								<a [href]="project.github ? project.github : project.website">
+									<img alt="First slide" class="d-block" [src]="project.img" />
+								</a>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</section>
 </div>

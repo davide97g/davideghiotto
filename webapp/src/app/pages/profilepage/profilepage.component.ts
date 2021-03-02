@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Project } from 'src/app/models/project.model';
 import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
@@ -8,6 +9,29 @@ import { UtilsService } from 'src/app/services/utils.service';
 })
 export class ProfilepageComponent implements OnInit, OnDestroy {
 	isCollapsed = true;
+	projects: Project[] = [
+		{
+			title: 'Machine Learning',
+			github: 'https://github.com/davide97g/ml-modules',
+			img: 'assets/img/projects/screen_ml_modules.png',
+			tags: ['machine-learning', 'mnist'],
+			website: null,
+		},
+		{
+			title: 'Zeus Code',
+			github: null,
+			img: 'assets/img/projects/screen_zeuscode.png',
+			tags: ['qr', 'firebase', 'angular'],
+			website: 'https://zeuscode.it',
+		},
+		{
+			title: 'Life in Weeks',
+			github: 'https://github.com/davide97g/life4weeks',
+			img: 'assets/img/projects/screen_life_in_weeks.png',
+			tags: ['diary', 'firebase', 'angular'],
+			website: 'https://life-4-weeks.web.app/',
+		},
+	];
 	constructor(private utils: UtilsService) {}
 
 	ngOnInit() {
