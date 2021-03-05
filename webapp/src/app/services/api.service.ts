@@ -114,7 +114,7 @@ export class ApiService {
 	async getExamsRegistered() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.get(this.host_uniweb + 'exams/registered')
+			.get(this.host_uniweb + 'exams-registered')
 			.toPromise()
 			.then((res: any) => res.exams)
 			.catch(err => {
@@ -129,7 +129,7 @@ export class ApiService {
 	async updateExamsRegistered() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.post(this.host_uniweb + 'exams/registered/update', {})
+			.post(this.host_uniweb + 'exams-registered/update', {})
 			.toPromise()
 			.then((res: any) => res.message)
 			.catch(err => {
@@ -146,7 +146,7 @@ export class ApiService {
 	async getExamsResults() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.get(this.host_uniweb + 'exams/results')
+			.get(this.host_uniweb + 'exams-results')
 			.toPromise()
 			.then((res: any) => res.exams)
 			.catch(err => {
@@ -161,7 +161,7 @@ export class ApiService {
 	async updateExamsResults() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.post(this.host_uniweb + 'exams/results/update', {})
+			.post(this.host_uniweb + 'exams-results/update', {})
 			.toPromise()
 			.then((res: any) => res.message)
 			.catch(err => {
