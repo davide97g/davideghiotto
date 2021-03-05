@@ -22,7 +22,7 @@ export class UniversityComponent implements OnInit {
 
 	getExams() {
 		this.api
-			.getExams()
+			.getExamsRegistered()
 			.then((exams: Exam[]) => {
 				this.exams = exams;
 				this.computeAverage();

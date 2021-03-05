@@ -111,14 +111,14 @@ export class ApiService {
 
 	// ? university
 
-	async getExams() {
+	async getExamsRegistered() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.get(this.host_uniweb + 'exams')
+			.get(this.host_uniweb + 'exams/registered')
 			.toPromise()
 			.then((res: any) => res.exams)
 			.catch(err => {
-				this.utils.openSnackBar('Exams download failed', 'Please, try again.');
+				this.utils.openSnackBar('Registered exams download failed', 'Please, try again.');
 				console.error(err);
 				return null;
 			});
@@ -126,14 +126,46 @@ export class ApiService {
 		return res;
 	}
 
-	async updateExams() {
+	async updateExamsRegistered() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.post(this.host_uniweb + 'exams/update', {})
+			.post(this.host_uniweb + 'exams/registered/update', {})
 			.toPromise()
 			.then((res: any) => res.message)
 			.catch(err => {
-				this.utils.openSnackBar('Exams update failed', 'Please, try again.');
+				this.utils.openSnackBar('Registered exams update failed', 'Please, try again.');
+				console.error(err);
+				return null;
+			});
+		this.utils.asyncOperation.next(false);
+		return res;
+	}
+
+	// ? university / exams / results
+
+	async getExamsResults() {
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
+			.get(this.host_uniweb + 'exams/results')
+			.toPromise()
+			.then((res: any) => res.exams)
+			.catch(err => {
+				this.utils.openSnackBar('Exams results download failed', 'Please, try again.');
+				console.error(err);
+				return null;
+			});
+		this.utils.asyncOperation.next(false);
+		return res;
+	}
+
+	async updateExamsResults() {
+		this.utils.asyncOperation.next(true);
+		let res = await this.http
+			.post(this.host_uniweb + 'exams/results/update', {})
+			.toPromise()
+			.then((res: any) => res.message)
+			.catch(err => {
+				this.utils.openSnackBar('Exams results update failed', 'Please, try again.');
 				console.error(err);
 				return null;
 			});
