@@ -25,7 +25,7 @@ export class ProfilepageComponent implements OnInit, OnDestroy {
 			website: null,
 		},
 		{
-			title: 'Dynamic QR',
+			title: 'Dynamic Shirts',
 			github: null,
 			img: 'assets/img/projects/screen_zeuscode.png',
 			tags: ['qr', 'firebase', 'angular'],
