@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Exam } from 'src/app/models/exam.model';
+import { Exam, ExamResult } from 'src/app/models/exam.model';
 import { ApiService } from 'src/app/services/api.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import Chart from 'chart.js';
@@ -11,16 +11,18 @@ import Chart from 'chart.js';
 })
 export class UniversityComponent implements OnInit {
 	exams: Exam[] = [];
+	exams_results: ExamResult[] = [];
 	average: number = 0;
 	weighted_average: number = 0;
 	chartExams: Chart = null;
 	constructor(private utils: UtilsService, private api: ApiService) {}
 
 	ngOnInit(): void {
-		this.getExams();
+		this.getExamsRegistered();
+		this.getExamsResults();
 	}
 
-	getExams() {
+	getExamsRegistered() {
 		this.api
 			.getExamsRegistered()
 			.then((exams: Exam[]) => {
@@ -28,6 +30,15 @@ export class UniversityComponent implements OnInit {
 				this.computeAverage();
 				this.computeWeightedAverage();
 				this.renderChartExams();
+			})
+			.catch(err => console.error(err));
+	}
+
+	getExamsResults() {
+		this.api
+			.getExamsResults()
+			.then((exams_results: ExamResult[]) => {
+				this.exams_results = exams_results;
 			})
 			.catch(err => console.error(err));
 	}
@@ -83,6 +94,10 @@ export class UniversityComponent implements OnInit {
 							'rgba(54, 162, 235, 0.2)',
 							'rgba(153, 102, 255, 0.2)',
 							'rgba(201, 203, 207, 0.2)',
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(255, 159, 64, 0.2)',
+							'rgba(255, 205, 86, 0.2)',
+							'rgba(75, 192, 192, 0.2)',
 						],
 						borderColor: [
 							'rgb(255, 99, 132)',
@@ -99,6 +114,10 @@ export class UniversityComponent implements OnInit {
 							'rgb(54, 162, 235)',
 							'rgb(153, 102, 255)',
 							'rgb(201, 203, 207)',
+							'rgb(255, 99, 132)',
+							'rgb(255, 159, 64)',
+							'rgb(255, 205, 86)',
+							'rgb(75, 192, 192)',
 						],
 						borderWidth: 1,
 					},

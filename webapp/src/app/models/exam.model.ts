@@ -6,3 +6,11 @@ export interface Exam {
 	year: string;
 	cfu: string;
 }
+
+export interface ExamResult {
+	id: string;
+	name: string;
+	date: string;
+	last_date_reject: string;
+	mark: string;
+}
