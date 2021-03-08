@@ -11,6 +11,13 @@ export class ProfilepageComponent implements OnInit, OnDestroy {
 	isCollapsed = true;
 	projects: Project[] = [
 		{
+			title: 'Uniweb Scraper',
+			github: 'https://github.com/davide97g/uniweb-scraper',
+			img: 'assets/img/projects/screen_unipd.png',
+			tags: ['web-scraper', 'mongodb', 'python', 'heroku'],
+			website: null,
+		},
+		{
 			title: 'Market Value Soccer Players',
 			github: 'https://github.com/davide97g/statistical-learning',
 			img: 'assets/img/projects/screen_statistical_learning.png',
