@@ -126,10 +126,10 @@ export class ApiService {
 		return res;
 	}
 
-	async updateExamsRegistered() {
+	async updateExamsRegistered(password: string) {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
-			.post(this.host_uniweb + 'exams/registered/update', {})
+			.post(this.host_uniweb + 'exams/registered/update', { password: password })
 			.toPromise()
 			.then((res: any) => res.message)
 			.catch(err => {
@@ -158,7 +158,7 @@ export class ApiService {
 		return res;
 	}
 
-	async updateExamsResults() {
+	async updateExamsResults(password: string) {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
 			.post(this.host_uniweb + 'exams/results/update', {})

@@ -16,6 +16,7 @@ export class UniversityComponent implements OnInit {
 	weighted_average: number = 0;
 	chartExams: Chart = null;
 	focus: boolean = false;
+	password: string = null;
 	constructor(private utils: UtilsService, private api: ApiService) {}
 
 	ngOnInit(): void {
@@ -126,5 +127,15 @@ export class UniversityComponent implements OnInit {
 			},
 			options: { scales: { yAxes: [{ ticks: { beginAtZero: true } }] } },
 		});
+	}
+
+	updateExams(password: string) {
+		console.info('updateExams', password);
+		this.api
+			.updateExamsRegistered(password)
+			.then(res => {
+				console.info(res);
+			})
+			.catch(err => console.error(err));
 	}
 }

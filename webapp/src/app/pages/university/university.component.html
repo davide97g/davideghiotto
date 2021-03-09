@@ -7,34 +7,39 @@
 						<div class="row">
 							<div class="col-sm-6 text-left">
 								<hr class="line-primary" />
-
 								<h5 class="card-category">All my current exams</h5>
 								<h2 class="card-title">Exams Marks</h2>
 								<h5 *ngIf="exams.length > 0" class="card-title">
 									Average: {{ average }} <br />
 									Weighted Average: {{ weighted_average }}
 								</h5>
-								<!-- <div class="col-sm-10 col-lg-3"> -->
+								<hr class="line-primary" />
+								<h5 class="card-title">Reload data</h5>
 								<div
-									class="input-group"
+									class="input-group col-lg-6"
 									[ngClass]="{ 'input-group-focus': focus === true }"
 								>
+									<div class="input-group-prepend">
+										<span class="input-group-text">
+											<i class="fas fa-key"> </i>
+										</span>
+									</div>
 									<input
-										class="form-control col-lg-3"
+										class="form-control"
 										placeholder="Password"
 										type="password"
+										[(ngModel)]="password"
 										(focus)="focus = true"
 										(blur)="focus = false"
 									/>
 									<a
 										class="btn btn-link btn-sm"
-										id="reload-exams"
-										(click)="getExamsRegistered()"
+										id="update-exams"
+										(click)="updateExams(password)"
 									>
-										<i class="fas fa-sync"> </i>
+										<i class="fas fa-paper-plane"> </i>
 									</a>
 								</div>
-								<!-- </div> -->
 							</div>
 						</div>
 					</div>
