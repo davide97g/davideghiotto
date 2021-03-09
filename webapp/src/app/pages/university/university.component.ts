@@ -15,6 +15,7 @@ export class UniversityComponent implements OnInit {
 	average: number = 0;
 	weighted_average: number = 0;
 	chartExams: Chart = null;
+	focus: boolean = false;
 	constructor(private utils: UtilsService, private api: ApiService) {}
 
 	ngOnInit(): void {
