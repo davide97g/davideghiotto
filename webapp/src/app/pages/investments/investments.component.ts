@@ -23,7 +23,7 @@ export class InvestmentsComponent implements OnInit {
 	};
 	difference: number = 0;
 	portfolios: Portfolio[] = [];
-	currentExchangeUSD: number = null;
+	currentExchangeUSD: number = 1.178;
 	constructor(private utils: UtilsService, private api: ApiService) {}
 
 	ngOnInit() {
@@ -33,10 +33,6 @@ export class InvestmentsComponent implements OnInit {
 		this.getPortfolio();
 		this.getPerformance();
 		this.getPortfolioAll();
-		this.api
-			.getCurrentExchange()
-			.then((value: number) => (this.currentExchangeUSD = value))
-			.catch(err => console.error(err));
 	}
 
 	ngOnDestroy() {
@@ -124,6 +120,15 @@ export class InvestmentsComponent implements OnInit {
 						fill: true,
 						// backgroundColor: gradientFill,
 						backgroundColor: [
+							'#03045e',
+							'#023e8a',
+							'#0077b6',
+							'#0096c7',
+							'#00b4d8',
+							'#48cae4',
+							'#90e0ef',
+							'#ade8f4',
+							'#caf0f8',
 							'#03045e',
 							'#023e8a',
 							'#0077b6',
@@ -246,7 +251,6 @@ export class InvestmentsComponent implements OnInit {
 				legend: {
 					display: true,
 				},
-
 				tooltips: {
 					backgroundColor: '#fff',
 					titleFontColor: '#222222',
@@ -275,7 +279,6 @@ export class InvestmentsComponent implements OnInit {
 							},
 						},
 					],
-
 					xAxes: [
 						{
 							barPercentage: 1.6,

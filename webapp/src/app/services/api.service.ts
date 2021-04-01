@@ -13,25 +13,6 @@ export class ApiService {
 
 	// ? investments
 
-	async getCurrentExchange() {
-		this.utils.asyncOperation.next(true);
-		let res = await this.http
-			.get('https://api.exchangeratesapi.io/latest?symbols=USD')
-			.toPromise()
-			.then((res: any) => {
-				// console.info(res);
-				const value = res.rates && res.rates.USD ? res.rates.USD : null;
-				return value;
-			})
-			.catch(err => {
-				this.utils.openSnackBar('Portfolio download failed', 'Please, try again.');
-				console.error(err);
-				return null;
-			});
-		this.utils.asyncOperation.next(false);
-		return res;
-	}
-
 	async getPortfolio() {
 		this.utils.asyncOperation.next(true);
 		let res = await this.http
