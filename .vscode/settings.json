@@ -4,5 +4,5 @@
 	"editor.fontSize": 14,
 	"debug.console.fontFamily": "Fira Code Light, Consolas, 'Courier New', monospace",
 	"terminal.integrated.fontFamily": "Fira Code Light, Consolas, 'Courier New', monospace",
-	"terminal.integrated.fontSize": 13
+	"terminal.integrated.fontSize": 14
 }
