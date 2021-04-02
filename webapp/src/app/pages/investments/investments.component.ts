@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js';
-import { Portfolio, PerformanceMonth } from 'src/app/models/portfolio.model';
+import { Portfolio } from 'src/app/models/portfolio.model';
 import { ApiService } from 'src/app/services/api.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
@@ -13,17 +13,16 @@ export class InvestmentsComponent implements OnInit {
 	isCollapsed = true;
 	chartPerformance: Chart = null;
 	chartPortfolio: Chart = null;
-	performance: PerformanceMonth[] = [];
 	portfolio: Portfolio = {
 		total: 0,
 		invested: 0,
 		stocks: [],
 		date: new Date().toLocaleDateString(),
 		full_date: '',
+		exchangeUSD: 1.2,
 	};
 	difference: number = 0;
 	portfolios: Portfolio[] = [];
-	currentExchangeUSD: number = 1.178;
 	constructor(private utils: UtilsService, private api: ApiService) {}
 
 	ngOnInit() {
@@ -31,7 +30,6 @@ export class InvestmentsComponent implements OnInit {
 		body.classList.add('landing-page');
 		// call API
 		this.getPortfolio();
-		this.getPerformance();
 		this.getPortfolioAll();
 	}
 
@@ -40,8 +38,9 @@ export class InvestmentsComponent implements OnInit {
 		body.classList.remove('landing-page');
 	}
 
-	computePL(quantity: number, PMC: number, last: number) {
-		const value = Math.round(((last - PMC) * quantity * 100) / this.currentExchangeUSD) / 100;
+	computePL(quantity: number, PMC: number, last: number, exchangeUSD?: number) {
+		const value =
+			Math.round(((last - PMC) * quantity * 100) / (exchangeUSD ? exchangeUSD : 1.2)) / 100;
 		return value > 0 ? '+' + value : '' + value;
 	}
 
@@ -72,19 +71,6 @@ export class InvestmentsComponent implements OnInit {
 			})
 			.catch(err => {
 				this.portfolio = null;
-				console.error(err);
-			});
-	}
-
-	getPerformance() {
-		this.api
-			.getPerformance()
-			.then((performance: PerformanceMonth[]) => {
-				this.performance = performance;
-				// if (this.performance) this.renderChartPerformance(this.performance);
-			})
-			.catch(err => {
-				this.performance = null;
 				console.error(err);
 			});
 	}
@@ -192,7 +178,7 @@ export class InvestmentsComponent implements OnInit {
 					p.invested += s.PMC * s.quantity;
 				});
 			}
-			p.invested /= this.currentExchangeUSD;
+			p.invested /= p.exchangeUSD ? p.exchangeUSD : 1.2;
 			p.invested = Math.round(p.invested * 100) / 100;
 		});
 

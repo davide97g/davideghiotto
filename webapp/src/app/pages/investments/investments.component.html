@@ -249,7 +249,8 @@
 		</section>
 	</section>
 
-	<section class="section section-lg" id="stock-table">
+	<!-- stocks table -->
+	<section class="section section-lg" id="stock-table" *ngIf="portfolio">
 		<!-- title -->
 		<div class="col-md-12">
 			<div class="card card-chart card-plain">
@@ -345,17 +346,17 @@
 						</h3>
 					</div>
 				</div>
-				<div *ngIf="performance" class="card-body">
+				<div *ngIf="portfolios" class="card-body">
 					<div class="chart-area"><canvas id="chartPerformance"> </canvas></div>
 				</div>
-				<div *ngIf="!performance" class="card-body" style="text-align: center">
+				<div *ngIf="portfolios.length == 0" class="card-body" style="text-align: center">
 					<div class="btn-wrapper mb-3">
 						<p>Seems like something is not working properly... 😥💀</p>
 						<p class="category text-info d-inline mr-1">Reload Performance</p>
 						<a
 							class="btn btn-link btn-sm"
 							id="reload-performance"
-							(click)="getPerformance()"
+							(click)="getPortfolioAll()"
 						>
 							<i class="tim-icons icon-minimal-right"> </i>
 						</a>

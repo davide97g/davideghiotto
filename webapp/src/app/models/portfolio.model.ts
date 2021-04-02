@@ -20,10 +20,5 @@ export interface Portfolio {
 	stocks: Stock[];
 	date: string;
 	full_date: string;
-}
-
-export interface PerformanceMonth {
-	month: string;
-	year: string;
-	total: number;
+	exchangeUSD: number;
 }

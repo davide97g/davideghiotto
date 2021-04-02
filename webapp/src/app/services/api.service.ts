@@ -18,10 +18,7 @@ export class ApiService {
 		let res = await this.http
 			.get(this.host_degiro + 'portfolio')
 			.toPromise()
-			.then((res: any) => {
-				// console.info(res.portfolio);
-				return res.portfolio;
-			})
+			.then((res: any) => res.portfolio)
 			.catch(err => {
 				this.utils.openSnackBar('Portfolio download failed', 'Please, try again.');
 				console.error(err);
@@ -47,24 +44,6 @@ export class ApiService {
 			})
 			.catch(err => {
 				this.utils.openSnackBar('Portfolio update failed', 'Please, try again.');
-				console.error(err);
-				return null;
-			});
-		this.utils.asyncOperation.next(false);
-		return res;
-	}
-
-	async getPerformance() {
-		this.utils.asyncOperation.next(true);
-		let res = await this.http
-			.get(this.host_degiro + 'performance')
-			.toPromise()
-			.then((res: any) => res.performance)
-			.catch(err => {
-				this.utils.openSnackBar(
-					'Performance download failed',
-					'Check your internet connection or server status'
-				);
 				console.error(err);
 				return null;
 			});
