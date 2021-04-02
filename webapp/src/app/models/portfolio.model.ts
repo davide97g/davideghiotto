@@ -21,3 +21,9 @@ export interface Portfolio {
 	date: string;
 	full_date: string;
 }
+
+export interface PerformanceMonth {
+	month: string;
+	year: string;
+	total: number;
+}

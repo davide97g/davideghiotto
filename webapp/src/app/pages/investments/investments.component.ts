@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js';
-import { Portfolio } from 'src/app/models/portfolio.model';
+import { Portfolio, PerformanceMonth } from 'src/app/models/portfolio.model';
 import { ApiService } from 'src/app/services/api.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
@@ -13,6 +13,7 @@ export class InvestmentsComponent implements OnInit {
 	isCollapsed = true;
 	chartPerformance: Chart = null;
 	chartPortfolio: Chart = null;
+	performance: PerformanceMonth[] = [];
 	portfolio: Portfolio = {
 		total: 0,
 		invested: 0,
@@ -30,6 +31,7 @@ export class InvestmentsComponent implements OnInit {
 		body.classList.add('landing-page');
 		// call API
 		this.getPortfolio();
+		this.getPerformance();
 		this.getPortfolioAll();
 	}
 
@@ -70,6 +72,19 @@ export class InvestmentsComponent implements OnInit {
 			})
 			.catch(err => {
 				this.portfolio = null;
+				console.error(err);
+			});
+	}
+
+	getPerformance() {
+		this.api
+			.getPerformance()
+			.then((performance: PerformanceMonth[]) => {
+				this.performance = performance;
+				// if (this.performance) this.renderChartPerformance(this.performance);
+			})
+			.catch(err => {
+				this.performance = null;
 				console.error(err);
 			});
 	}
