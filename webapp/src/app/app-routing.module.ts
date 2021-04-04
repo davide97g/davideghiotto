@@ -10,6 +10,7 @@ import { LandingpageComponent } from './pages/landingpage/landingpage.component'
 import { InvestmentsComponent } from './pages/investments/investments.component';
 import { UniversityComponent } from './pages/university/university.component';
 import { PhysiqueComponent } from './pages/physique/physique.component';
+import { TravelsComponent } from './pages/travels/travels.component';
 
 const routes: Routes = [
 	{ path: 'index', component: IndexComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
 	{ path: 'investments', component: InvestmentsComponent },
 	{ path: 'university', component: UniversityComponent },
 	{ path: 'physique', component: PhysiqueComponent },
+	{ path: 'travels', component: TravelsComponent },
 	{ path: 'home', component: ProfilepageComponent },
 	{ path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

@@ -24,6 +24,7 @@ import { LandingpageComponent } from './landingpage/landingpage.component';
 import { InvestmentsComponent } from './investments/investments.component';
 import { UniversityComponent } from './university/university.component';
 import { PhysiqueComponent } from './physique/physique.component';
+import { TravelsComponent } from './travels/travels.component';
 
 @NgModule({
 	imports: [
@@ -52,6 +53,7 @@ import { PhysiqueComponent } from './physique/physique.component';
 		InvestmentsComponent,
 		UniversityComponent,
 		PhysiqueComponent,
+		TravelsComponent,
 	],
 	exports: [IndexComponent, ProfilepageComponent, RegisterpageComponent, LandingpageComponent, UniversityComponent, InvestmentsComponent],
 	providers: [],
