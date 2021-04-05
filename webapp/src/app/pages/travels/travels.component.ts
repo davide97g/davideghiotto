@@ -14,6 +14,7 @@ import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 export class TravelsComponent implements OnInit, OnDestroy, AfterViewInit {
 	isCollapsed = true;
 	visitedColor = am4core.color('#E14ECA');
+	bucketColor = am4core.color('#E1C94E');
 	travels: Travel[] = [
 		{
 			id: 'IT',
@@ -141,9 +142,17 @@ export class TravelsComponent implements OnInit, OnDestroy, AfterViewInit {
 			dateStart: new Date(),
 			dateEnd: new Date(),
 		},
+		// here I insert my bucket list
+		{
+			id: 'IS',
+			fill: this.bucketColor,
+			description: '',
+			dateStart: new Date(),
+			dateEnd: null,
+		},
 	];
 	last_update = new Date();
-	total_visited = this.travels.length;
+	total_visited = this.travels.filter(travel => travel.dateEnd).length;
 	percentage_visited = Math.round((10000 * this.total_visited) / 256) / 100;
 	constructor() {}
 
@@ -233,6 +242,10 @@ export class TravelsComponent implements OnInit, OnDestroy, AfterViewInit {
 		polygonTemplate.propertyFields.fill = 'fill';
 		polygonTemplate.fill = am4core.color('#1d8cf8');
 		// polygonTemplate.tooltipText = '{name}: {dateStart} - {dateEnd}';
+
+		chart.legend = new am4maps.Legend();
+		chart.legend.position = 'right';
+		chart.legend.align = 'right';
 	}
 
 	ngOnDestroy() {
