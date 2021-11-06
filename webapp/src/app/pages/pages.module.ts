@@ -22,7 +22,6 @@ import { ProfilepageComponent } from './profilepage/profilepage.component';
 import { RegisterpageComponent } from './registerpage/registerpage.component';
 import { LandingpageComponent } from './landingpage/landingpage.component';
 import { InvestmentsComponent } from './investments/investments.component';
-import { UniversityComponent } from './university/university.component';
 import { PhysiqueComponent } from './physique/physique.component';
 import { TravelsComponent } from './travels/travels.component';
 
@@ -51,11 +50,16 @@ import { TravelsComponent } from './travels/travels.component';
 		RegisterpageComponent,
 		LandingpageComponent,
 		InvestmentsComponent,
-		UniversityComponent,
 		PhysiqueComponent,
 		TravelsComponent,
 	],
-	exports: [IndexComponent, ProfilepageComponent, RegisterpageComponent, LandingpageComponent, UniversityComponent, InvestmentsComponent],
+	exports: [
+		IndexComponent,
+		ProfilepageComponent,
+		RegisterpageComponent,
+		LandingpageComponent,
+		InvestmentsComponent,
+	],
 	providers: [],
 })
 export class PagesModule {}
