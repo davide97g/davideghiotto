@@ -11,6 +11,30 @@ export class ProfilepageComponent implements OnInit, OnDestroy {
 	isCollapsed = true;
 	projects: Project[] = [
 		{
+			title: 'Atoma World',
+			github: null,
+			img: 'assets/img/projects/screen_atoma_world.png',
+			tags: [
+				'web-app',
+				'firebase',
+				'typescript',
+				'heroku',
+				'angular',
+				'blockchain',
+				'play-to-earn',
+				'wax',
+				'discord',
+			],
+			website: 'https://atoma.world/',
+		},
+		{
+			title: 'Ultra Gymnasium',
+			github: 'https://github.com/francescogaratti/gymnasium',
+			img: 'assets/img/projects/screen_ultragymnasium.png',
+			tags: ['web-app', 'firebase', 'typescript', 'heroku', 'angular'],
+			website: 'https://ultra-gymnasium.web.app/',
+		},
+		{
 			title: 'Uniweb Scraper',
 			github: 'https://github.com/davide97g/uniweb-scraper',
 			img: 'assets/img/projects/screen_unipd.png',
