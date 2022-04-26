@@ -6,6 +6,11 @@ import * as am4maps from '@amcharts/amcharts4/maps';
 import am4geodata_worldLow from '@amcharts/amcharts4-geodata/worldLow';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 
+/**
+ * ? COUNTRY CODES
+ * https://www.iban.com/country-codes
+ */
+
 @Component({
 	selector: 'app-travels',
 	templateUrl: 'travels.component.html',
@@ -136,6 +141,20 @@ export class TravelsComponent implements OnInit, OnDestroy, AfterViewInit {
 		},
 		{
 			id: 'SG',
+			fill: this.visitedColor,
+			description: '',
+			dateStart: new Date(),
+			dateEnd: new Date(),
+		},
+		{
+			id: 'AE',
+			fill: this.visitedColor,
+			description: '',
+			dateStart: new Date(),
+			dateEnd: new Date(),
+		},
+		{
+			id: 'IL',
 			fill: this.visitedColor,
 			description: '',
 			dateStart: new Date(),

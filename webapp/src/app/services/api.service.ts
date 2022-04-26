@@ -8,7 +8,6 @@ import { UtilsService } from './utils.service';
 export class ApiService {
 	host_degiro: string = 'https://ultra-degiro.herokuapp.com/';
 	host_uniweb: string = 'https://uniweb-api.herokuapp.com/';
-	host_sir_tracker: string = 'https://sir-tracker.herokuapp.com/';
 	constructor(private http: HttpClient, private utils: UtilsService) {}
 
 	// ? investments
@@ -62,87 +61,6 @@ export class ApiService {
 					'Portfolios download failed',
 					'Check your internet connection or server status'
 				);
-				console.error(err);
-				return null;
-			});
-		this.utils.asyncOperation.next(false);
-		return res;
-	}
-
-	// ? university
-
-	async getExamsRegistered() {
-		this.utils.asyncOperation.next(true);
-		let res = await this.http
-			.get(this.host_uniweb + 'exams/registered')
-			.toPromise()
-			.then((res: any) => res.exams)
-			.catch(err => {
-				this.utils.openSnackBar('Registered exams download failed', 'Please, try again.');
-				console.error(err);
-				return null;
-			});
-		this.utils.asyncOperation.next(false);
-		return res;
-	}
-
-	async updateExamsRegistered(password: string) {
-		this.utils.asyncOperation.next(true);
-		let res = await this.http
-			.post(this.host_uniweb + 'exams/registered/update', { password: password })
-			.toPromise()
-			.then((res: any) => res.message)
-			.catch(err => {
-				this.utils.openSnackBar('Registered exams update failed', 'Please, try again.');
-				console.error(err);
-				return null;
-			});
-		this.utils.asyncOperation.next(false);
-		return res;
-	}
-
-	// ? university / exams / results
-
-	async getExamsResults() {
-		this.utils.asyncOperation.next(true);
-		let res = await this.http
-			.get(this.host_uniweb + 'exams/results')
-			.toPromise()
-			.then((res: any) => res.exams)
-			.catch(err => {
-				this.utils.openSnackBar('Exams results download failed', 'Please, try again.');
-				console.error(err);
-				return null;
-			});
-		this.utils.asyncOperation.next(false);
-		return res;
-	}
-
-	async updateExamsResults(password: string) {
-		this.utils.asyncOperation.next(true);
-		let res = await this.http
-			.post(this.host_uniweb + 'exams/results/update', {})
-			.toPromise()
-			.then((res: any) => res.message)
-			.catch(err => {
-				this.utils.openSnackBar('Exams results update failed', 'Please, try again.');
-				console.error(err);
-				return null;
-			});
-		this.utils.asyncOperation.next(false);
-		return res;
-	}
-
-	// ? physique
-
-	async getWeightRecords() {
-		this.utils.asyncOperation.next(true);
-		let res = await this.http
-			.get(this.host_sir_tracker + 'records')
-			.toPromise()
-			.then((res: any) => res.records)
-			.catch(err => {
-				this.utils.openSnackBar('Records download failed', 'Please, try again.');
 				console.error(err);
 				return null;
 			});

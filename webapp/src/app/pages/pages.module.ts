@@ -17,13 +17,12 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { JwBootstrapSwitchNg2Module } from 'jw-bootstrap-switch-ng2';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 
-import { IndexComponent } from './index/index.component';
 import { ProfilepageComponent } from './profilepage/profilepage.component';
-import { RegisterpageComponent } from './registerpage/registerpage.component';
-import { LandingpageComponent } from './landingpage/landingpage.component';
 import { InvestmentsComponent } from './investments/investments.component';
-import { PhysiqueComponent } from './physique/physique.component';
+import { FitnessComponent } from './fitness/fitness.component';
 import { TravelsComponent } from './travels/travels.component';
+import { FinanceComponent } from './finance/finance.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
 	imports: [
@@ -45,21 +44,14 @@ import { TravelsComponent } from './travels/travels.component';
 		ModalModule.forRoot(),
 	],
 	declarations: [
-		IndexComponent,
 		ProfilepageComponent,
-		RegisterpageComponent,
-		LandingpageComponent,
 		InvestmentsComponent,
-		PhysiqueComponent,
+		FitnessComponent,
 		TravelsComponent,
+		FinanceComponent,
+		NotFoundComponent,
 	],
-	exports: [
-		IndexComponent,
-		ProfilepageComponent,
-		RegisterpageComponent,
-		LandingpageComponent,
-		InvestmentsComponent,
-	],
+	exports: [ProfilepageComponent, InvestmentsComponent],
 	providers: [],
 })
 export class PagesModule {}

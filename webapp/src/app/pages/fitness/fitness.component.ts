@@ -4,11 +4,11 @@ import { ApiService } from 'src/app/services/api.service';
 import Chart from 'chart.js';
 
 @Component({
-	selector: 'app-physique',
-	templateUrl: './physique.component.html',
-	styleUrls: ['./physique.component.scss'],
+	selector: 'app-fitness',
+	templateUrl: './fitness.component.html',
+	styleUrls: ['./fitness.component.scss'],
 })
-export class PhysiqueComponent implements OnInit {
+export class FitnessComponent implements OnInit {
 	records: Record[] = [];
 	chartWeight: Chart = null;
 	constructor(private api: ApiService) {}
@@ -18,16 +18,18 @@ export class PhysiqueComponent implements OnInit {
 	}
 
 	getWeightRecords() {
-		this.api
-			.getWeightRecords()
-			.then((records: Record[]) => {
-				this.records = records;
-				if (this.records) this.renderChartWeightProgress(this.records);
-			})
-			.catch(err => {
-				this.records = null;
-				console.error(err);
-			});
+		console.info('get weight records');
+		this.records = records_mock;
+		// this.api
+		// 	.getWeightRecords()
+		// 	.then((records: Record[]) => {
+		// 		this.records = records;
+		// 		if (this.records) this.renderChartWeightProgress(this.records);
+		// 	})
+		// 	.catch(err => {
+		// 		this.records = null;
+		// 		console.error(err);
+		// 	});
 	}
 
 	renderChartWeightProgress(records: Record[]) {

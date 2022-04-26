@@ -3,23 +3,22 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
 
-import { IndexComponent } from './pages/index/index.component';
 import { ProfilepageComponent } from './pages/profilepage/profilepage.component';
-import { RegisterpageComponent } from './pages/registerpage/registerpage.component';
-import { LandingpageComponent } from './pages/landingpage/landingpage.component';
 import { InvestmentsComponent } from './pages/investments/investments.component';
-import { PhysiqueComponent } from './pages/physique/physique.component';
+import { FitnessComponent } from './pages/fitness/fitness.component';
 import { TravelsComponent } from './pages/travels/travels.component';
+import { FinanceComponent } from './pages/finance/finance.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 const routes: Routes = [
-	{ path: 'index', component: IndexComponent },
-	{ path: 'register', component: RegisterpageComponent },
-	{ path: 'landing', component: LandingpageComponent },
 	{ path: 'investments', component: InvestmentsComponent },
-	{ path: 'physique', component: PhysiqueComponent },
+	{ path: 'fitness', component: FitnessComponent },
+	{ path: 'finance', component: FinanceComponent },
 	{ path: 'travels', component: TravelsComponent },
 	{ path: 'home', component: ProfilepageComponent },
+	{ path: 'not-found', component: NotFoundComponent },
 	{ path: '', redirectTo: 'home', pathMatch: 'full' },
+	{ path: '**', redirectTo: 'not-found' },
 ];
 
 @NgModule({
