@@ -3,22 +3,17 @@
 		<div class="content-center">
 			<div class="row row-grid justify-content-between align-items-center text-left">
 				<div class="col-lg-12 col-md-12">
-					<h1 class="text-white">Great things take time</h1>
-					<p class="text-white mb-3">
-						Here you will find my weight tracking and my gym workouts.
-						<br />
-						As part of my "open-life" project I want to expose some real data in an
-						automated way with tools that I personally built
-					</p>
+					<h1 class="text-white">Finance</h1>
+					<p class="text-white mb-3">Budgeting and financial analysis of my life.</p>
 					<div class="btn-wrapper mt-3">
-						<p class="category text-info d-inline mr-1">Weight</p>
-						<a class="btn btn-info btn-link btn-sm" href="#weight">
+						<p class="category text-info d-inline mr-1">Expenses</p>
+						<a class="btn btn-info btn-link btn-sm" href="#expenses">
 							<i class="tim-icons icon-minimal-right"> </i>
 						</a>
 					</div>
-					<div class="btn-wrapper mb-3">
-						<p class="category text-info d-inline mr-1">Workouts</p>
-						<a class="btn btn-info btn-link btn-sm" href="#workouts">
+					<div class="btn-wrapper">
+						<p class="category text-info d-inline mr-1">Statistics</p>
+						<a class="btn btn-info btn-link btn-sm" href="#stats">
 							<i class="tim-icons icon-minimal-right"> </i>
 						</a>
 					</div>
@@ -26,40 +21,39 @@
 			</div>
 		</div>
 	</div>
-	<!-- weigth progress -->
-	<section class="section section-lg" id="weight">
+	<!-- expenses -->
+	<section class="section section-lg" id="expenses">
 		<div class="col-md-12">
 			<div class="card card-chart card-plain">
 				<div class="card card-chart">
 					<div class="card-header">
-						<h5 class="card-category">Weight Tracking</h5>
+						<h5 class="card-category">Expenses</h5>
 						<h3 class="card-title">
 							<p class="text-info">
 								<i class="tim-icons icon-chart-bar-32 text-info"></i>
-								Current Weight:
-								{{
-									records && records.length > 0
-										? records[records.length - 1].weight + 'kg'
-										: '??'
-								}}
+								Track expenses
 							</p>
 						</h3>
 					</div>
 				</div>
 				<div *ngIf="records" class="card-body">
-					<div class="chart-area"><canvas id="chartWeight"> </canvas></div>
-				</div>
-				<div *ngIf="!records" class="card-body" style="text-align: center">
-					<div class="btn-wrapper mb-3">
-						<p>Seems like something is not working properly... 😥💀</p>
-						<p class="category text-info d-inline mr-1">Reload Weight Records</p>
-						<a
-							class="btn btn-link btn-sm"
-							id="reload-performance"
-							(click)="getWeightRecords()"
-						>
-							<i class="tim-icons icon-minimal-right"> </i>
-						</a>
+					<div class="chart-area"><canvas id="chartExpenses"> </canvas></div>
+				</div>				
+			</div>
+		</div>
+	</section>
+	<section class="section section-lg" id="statistics">
+		<div class="col-md-12">
+			<div class="card card-chart card-plain">
+				<div class="card card-chart">
+					<div class="card-header">
+						<h5 class="card-category">Statistics</h5>
+						<h3 class="card-title">
+							<p class="text-info">
+								<i class="tim-icons icon-chart-bar-32 text-info"></i>
+								Some stats here...
+							</p>
+						</h3>
 					</div>
 				</div>
 			</div>

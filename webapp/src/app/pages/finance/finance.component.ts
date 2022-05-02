@@ -23,7 +23,7 @@ export class FinanceComponent implements OnInit {
 	}
 
 	renderChartWeightProgress(records: Record[]) {
-		var canvas: any = document.getElementById('chartWeight');
+		var canvas: any = document.getElementById('chartExpenses');
 		var ctx = canvas.getContext('2d');
 		var gradientFill = ctx.createLinearGradient(0, 500, 0, 50);
 		gradientFill.addColorStop(0, 'rgba(228, 76, 196, 0.0)');
