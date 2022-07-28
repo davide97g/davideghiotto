@@ -23,6 +23,7 @@ import { FitnessComponent } from './fitness/fitness.component';
 import { TravelsComponent } from './travels/travels.component';
 import { FinanceComponent } from './finance/finance.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
 	imports: [
@@ -50,6 +51,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 		TravelsComponent,
 		FinanceComponent,
 		NotFoundComponent,
+  LoginComponent,
 	],
 	exports: [ProfilepageComponent, InvestmentsComponent],
 	providers: [],

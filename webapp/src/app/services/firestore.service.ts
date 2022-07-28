@@ -17,6 +17,7 @@ export class FirestoreService {
 			else this.user = null;
 		} else
 			this.authService.firebaseUser$.subscribe(firebaseUser => {
+				console.info(this.authService.firebaseUser);
 				if (firebaseUser) this.addUserIfNotPresent(firebaseUser);
 				else this.user = null;
 			});

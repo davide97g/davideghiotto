@@ -54,6 +54,7 @@ export class AuthService {
 		signInWithPopup(this.auth, this.provider)
 			.then(result => {
 				this.user = result.user;
+				console.info(this.user);
 			})
 			.catch(error => this.utils.openSnackBar('Error', error.message));
 	}
