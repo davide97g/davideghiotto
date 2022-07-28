@@ -65,7 +65,7 @@
     "@angular/animations": "^14.1.0",
     "@angular/cdk": "^14.1.0",
     "@angular/common": "^14.1.0",
-    "@angular/compiler": "13.3.11",
+    "@angular/compiler": "14.1.0",
     "@angular/core": "^14.1.0",
     "@angular/forms": "^14.1.0",
     "@angular/material": "^14.1.0",
@@ -84,9 +84,9 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.1.0",
-    "@angular/cli": "^9.1.13",
-    "@angular/compiler-cli": "13.3.11",
-    "@angular/language-service": "13.3.11",
+    "@angular/cli": "^14.1.0",
+    "@angular/compiler-cli": "14.1.0",
+    "@angular/language-service": "14.1.0",
     "@types/node": "13.9.0",
     "protractor": "^7.0.0",
     "typescript": "4.6.4"
