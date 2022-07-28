@@ -10,12 +10,13 @@ import { TravelsComponent } from './pages/travels/travels.component';
 import { FinanceComponent } from './pages/finance/finance.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { LoginComponent } from './pages/login/login.component';
+import { LoggedGuard } from './guards/logged.guard';
 
 const routes: Routes = [
 	{ path: 'investments', component: InvestmentsComponent },
 	{ path: 'fitness', component: FitnessComponent },
 	{ path: 'login', component: LoginComponent },
-	{ path: 'finance', component: FinanceComponent },
+	{ path: 'finance', component: FinanceComponent, canActivate: [LoggedGuard] },
 	{ path: 'travels', component: TravelsComponent },
 	{ path: '', component: ProfilepageComponent },
 	{ path: 'not-found', component: NotFoundComponent },

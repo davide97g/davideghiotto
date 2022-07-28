@@ -49,7 +49,7 @@ export class FirestoreService {
 	}
 
 	async newUser(user: User): Promise<User | null> {
-		return setDoc(doc(this.db, 'users', user.uid), user)
+		return setDoc(doc(this.db, 'users', user.uid), JSON.parse(JSON.stringify(user)))
 			.then(() => user)
 			.catch(err => {
 				console.error(err);

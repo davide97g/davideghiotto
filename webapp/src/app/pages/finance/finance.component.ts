@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Record, mock as records_mock } from 'src/app/models/weight.model';
-import { ApiService } from 'src/app/services/api.service';
 import Chart from 'chart.js';
+import { FirestoreService } from 'src/app/services/firestore.service';
 
 @Component({
 	selector: 'app-finance',
@@ -11,7 +11,7 @@ import Chart from 'chart.js';
 export class FinanceComponent implements OnInit {
 	records: Record[] = [];
 	chartWeight: Chart = null;
-	constructor(private api: ApiService) {}
+	constructor(private firestore: FirestoreService) {}
 
 	ngOnInit(): void {
 		this.getWeightRecords();

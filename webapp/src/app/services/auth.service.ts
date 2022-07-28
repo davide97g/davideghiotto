@@ -52,10 +52,7 @@ export class AuthService {
 
 	async googleSignIn() {
 		signInWithPopup(this.auth, this.provider)
-			.then(result => {
-				this.user = result.user;
-				console.info(this.user);
-			})
+			.then(result => (this.user = result.user))
 			.catch(error => this.utils.openSnackBar('Error', error.message));
 	}
 

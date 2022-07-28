@@ -51,7 +51,7 @@ import { LoginComponent } from './login/login.component';
 		TravelsComponent,
 		FinanceComponent,
 		NotFoundComponent,
-  LoginComponent,
+		LoginComponent,
 	],
 	exports: [ProfilepageComponent, InvestmentsComponent],
 	providers: [],
