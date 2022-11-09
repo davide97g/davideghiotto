@@ -1,0 +1,22 @@
+{
+	"name": "davideghiotto",
+	"version": "2.0.1",
+	"description": "Personal Website",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"prepare": "husky install"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/davide97g/davideghiotto.git"
+	},
+	"author": "Davide Ghiotto",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/davide97g/davideghiotto/issues"
+	},
+	"homepage": "https://github.com/davide97g/davideghiotto#readme",
+	"devDependencies": {
+		"husky": "^8.0.0"
+	}
+}
