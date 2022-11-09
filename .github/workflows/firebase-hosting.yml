@@ -6,7 +6,6 @@ name: Deploy to Firebase Hosting
     push:
         branches:
             - master
-            - vue-webapp
 jobs:
     build_and_deploy:
         runs-on: ubuntu-latest
