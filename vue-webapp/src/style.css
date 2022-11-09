@@ -61,44 +61,14 @@ button:focus-visible {
 }
 
 #app {
-	max-width: 1280px;
-	margin: 0 auto;
-	padding: 2rem;
+	margin: 0;
 	text-align: center;
 	height: 100vh;
-}
-
-@media (prefers-color-scheme: light) {
-	:root {
-		color: #213547;
-		background-color: #ffffff;
-	}
-	a:hover {
-		color: #747bff;
-	}
-	button {
-		background-color: #f9f9f9;
-	}
+	width: 100vw;
 }
 
 html,
 body {
 	width: 100%;
 	height: 100%;
-}
-
-body {
-	background: linear-gradient(-45deg, #d97e38, #ab3ce7, #23a6d5);
-	background-size: 800% 800%;
-	animation: gradient 10s infinite;
-	animation-direction: alternate;
-}
-
-@keyframes gradient {
-	0% {
-		background-position: 0% 0%;
-	}
-	100% {
-		background-position: 100% 0%;
-	}
 }
