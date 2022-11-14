@@ -1,5 +1,8 @@
 {
-  "projects": {
-    "default": "davide-ghiotto"
-  }
+	"projects": {
+		"default": "davide-ghiotto",
+		"staging": "test-davide-ghiotto"
+	},
+	"targets": {},
+	"etags": {}
 }
