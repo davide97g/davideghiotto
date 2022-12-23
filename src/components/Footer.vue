@@ -1,20 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import packageJson from '../../package.json';
+</script>
 
 <template>
-	<a href="https://bulma.io">
-		<img
-			src="https://bulma.io/images/made-with-bulma.png"
-			alt="Made with Bulma"
-			width="128"
-			height="24"
-		/>
-	</a>
+	<p id="version">Version {{ packageJson.version }}</p>
 </template>
 
 <style scoped>
-a {
+#version {
+	margin: 0;
 	position: absolute;
-	bottom: 50px;
-	left: calc(50% - 64px);
+	bottom: 10px;
+	right: 10px;
+	text-align: right;
 }
 </style>

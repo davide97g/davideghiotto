@@ -3,4 +3,5 @@
 <template>
 	<h1>Welcome</h1>
 	<h2>I'm Davide Ghiotto and this is my personal website!</h2>
+	<a-button type="primary">Primary Button</a-button>
 </template>
