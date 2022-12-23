@@ -9,8 +9,5 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - run: npm i && npm run build
-            - uses: FirebaseExtended/action-hosting-deploy@v0
-              with:
-                  firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DAVIDE_GHIOTTO_TEST }}'
-                  channelId: live
-                  projectId: test-davide-ghiotto
+            - run: npm i firebase-tools
+            - run: firebase deploy --token "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DAVIDE_GHIOTTO_TEST }}" --only hosting --project test-davide-ghiotto
