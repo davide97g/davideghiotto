@@ -1,7 +1,7 @@
 {
 	"name": "davideghiotto.it",
 	"private": true,
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite --port 8080",
@@ -12,6 +12,7 @@
 	},
 	"dependencies": {
 		"ant-design-vue": "^3.2.15",
+		"firebase": "^9.15.0",
 		"pinia": "^2.0.23",
 		"sass": "^1.56.0",
 		"vue": "^3.2.41",

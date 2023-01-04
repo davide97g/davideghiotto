@@ -1,7 +1,16 @@
-<script setup lang="ts"></script>
-
 <template>
-	<h1>Welcome</h1>
-	<h2>I'm Davide Ghiotto and this is my personal website!</h2>
-	<a-button type="primary">Ant Design is Here</a-button>
+	<div
+		style="
+			display: flex;
+			flex-direction: column;
+			height: 100vh;
+			align-items: center;
+			justify-content: center;
+		"
+	>
+		<h1>Home</h1>
+		<router-link to="/finance">
+			<a-button type="primary">Go To Finance</a-button>
+		</router-link>
+	</div>
 </template>
