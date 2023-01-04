@@ -1,9 +1,11 @@
 import { User } from 'firebase/auth';
-import { collection, getDocs, getFirestore, setDoc } from 'firebase/firestore';
+import { addDoc, collection, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import { doc, getDoc } from 'firebase/firestore';
 
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { Expense } from '../models/expense';
+import { Earning } from '../models/earning';
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_CONFIG_API_KEY,
@@ -42,5 +44,25 @@ export const DataBaseClient = {
 	async getAllUsers(): Promise<User[]> {
 		const querySnapshot = await getDocs(collection(db, 'users'));
 		return querySnapshot.docs.map(doc => doc.data()) as User[];
+	},
+	Transactions: {
+		async createNewExpense(expense: Expense): Promise<boolean> {
+			try {
+				await addDoc(collection(db, 'expenses'), expense);
+				return true;
+			} catch (err) {
+				console.info(err);
+				throw err;
+			}
+		},
+		async createNewEarning(earning: Earning): Promise<boolean> {
+			try {
+				await addDoc(collection(db, 'earnings'), earning);
+				return true;
+			} catch (err) {
+				console.info(err);
+				throw err;
+			}
+		},
 	},
 };
