@@ -1,37 +1,55 @@
 <template>
 	<h1>Finance</h1>
+	<NewTransactionPopup
+		:visible="newTransactionPopupIsVisibile"
+		:type="type"
+		@close="newTransactionPopupIsVisibile = false"
+		@ok="addTransaction"
+	/>
 	<div class="actions">
-		<a-button type="primary" danger @click="addExpense">Add Expense</a-button>
-		<a-button type="primary" @click="addEarning">Add Earning</a-button>
+		<a-button type="primary" danger @click="openPopupFor('expense')">Add Expense</a-button>
+		<a-button type="primary" @click="openPopupFor('earning')">Add Earning</a-button>
 	</div>
 </template>
 
 <script setup lang="ts">
+import NewTransactionPopup from '../components/Finance/NewTransactionPopup.vue';
+import { ref } from 'vue';
+import { setIsLoading } from '../services/utils';
 import { DataBaseClient } from '../api/db';
-import { Earning } from '../models/earning';
-import { Expense } from '../models/expense';
+import { Earning, Expense, IEarning, IExpense, ITransaction } from '../models/transaction';
 
-const addExpense = () => {
-	const expense: Expense = {
-		date: '01/01/2023',
-		description: 'Test expense',
-		amount: 1.23,
-		type: 'travel',
-	};
-	DataBaseClient.Transactions.createNewExpense(expense)
-		.then(() => console.info('expense added successfully'))
-		.catch(err => console.error(err));
+const newTransactionPopupIsVisibile = ref(false);
+const type = ref<'expense' | 'earning'>('earning');
+
+const openPopupFor = (_type: 'expense' | 'earning') => {
+	type.value = _type;
+	newTransactionPopupIsVisibile.value = true;
 };
-const addEarning = () => {
-	const earning: Earning = {
-		date: '02/01/2023',
-		description: 'Test earning',
-		amount: 123.45,
-		type: 'salary',
-	};
+
+const addExpense = (expense: IExpense) => {
+	setIsLoading(true);
+	DataBaseClient.Transactions.createNewExpense(expense)
+		.then(() => (newTransactionPopupIsVisibile.value = false))
+		.catch(err => console.error(err))
+		.finally(() => setIsLoading(false));
+};
+const addEarning = (earning: IEarning) => {
+	setIsLoading(true);
 	DataBaseClient.Transactions.createNewEarning(earning)
-		.then(() => console.info('earning added successfully'))
-		.catch(err => console.error(err));
+		.then(() => (newTransactionPopupIsVisibile.value = false))
+		.catch(err => console.error(err))
+		.finally(() => setIsLoading(false));
+};
+
+const addTransaction = (payload: { transaction: ITransaction; category: string }) => {
+	if (type.value == 'earning') {
+		const earning = new Earning(payload.transaction, payload.category);
+		addEarning(earning);
+	} else {
+		const expense = new Expense(payload.transaction, payload.category);
+		addExpense(expense);
+	}
 };
 </script>
 

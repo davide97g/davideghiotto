@@ -4,8 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
-import { Expense } from '../models/expense';
-import { Earning } from '../models/earning';
+import { IEarning, IExpense } from '../models/transaction';
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_CONFIG_API_KEY,
@@ -46,18 +45,18 @@ export const DataBaseClient = {
 		return querySnapshot.docs.map(doc => doc.data()) as User[];
 	},
 	Transactions: {
-		async createNewExpense(expense: Expense): Promise<boolean> {
+		async createNewExpense(expense: IExpense): Promise<boolean> {
 			try {
-				await addDoc(collection(db, 'expenses'), expense);
+				await addDoc(collection(db, 'expenses'), JSON.parse(JSON.stringify(expense)));
 				return true;
 			} catch (err) {
 				console.info(err);
 				throw err;
 			}
 		},
-		async createNewEarning(earning: Earning): Promise<boolean> {
+		async createNewEarning(earning: IEarning): Promise<boolean> {
 			try {
-				await addDoc(collection(db, 'earnings'), earning);
+				await addDoc(collection(db, 'earnings'), JSON.parse(JSON.stringify(earning)));
 				return true;
 			} catch (err) {
 				console.info(err);
