@@ -2,6 +2,7 @@ export interface ITransaction {
 	date: string;
 	amount: number;
 	description: string;
+	category: string;
 }
 
 export const EarningCategories = ['salary', 'investments', 'gifts', 'refund', 'other'];

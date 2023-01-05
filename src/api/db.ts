@@ -1,10 +1,18 @@
 import { User } from 'firebase/auth';
-import { addDoc, collection, getDocs, getFirestore, setDoc } from 'firebase/firestore';
+import {
+	addDoc,
+	collection,
+	getDocs,
+	getFirestore,
+	query,
+	setDoc,
+	where,
+} from 'firebase/firestore';
 import { doc, getDoc } from 'firebase/firestore';
 
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
-import { IEarning, IExpense } from '../models/transaction';
+import { IEarning, IExpense, ITransaction } from '../models/transaction';
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_CONFIG_API_KEY,
@@ -45,6 +53,17 @@ export const DataBaseClient = {
 		return querySnapshot.docs.map(doc => doc.data()) as User[];
 	},
 	Transactions: {
+		async getTransactionsNew(type: 'expense' | 'earning'): Promise<ITransaction[]> {
+			const q = query(collection(db, 'transactions'), where('type', '==', type));
+			const querySnapshot = await getDocs(q);
+			return querySnapshot.docs.map(doc => doc.data()) as ITransaction[];
+		},
+		async getTransactions(type: 'expense' | 'earning'): Promise<ITransaction[]> {
+			const querySnapshot = await getDocs(
+				collection(db, type == 'expense' ? 'expenses' : 'earnings')
+			);
+			return querySnapshot.docs.map(doc => doc.data()) as ITransaction[];
+		},
 		async createNewExpense(expense: IExpense): Promise<boolean> {
 			try {
 				await addDoc(collection(db, 'expenses'), JSON.parse(JSON.stringify(expense)));

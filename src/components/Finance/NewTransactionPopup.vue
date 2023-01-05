@@ -94,6 +94,7 @@ const transaction = ref<ITransaction>({
 	description: '',
 	date: formatDate(new Date().toLocaleDateString()),
 	amount: 0,
+	category: '',
 });
 
 const handleOk = () => {

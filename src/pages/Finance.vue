@@ -1,5 +1,7 @@
 <template>
 	<h1>Finance</h1>
+	<TransactionList :title="'Expenses'" :transactions="expenses" />
+	<TransactionList :title="'Earnings'" :transactions="earnings" />
 	<NewTransactionPopup
 		:visible="newTransactionPopupIsVisibile"
 		:type="type"
@@ -18,6 +20,21 @@ import { ref } from 'vue';
 import { setIsLoading } from '../services/utils';
 import { DataBaseClient } from '../api/db';
 import { Earning, Expense, IEarning, IExpense, ITransaction } from '../models/transaction';
+import TransactionList from '../components/Finance/TransactionList.vue';
+
+// *** transaction list
+
+const earnings = ref<ITransaction[]>([]);
+const expenses = ref<ITransaction[]>([]);
+
+DataBaseClient.Transactions.getTransactions('earning').then(
+	transactions => (earnings.value = transactions)
+);
+DataBaseClient.Transactions.getTransactions('expense').then(
+	transactions => (expenses.value = transactions)
+);
+
+// *** add new transaction popup
 
 const newTransactionPopupIsVisibile = ref(false);
 const type = ref<'expense' | 'earning'>('earning');
