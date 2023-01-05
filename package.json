@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "vite --port 8080",
 		"compile": "vue-tsc",
-		"build": "vue-tsc && vite build",
+		"build": "vue-tsc && vite build -m staging",
+		"build:prod": "vue-tsc && vite build -m production",
 		"preview": "vite preview",
 		"prepare": "husky install"
 	},
