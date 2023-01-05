@@ -14,3 +14,4 @@ jobs:
                   firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEST_DAVIDE_GHIOTTO }}'
                   channelId: live
                   projectId: test-davide-ghiotto
+                  target: finance-davide-ghiotto

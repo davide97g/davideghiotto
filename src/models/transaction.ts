@@ -7,4 +7,14 @@ export interface ITransaction {
 }
 
 export const EarningCategories = ['salary', 'investments', 'gifts', 'refund', 'other'];
-export const ExpenseCategories = ['house', 'travel', 'health', 'other'];
+export const ExpenseCategories = [
+	'travel',
+	'house',
+	'sport',
+	'health',
+	'beauty',
+	'groceries',
+	'petrol ⛽',
+	'party 🎉',
+	'other',
+];
