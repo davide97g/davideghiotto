@@ -12,7 +12,7 @@ import { doc, getDoc } from 'firebase/firestore';
 
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
-import { IEarning, IExpense, ITransaction } from '../models/transaction';
+import { ITransaction } from '../models/transaction';
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_CONFIG_API_KEY,
@@ -26,6 +26,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
+
+export interface IResult<T> {
+	id: string;
+	data: T;
+}
 
 const db = getFirestore();
 
@@ -53,29 +58,20 @@ export const DataBaseClient = {
 		return querySnapshot.docs.map(doc => doc.data()) as User[];
 	},
 	Transactions: {
-		async getTransactionsNew(type: 'expense' | 'earning'): Promise<ITransaction[]> {
+		async getTransactions(type: 'expense' | 'earning'): Promise<IResult<ITransaction>[]> {
 			const q = query(collection(db, 'transactions'), where('type', '==', type));
 			const querySnapshot = await getDocs(q);
-			return querySnapshot.docs.map(doc => doc.data()) as ITransaction[];
+			return querySnapshot.docs.map(doc => ({
+				id: doc.id,
+				data: doc.data(),
+			})) as IResult<ITransaction>[];
 		},
-		async getTransactions(type: 'expense' | 'earning'): Promise<ITransaction[]> {
-			const querySnapshot = await getDocs(
-				collection(db, type == 'expense' ? 'expenses' : 'earnings')
-			);
-			return querySnapshot.docs.map(doc => doc.data()) as ITransaction[];
-		},
-		async createNewExpense(expense: IExpense): Promise<boolean> {
+		async createNewTransaction(transaction: ITransaction): Promise<boolean> {
 			try {
-				await addDoc(collection(db, 'expenses'), JSON.parse(JSON.stringify(expense)));
-				return true;
-			} catch (err) {
-				console.info(err);
-				throw err;
-			}
-		},
-		async createNewEarning(earning: IEarning): Promise<boolean> {
-			try {
-				await addDoc(collection(db, 'earnings'), JSON.parse(JSON.stringify(earning)));
+				await addDoc(
+					collection(db, 'transactions'),
+					JSON.parse(JSON.stringify(transaction))
+				);
 				return true;
 			} catch (err) {
 				console.info(err);

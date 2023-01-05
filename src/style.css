@@ -24,7 +24,7 @@
 	--primary-color: #61e7b4;
 	--primary-test-color: #53b7c4;
 
-	--background-color: #410d38;
+	--background-color: #eaefea;
 
 	background-color: var(--background-color);
 }
@@ -43,15 +43,20 @@ body {
 	text-align: center;
 	height: 100vh;
 	width: 100vw;
-	color: whitesmoke;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
-	color: whitesmoke !important;
+.full-width {
+	width: 100%;
+}
+
+.left {
+	text-align: left;
+}
+.right {
+	text-align: right;
+}
+.ellipsis {
+	text-overflow: ellipsis;
+	white-space: pre;
+	overflow: hidden;
 }

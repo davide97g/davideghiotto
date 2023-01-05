@@ -31,3 +31,18 @@ export const formatDate = (date: string) => {
 
 	return [year, month, day].join('-');
 };
+
+const categoryColorMap = {
+	salary: 'green',
+	investments: 'cyan',
+	gifts: 'orange',
+	refund: 'blue',
+	other: null,
+	house: 'purple',
+	travel: 'gold',
+	health: 'red',
+};
+
+export const getCategoryColor = (category: string) => {
+	return (categoryColorMap as any)[category] ?? null;
+};

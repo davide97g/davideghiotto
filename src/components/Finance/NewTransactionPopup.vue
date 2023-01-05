@@ -8,18 +8,21 @@
 	>
 		<div class="input-form">
 			<a-input
+				class="full-width"
 				type="date"
 				v-model:value="transaction.date"
 				placeholder="Choose a date"
 				style="margin-top: 10px"
 			></a-input>
 			<a-input
+				class="full-width"
 				type="text"
 				v-model:value="transaction.description"
 				placeholder="Enter a description"
 				style="margin-top: 10px"
 			></a-input>
 			<a-input-number
+				class="full-width"
 				v-model:value="transaction.amount"
 				placeholder="Enter an amount"
 				:min="0"
@@ -27,8 +30,9 @@
 				style="margin-top: 10px"
 			></a-input-number>
 			<a-select
+				class="full-width"
 				ref="select"
-				v-model:value="categoryExpense"
+				v-model:value="transaction.category"
 				v-if="type == 'expense'"
 				style="margin-top: 10px"
 			>
@@ -39,7 +43,13 @@
 					>{{ category }}</a-select-option
 				>
 			</a-select>
-			<a-select ref="select" v-model:value="categoryEarning" v-else style="margin-top: 10px">
+			<a-select
+				class="full-width"
+				ref="select"
+				v-model:value="transaction.category"
+				v-else
+				style="margin-top: 10px"
+			>
 				<a-select-option
 					v-for="category in EarningCategories"
 					:key="category"
@@ -55,7 +65,12 @@
 				type="primary"
 				:loading="loading"
 				@click="handleOk"
-				:disabled="!transaction.amount || !transaction.date || !transaction.description"
+				:disabled="
+					!transaction.amount ||
+					!transaction.date ||
+					!transaction.description ||
+					!transaction.category
+				"
 				>Create</a-button
 			>
 		</template>
@@ -64,14 +79,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import {
-	ExpenseCategory,
-	EarningCategory,
-	ITransaction,
-	EarningCategories,
-	ExpenseCategories,
-} from '../../models/transaction';
-import { formatDate, loading } from '../../services/utils';
+import { ITransaction, EarningCategories, ExpenseCategories } from '../../models/transaction';
+import { formatDate, loading, setIsLoading } from '../../services/utils';
+import { DataBaseClient } from '../../api/db';
 
 const props = defineProps<{
 	visible: boolean;
@@ -81,27 +91,42 @@ const props = defineProps<{
 const emits = defineEmits(['close', 'ok']);
 
 const visible = ref<boolean>(false);
-
-const categoryExpense = ref<ExpenseCategory>('other');
-const categoryEarning = ref<EarningCategory>('other');
+const newTransaction = () => ({
+	description: '',
+	date: formatDate(new Date().toLocaleDateString()),
+	amount: 0,
+	category: '',
+	type: props.type,
+});
+const transaction = ref<ITransaction>(newTransaction());
+const resetTransaction = () => (transaction.value = newTransaction());
 
 watch(
 	() => props.visible,
 	() => (visible.value = props.visible)
 );
 
-const transaction = ref<ITransaction>({
-	description: '',
-	date: formatDate(new Date().toLocaleDateString()),
-	amount: 0,
-	category: '',
-});
+watch(
+	() => visible.value,
+	() => {
+		if (!visible.value) emits('close');
+	}
+);
+
+watch(
+	() => props.type,
+	() => resetTransaction()
+);
 
 const handleOk = () => {
-	emits('ok', {
-		transaction: transaction.value,
-		category: props.type == 'expense' ? categoryExpense.value : categoryEarning.value,
-	});
+	setIsLoading(true);
+	DataBaseClient.Transactions.createNewTransaction(transaction.value)
+		.then(() => {
+			resetTransaction();
+			emits('close');
+		})
+		.catch(err => console.error(err))
+		.finally(() => setIsLoading(false));
 };
 </script>
 
