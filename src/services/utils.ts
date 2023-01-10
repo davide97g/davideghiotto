@@ -46,3 +46,6 @@ const categoryColorMap = {
 export const getCategoryColor = (category: string) => {
 	return (categoryColorMap as any)[category] ?? null;
 };
+
+export const isCVHighlighted = ref(false);
+export const highlightCV = computed(() => isCVHighlighted.value);

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CV from './components/CV.vue';
 import Footer from './components/Footer.vue';
 import Header from './components/Header.vue';
 import { isMobile, setIsLoading } from './services/utils';
@@ -16,6 +17,7 @@ setIsLoading(false);
 	<div id="router-view" :class="{ mobile: isMobile }">
 		<router-view />
 	</div>
+	<CV />
 	<Footer />
 </template>
 
