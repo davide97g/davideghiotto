@@ -3,25 +3,27 @@ import packageJson from '../../package.json';
 </script>
 
 <template>
-	<p id="copyright">Davide Ghiotto</p>
-	<p id="version">v{{ packageJson.version }}</p>
+	<div id="footer" class="w100">
+		<p id="copyright">Davide Ghiotto</p>
+		<p id="version">v{{ packageJson.version }}</p>
+	</div>
 </template>
 
 <style scoped>
-#copyright {
-	margin: 0;
+#footer {
 	position: absolute;
-	bottom: 10px;
-	left: 10px;
-	text-align: left;
+	height: 20px;
+	margin: 0;
+	padding: 0 10px;
 	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+#copyright {
+	text-align: left;
 }
 #version {
-	margin: 0;
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
 	text-align: right;
-	font-size: 12px;
 }
 </style>
