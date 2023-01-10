@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Footer from './components/Footer.vue';
 import { isMobile, setIsLoading } from './services/utils';
 
 document.title = import.meta.env.VITE_APP_TITLE;
@@ -14,6 +15,7 @@ setIsLoading(false);
 	<div id="router-view" :class="{ mobile: isMobile }">
 		<router-view />
 	</div>
+	<Footer />
 </template>
 
 <style scoped lang="scss">

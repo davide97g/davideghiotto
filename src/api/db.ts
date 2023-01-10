@@ -1,18 +1,14 @@
 import { User } from 'firebase/auth';
 import {
-	addDoc,
 	collection,
 	getDocs,
 	getFirestore,
-	query,
 	setDoc,
-	where,
 } from 'firebase/firestore';
 import { doc, getDoc } from 'firebase/firestore';
 
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
-import { ITransaction } from '../models/transaction';
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_CONFIG_API_KEY,
@@ -56,27 +52,5 @@ export const DataBaseClient = {
 	async getAllUsers(): Promise<User[]> {
 		const querySnapshot = await getDocs(collection(db, 'users'));
 		return querySnapshot.docs.map(doc => doc.data()) as User[];
-	},
-	Transactions: {
-		async getTransactions(type: 'expense' | 'earning'): Promise<IResult<ITransaction>[]> {
-			const q = query(collection(db, 'transactions'), where('type', '==', type));
-			const querySnapshot = await getDocs(q);
-			return querySnapshot.docs.map(doc => ({
-				id: doc.id,
-				data: doc.data(),
-			})) as IResult<ITransaction>[];
-		},
-		async createNewTransaction(transaction: ITransaction): Promise<boolean> {
-			try {
-				await addDoc(
-					collection(db, 'transactions'),
-					JSON.parse(JSON.stringify(transaction))
-				);
-				return true;
-			} catch (err) {
-				console.info(err);
-				throw err;
-			}
-		},
 	},
 };
