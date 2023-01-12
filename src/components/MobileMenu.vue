@@ -1,5 +1,5 @@
 <template>
-	<a-drawer v-model:visible="visible" title="Menu" placement="right">
+	<a-drawer v-model:visible="visible" title="Menu" placement="right" class="glass">
 		<div style="display: flex; flex-direction: column" class="h100 mobile-link-container">
 			<router-link to="/" active-class="disabled">
 				<a-button type="primary"> Home </a-button>

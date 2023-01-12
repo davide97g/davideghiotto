@@ -20,21 +20,29 @@
 				gap: 12px;
 			"
 		>
-			<div class="card glass flex-center fade-in delay-2">
-				<router-link to="/skills">
+			<router-link to="/skills">
+				<div class="card glass solid flex-center fade-in delay-2 flex-column black">
 					<a-button type="link"><ToolOutlined /> Skills</a-button>
-				</router-link>
-			</div>
-			<div class="card glass flex-center fade-in delay-3">
-				<router-link to="/projects">
+					<p class="small">
+						Here's a list of skills I've acquired and technologies I've gone through
+						during my career.
+					</p>
+				</div>
+			</router-link>
+			<router-link to="/projects">
+				<div class="card glass solid flex-center fade-in delay-3 flex-column black">
 					<a-button type="link"><ProjectOutlined /> Projects</a-button>
-				</router-link>
-			</div>
-			<div class="card glass flex-center fade-in delay-4">
-				<router-link to="/contacts">
+					<p class="small">
+						A bunch of projects, experimenting different technologies & having fun!
+					</p>
+				</div>
+			</router-link>
+			<router-link to="/contacts">
+				<div class="card glass solid flex-center fade-in delay-4 flex-column black">
 					<a-button type="link"><MailOutlined /> Contacts</a-button>
-				</router-link>
-			</div>
+					<p class="small">If you have anything to ask me, feel free to contact me.</p>
+				</div>
+			</router-link>
 		</div>
 		<a-divider />
 		<a-button class="fade-in delay-5" type="primary" @click="isCVHighlighted = !isCVHighlighted"

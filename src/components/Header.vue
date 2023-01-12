@@ -36,7 +36,6 @@ const showMobileMenu = ref(false);
 
 router.afterEach(() => {
 	showMobileMenu.value = false;
-	console.info(router.currentRoute.value.name);
 });
 </script>
 

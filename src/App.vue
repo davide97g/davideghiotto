@@ -4,11 +4,6 @@ import Footer from './components/Footer.vue';
 import Header from './components/Header.vue';
 import { isMobile, setIsLoading } from './services/utils';
 
-document.title = import.meta.env.VITE_APP_TITLE;
-if (!import.meta.env.PROD)
-	[...document.head.getElementsByTagName('link')].forEach(
-		link => (link.href = link.href.replace('icons', 'icons-test'))
-	);
 setIsLoading(false);
 </script>
 
@@ -62,5 +57,24 @@ setIsLoading(false);
 	100% {
 		opacity: 1;
 	}
+}
+
+.glass {
+	background: rgba(255, 255, 255, 0.2);
+	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+	backdrop-filter: blur(9px);
+	-webkit-backdrop-filter: blur(9px);
+	border-radius: 10px;
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	.solid {
+		background: rgba(255, 255, 255, 0.5);
+	}
+}
+
+.txt {
+	color: white;
+}
+.small {
+	font-size: 12px;
 }
 </style>
