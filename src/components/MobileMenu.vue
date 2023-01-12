@@ -1,12 +1,18 @@
 <template>
 	<a-drawer v-model:visible="visible" title="Menu" placement="right">
 		<div style="display: flex; flex-direction: column" class="h100 mobile-link-container">
-			<router-link to="/">
+			<router-link to="/" active-class="disabled">
 				<a-button type="primary"> Home </a-button>
 			</router-link>
-			<router-link to="/skills"><a-button type="primary"> Skills </a-button></router-link>
-			<router-link to="/projects"><a-button type="primary"> Projects </a-button></router-link>
-			<router-link to="/contacts"><a-button type="primary"> Contacts </a-button></router-link>
+			<router-link to="/skills" active-class="disabled"
+				><a-button type="primary"> Skills </a-button></router-link
+			>
+			<router-link to="/projects" active-class="disabled"
+				><a-button type="primary"> Projects </a-button></router-link
+			>
+			<router-link to="/contacts" active-class="disabled"
+				><a-button type="primary"> Contacts </a-button></router-link
+			>
 		</div>
 	</a-drawer>
 </template>
@@ -40,5 +46,11 @@ watch(
 <style scoped lang="scss">
 .mobile-link-container > a {
 	padding: 5px;
+}
+.disabled {
+	pointer-events: none;
+	button {
+		background-color: #3f7bb3;
+	}
 }
 </style>

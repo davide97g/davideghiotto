@@ -1,12 +1,18 @@
 <template>
 	<div id="header">
 		<div class="w100" v-if="!isMobile">
-			<router-link to="/">
+			<router-link to="/" active-class="disabled">
 				<a-button type="primary"> Home </a-button>
 			</router-link>
-			<router-link to="/skills"><a-button type="primary"> Skills </a-button></router-link>
-			<router-link to="/projects"><a-button type="primary"> Projects </a-button></router-link>
-			<router-link to="/contacts"><a-button type="primary"> Contacts </a-button></router-link>
+			<router-link to="/skills" active-class="disabled"
+				><a-button type="primary"> Skills </a-button></router-link
+			>
+			<router-link to="/projects" active-class="disabled"
+				><a-button type="primary"> Projects </a-button></router-link
+			>
+			<router-link to="/contacts" active-class="disabled"
+				><a-button type="primary"> Contacts </a-button></router-link
+			>
 		</div>
 		<div
 			v-else
@@ -22,10 +28,16 @@
 <script setup lang="ts">
 import { MenuOutlined } from '@ant-design/icons-vue';
 import { ref } from 'vue';
+import { router } from '../router';
 import { isMobile } from '../services/utils';
 import MobileMenu from './MobileMenu.vue';
 
 const showMobileMenu = ref(false);
+
+router.afterEach(() => {
+	showMobileMenu.value = false;
+	console.info(router.currentRoute.value.name);
+});
 </script>
 
 <style scoped lang="scss">
@@ -39,6 +51,13 @@ const showMobileMenu = ref(false);
 
 	a {
 		padding: 5px;
+	}
+}
+
+.disabled {
+	pointer-events: none;
+	button {
+		background-color: #3f7bb3;
 	}
 }
 </style>

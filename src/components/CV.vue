@@ -2,7 +2,7 @@
 	<div id="cv-tooltip">
 		<ArrowDownOutlined class="down move-y" v-if="highlightCV" />
 		<ArrowRightOutlined class="right move-x" v-if="highlightCV" />
-		<a-tooltip>
+		<a-tooltip :placement="'left'">
 			<template #title> Download the CV </template>
 			<a
 				href="https://drive.google.com/file/d/1bQ8iiiqqE71MFrTclb81DAbx8F5zOljU/view?usp=share_link"
@@ -30,8 +30,8 @@ import { highlightCV } from '../services/utils';
 <style scoped lang="scss">
 #cv-tooltip {
 	position: absolute;
-	bottom: 20px;
-	right: 5px;
+	bottom: 30px;
+	right: 10px;
 	.right {
 		position: absolute;
 		left: -15px;

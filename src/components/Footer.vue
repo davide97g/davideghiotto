@@ -4,8 +4,8 @@ import packageJson from '../../package.json';
 
 <template>
 	<div id="footer" class="w100">
-		<p id="copyright">Davide Ghiotto</p>
-		<p id="version">v{{ packageJson.version }}</p>
+		<p id="copyright" class="txt">Davide Ghiotto</p>
+		<p id="version" class="txt">v{{ packageJson.version }}</p>
 	</div>
 </template>
 
