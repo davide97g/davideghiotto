@@ -1,9 +1,0 @@
-{
-	"projects": {
-		"prod": "davide-ghiotto",
-		"staging": "test-davide-ghiotto",
-		"default": "test-davide-ghiotto"
-	},
-	"targets": {},
-	"etags": {}
-}

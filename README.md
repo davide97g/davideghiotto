@@ -1,18 +1,30 @@
-# davideghiotto
+# React + TypeScript + Vite
 
-Personal portfolio website.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-![GitHub repo size](https://img.shields.io/github/repo-size/davide97g/davideghiotto)
-![Lines of code](https://img.shields.io/tokei/lines/github/davide97g/davideghiotto?label=lines%20of%20code)
+Currently, two official plugins are available:
 
-![GitHub Workflow Status (event)](https://img.shields.io/github/workflow/status/davide97g/davideghiotto/deploy-hosting?event=push)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Technology Architecture
+## Expanding the ESLint configuration
 
-![](https://img.shields.io/static/v1?label=angular&message=webapp&color=red&logo=angular)
-![](https://img.shields.io/static/v1?label=firebase&message=hosting&color=orange&logo=firebase)
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-![](https://img.shields.io/static/v1?label=python&message=backend&color=blue&logo=python)
-![](https://img.shields.io/static/v1?label=heroku&message=server&color=purple&logo=heroku)
+- Configure the top-level `parserOptions` property like this:
 
-![](https://img.shields.io/static/v1?label=mongodb&message=database&color=green&logo=mongodb)
+```js
+export default {
+  // other rules...
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
+    tsconfigRootDir: __dirname,
+  },
+}
+```
+
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
