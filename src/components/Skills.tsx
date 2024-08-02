@@ -55,6 +55,8 @@ export default function Skills() {
     "React",
     "Vue",
     "Angular",
+    "Firebase",
+    "Node.js",
     "Git",
   ].sort(() => Math.random() - 0.5);
 
