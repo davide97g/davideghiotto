@@ -1,12 +1,13 @@
-import { Button, Card, CardFooter, Image } from "@nextui-org/react";
+import { Button, Card, CardFooter, Image } from '@nextui-org/react';
+import { useLayout } from '../hooks/useLayout';
 
 type ProjectColor =
-  | "default"
-  | "primary"
-  | "secondary"
-  | "success"
-  | "warning"
-  | "danger"
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'warning'
+  | 'danger'
   | undefined;
 
 type Project = {
@@ -15,14 +16,16 @@ type Project = {
   img?: string;
 };
 export default function Projects() {
+  const { isMobile } = useLayout();
+  const projectCardWidth = isMobile ? 150 : 300;
   const getRandomColor = (): ProjectColor => {
     const colors = [
-      "default",
-      "primary",
-      "secondary",
-      "success",
-      "warning",
-      "error",
+      'default',
+      'primary',
+      'secondary',
+      'success',
+      'warning',
+      'error',
     ];
     return colors[Math.floor(Math.random() * colors.length)] as ProjectColor;
   };
@@ -31,18 +34,18 @@ export default function Projects() {
 
   const projects: Project[] = [
     {
-      name: "RimScout App",
-      url: "https://app.rimscoutup.it/",
-      img: "rimscout-logo.png",
+      name: 'RimScout App',
+      url: 'https://app.rimscoutup.it/',
+      img: 'rimscout-logo.png',
     },
     {
-      name: "Pokèdle",
-      url: "https://pokedle.online/",
-      img: "pokedle-logo.png",
+      name: 'Pokèdle',
+      url: 'https://pokedle.online/',
+      img: 'pokedle-logo.png',
     },
     {
-      name: "Crypto Trade",
-      url: "https://github.com/davide97g/icrypto.trade",
+      name: 'Crypto Trade',
+      url: 'https://github.com/davide97g/icrypto.trade',
     },
   ].sort(() => Math.random() - 0.5);
 
@@ -60,9 +63,9 @@ export default function Projects() {
             <Image
               alt="Woman listing to music"
               className="object-cover"
-              height={200}
+              height={projectCardWidth}
               src={project.img}
-              width={200}
+              width={projectCardWidth}
             />
             <CardFooter className="absolute bg-black/40 bottom-0 z-10  border-default-600 dark:border-default-100">
               <div className="flex flex-grow gap-2 items-center">
@@ -75,7 +78,7 @@ export default function Projects() {
                 variant="light"
                 radius="full"
                 size="sm"
-                onClick={() => window.open(project.url)}
+                onPress={() => window.open(project.url)}
               >
                 Open
               </Button>
