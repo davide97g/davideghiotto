@@ -41,6 +41,18 @@
     --transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  /* Modern theme with DarkVeil: light text on dark background */
+  [data-theme="modern"] .dark-veil-background {
+    --foreground: 0 0% 98%;
+    --muted-foreground: 0 0% 72%;
+    --border: 0 0% 35%;
+  }
+  [data-theme="modern"] .dark-veil-background .card-themed {
+    --foreground: 225 30% 12%;
+    --muted-foreground: 220 10% 45%;
+    --border: 220 15% 90%;
+  }
+
   /* ═══════════════════════════════════════════
      LUXURY / HIGH-END BRAND
      ═══════════════════════════════════════════ */
