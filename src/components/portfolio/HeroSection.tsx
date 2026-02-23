@@ -1,6 +1,7 @@
-import { useTheme, ThemeId } from "@/context/ThemeContext";
+import ProfileCard from "@/components/ProfileCard";
+import { ThemeId, useTheme } from "@/context/ThemeContext";
+import { bio, heroMessages } from "@/data/content";
 import { motion } from "framer-motion";
-import { heroMessages, bio } from "@/data/content";
 import { ArrowDown, Mail } from "lucide-react";
 
 const MR_FRANZ_SKILLS =
@@ -78,9 +79,24 @@ function ModernHero() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          className="aspect-[3/4] max-h-[70vh] lg:max-h-none rounded-lg overflow-hidden shrink-0 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none"
+          className="shrink-0 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none flex justify-center"
         >
-          <img src={HERO_IMAGE_SRC} alt={bio.name} className="w-full h-full object-cover object-top" />
+          <ProfileCard
+            name={bio.name}
+            title={bio.role}
+            handle="github"
+            status="davide97g"
+            contactText="LinkedIn"
+            avatarUrl={HERO_IMAGE_SRC}
+            showUserInfo
+            enableTilt={true}
+            enableMobileTilt={false}
+            onContactClick={() => window.location.assign(`https://www.linkedin.com/in/${bio.linkedin}`)}
+            behindGlowColor="rgba(125, 190, 255, 0.67)"
+            iconUrl="/assets/demo/iconpattern.svg"
+            behindGlowEnabled
+            innerGradient="linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)"
+          />
         </motion.div>
       </div>
     </section>
