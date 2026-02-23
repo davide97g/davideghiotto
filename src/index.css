@@ -1,0 +1,212 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ═══════════════════════════════════════════
+     MODERN TECH / PLAYFUL SAAS
+     ═══════════════════════════════════════════ */
+  [data-theme="modern"] {
+    --background: 220 25% 97%;
+    --foreground: 225 30% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 225 30% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 30% 12%;
+    --primary: 250 85% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 250 30% 95%;
+    --secondary-foreground: 250 40% 30%;
+    --muted: 220 15% 93%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 15 90% 62%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 250 85% 60%;
+    --radius: 1rem;
+
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+
+    --hero-gradient: linear-gradient(135deg, hsl(250 85% 60%), hsl(280 80% 65%), hsl(15 90% 62%));
+    --card-shadow: 0 4px 24px -4px hsl(250 85% 60% / 0.08);
+    --card-hover-shadow: 0 12px 40px -8px hsl(250 85% 60% / 0.15);
+    --section-spacing: 6rem;
+    --content-max-width: 72rem;
+    --transition-speed: 0.35s;
+    --transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ═══════════════════════════════════════════
+     LUXURY / HIGH-END BRAND
+     ═══════════════════════════════════════════ */
+  [data-theme="luxury"] {
+    --background: 225 30% 6%;
+    --foreground: 40 25% 92%;
+    --card: 225 25% 10%;
+    --card-foreground: 40 25% 92%;
+    --popover: 225 25% 10%;
+    --popover-foreground: 40 25% 92%;
+    --primary: 40 70% 55%;
+    --primary-foreground: 225 30% 6%;
+    --secondary: 225 15% 14%;
+    --secondary-foreground: 40 20% 80%;
+    --muted: 225 15% 12%;
+    --muted-foreground: 225 10% 50%;
+    --accent: 15 45% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 225 12% 18%;
+    --input: 225 12% 18%;
+    --ring: 40 70% 55%;
+    --radius: 0.125rem;
+
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Cormorant Garamond', serif;
+    --font-mono: 'Space Mono', monospace;
+
+    --hero-gradient: linear-gradient(160deg, hsl(40 70% 55% / 0.15), transparent 60%);
+    --card-shadow: 0 4px 30px -4px hsl(0 0% 0% / 0.4);
+    --card-hover-shadow: 0 8px 50px -8px hsl(40 70% 55% / 0.2);
+    --section-spacing: 8rem;
+    --content-max-width: 76rem;
+    --transition-speed: 0.6s;
+    --transition-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ═══════════════════════════════════════════
+     EDITORIAL / MINIMAL / PRODUCT-FOCUSED
+     ═══════════════════════════════════════════ */
+  [data-theme="editorial"] {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 8%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+    --primary: 0 0% 8%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 85% 48%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 82%;
+    --input: 0 0% 82%;
+    --ring: 0 0% 8%;
+    --radius: 0;
+
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+
+    --hero-gradient: none;
+    --card-shadow: none;
+    --card-hover-shadow: 0 0 0 1px hsl(0 0% 8%);
+    --section-spacing: 4rem;
+    --content-max-width: 68rem;
+    --transition-speed: 0.2s;
+    --transition-ease: cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  /* ═══════════════════════════════════════════
+     GLOBAL TRANSITIONS
+     ═══════════════════════════════════════════ */
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    transition:
+      background-color var(--transition-speed) var(--transition-ease),
+      color var(--transition-speed) var(--transition-ease);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+
+  code, pre {
+    font-family: var(--font-mono);
+  }
+
+  .theme-transition {
+    transition:
+      background-color var(--transition-speed) var(--transition-ease),
+      color var(--transition-speed) var(--transition-ease),
+      border-color var(--transition-speed) var(--transition-ease),
+      box-shadow var(--transition-speed) var(--transition-ease),
+      transform var(--transition-speed) var(--transition-ease),
+      border-radius var(--transition-speed) var(--transition-ease);
+  }
+}
+
+@layer components {
+  .section-container {
+    max-width: var(--content-max-width);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  .section-spacing {
+    padding-block: var(--section-spacing);
+  }
+
+  .hero-gradient-text {
+    background: var(--hero-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  [data-theme="editorial"] .hero-gradient-text {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  [data-theme="luxury"] .hero-gradient-text {
+    background: linear-gradient(135deg, hsl(40 70% 55%), hsl(40 50% 70%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .card-themed {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    transition: all var(--transition-speed) var(--transition-ease);
+  }
+
+  .card-themed:hover {
+    box-shadow: var(--card-hover-shadow);
+  }
+
+  [data-theme="modern"] .card-themed:hover {
+    transform: translateY(-4px);
+  }
+
+  [data-theme="luxury"] .card-themed:hover {
+    border-color: hsl(var(--primary) / 0.4);
+  }
+
+  [data-theme="editorial"] .card-themed:hover {
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+  }
+}
