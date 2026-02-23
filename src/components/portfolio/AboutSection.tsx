@@ -19,6 +19,8 @@ export default function AboutSection() {
             ? "text-5xl md:text-7xl tracking-tight"
             : theme === "luxury"
             ? "text-3xl md:text-4xl italic font-medium"
+            : theme === "mr-franz"
+            ? "text-3xl md:text-5xl font-bold hero-gradient-text"
             : "text-3xl md:text-4xl font-bold"
         }`}
       >

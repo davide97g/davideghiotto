@@ -34,7 +34,7 @@ export default function Discovery() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col" data-theme="modern">
+    <div className="min-h-screen bg-background text-foreground flex flex-col" data-theme={content.themeOverride ?? "modern"}>
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-border">
         <button

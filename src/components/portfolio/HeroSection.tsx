@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { heroMessages, bio } from "@/data/content";
 import { ArrowDown, Mail } from "lucide-react";
 
+const MR_FRANZ_SKILLS =
+  "React • TypeScript • Next.js • Node.js • PostgreSQL • Tailwind • Framer Motion • Supabase • Python • Vue • AWS • Figma • ";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const animationPresets: Record<ThemeId, { container: any; item: any }> = {
   modern: {
@@ -24,6 +27,13 @@ const animationPresets: Record<ThemeId, { container: any; item: any }> = {
     item: {
       hidden: { opacity: 0, x: -20 },
       visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.33, 1, 0.68, 1] } },
+    },
+  },
+  "mr-franz": {
+    container: { staggerChildren: 0.1, delayChildren: 0.15 },
+    item: {
+      hidden: { opacity: 0, y: 24 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
     },
   },
 };
@@ -124,6 +134,79 @@ function LuxuryHero() {
   );
 }
 
+function MrFranzHero() {
+  const msg = heroMessages["mr-franz"];
+  const anim = animationPresets["mr-franz"];
+
+  return (
+    <>
+      <section className="mf-hero-section min-h-[88vh] flex flex-col justify-center section-container pt-8 relative">
+        <motion.div
+          className="text-center max-w-3xl mx-auto"
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: anim.container }}
+        >
+          <motion.p
+            variants={anim.item}
+            className="text-xs font-mono uppercase tracking-[0.25em] text-primary mb-4 font-medium"
+          >
+            Your best travel buddy
+          </motion.p>
+          <motion.h1
+            variants={anim.item}
+            className="text-4xl md:text-6xl lg:text-7xl font-display font-bold hero-gradient-text leading-tight mb-6"
+          >
+            {msg.heading}
+          </motion.h1>
+          <motion.p
+            variants={anim.item}
+            className="text-lg md:text-xl text-muted-foreground font-body mb-10 leading-relaxed"
+          >
+            {msg.subheading}
+          </motion.p>
+          <motion.div variants={anim.item} className="flex flex-wrap gap-4 justify-center">
+            <a
+              href="#projects"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-display font-medium hover:opacity-95 transition-opacity shadow-lg shadow-primary/20"
+            >
+              {msg.cta} <ArrowDown size={18} />
+            </a>
+            <a
+              href={`mailto:${bio.email}`}
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border-2 border-border text-foreground font-display font-medium hover:bg-secondary hover:border-primary/30 transition-colors"
+            >
+              <Mail size={18} />
+              {msg.ctaSecondary}
+            </a>
+          </motion.div>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+          className="mt-12 lg:mt-16 w-full max-w-4xl mx-auto relative"
+        >
+          <div className="relative aspect-[2/1] rounded-2xl overflow-hidden mf-hero-frame">
+            <img
+              src={HERO_IMAGE_SRC}
+              alt={bio.name}
+              className="w-full h-full object-cover object-center rounded-[calc(1.25rem-4px)]"
+            />
+            <span className="absolute top-4 right-4 mf-badge">Full stack</span>
+          </div>
+        </motion.div>
+      </section>
+      <div className="mf-ticker">
+        <div className="inline-flex whitespace-nowrap animate-mf-ticker will-change-transform w-[200%]">
+          <span className="inline-block pr-12">{MR_FRANZ_SKILLS.repeat(3)}</span>
+          <span className="inline-block pr-12">{MR_FRANZ_SKILLS.repeat(3)}</span>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function EditorialHero() {
   const msg = heroMessages.editorial;
   const anim = animationPresets.editorial;
@@ -178,6 +261,8 @@ export default function HeroSection() {
       return <LuxuryHero />;
     case "editorial":
       return <EditorialHero />;
+    case "mr-franz":
+      return <MrFranzHero />;
     default:
       return <ModernHero />;
   }

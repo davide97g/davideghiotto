@@ -19,6 +19,8 @@ export default function ProjectsSection() {
             ? "text-5xl md:text-7xl tracking-tight"
             : theme === "luxury"
             ? "text-3xl md:text-4xl italic font-medium"
+            : theme === "mr-franz"
+            ? "text-3xl md:text-5xl font-bold hero-gradient-text"
             : "text-3xl md:text-4xl font-bold"
         }`}
       >
@@ -31,6 +33,8 @@ export default function ProjectsSection() {
             ? "grid-cols-1 md:grid-cols-2"
             : theme === "luxury"
             ? "grid-cols-1 gap-8"
+            : theme === "mr-franz"
+            ? "grid-cols-1 md:grid-cols-2 gap-8"
             : "grid-cols-1 md:grid-cols-2 gap-6"
         }`}
       >
@@ -50,8 +54,11 @@ export default function ProjectsSection() {
               delay: i * (theme === "luxury" ? 0.15 : 0.08),
               ease: theme === "luxury" ? [0.16, 1, 0.3, 1] : [0.22, 1, 0.36, 1],
             }}
-            className="card-themed theme-transition p-6 md:p-8 group cursor-pointer h-full block"
+            className="card-themed theme-transition p-6 md:p-8 group cursor-pointer h-full block relative"
           >
+            {theme === "mr-franz" && (
+              <span className="absolute top-4 right-4 mf-badge">Verified</span>
+            )}
             <div className="flex justify-between items-start mb-4">
               <span className="text-xs font-mono text-muted-foreground tracking-wider">
                 {project.year}
@@ -67,6 +74,8 @@ export default function ProjectsSection() {
                   ? "text-2xl md:text-3xl font-medium"
                   : theme === "editorial"
                   ? "text-xl uppercase tracking-wide font-bold"
+                  : theme === "mr-franz"
+                  ? "text-xl md:text-2xl font-bold text-foreground"
                   : "text-xl md:text-2xl font-semibold"
               }`}
             >
@@ -84,9 +93,14 @@ export default function ProjectsSection() {
                       ? "border border-foreground text-foreground"
                       : theme === "luxury"
                       ? "border border-border text-muted-foreground"
+                      : theme === "mr-franz"
+                      ? "bg-secondary text-secondary-foreground rounded-full border border-border/60"
                       : "bg-secondary text-secondary-foreground rounded-full"
                   }`}
-                  style={{ borderRadius: theme === "modern" ? "9999px" : "var(--radius)" }}
+                  style={{
+                    borderRadius:
+                      theme === "modern" || theme === "mr-franz" ? "9999px" : "var(--radius)",
+                  }}
                 >
                   {tag}
                 </span>

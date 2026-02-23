@@ -55,6 +55,14 @@ export const heroMessages = {
     cta: "Work",
     ctaSecondary: "Contact",
   },
+  "mr-franz": {
+    greeting: "Hey, ready to build something great? 👋",
+    heading: "Full-Stack Engineer & Frontend Lead",
+    subheading:
+      "Build experiences people love — no tourist traps. 5+ years building scalable platforms. AI-native developer and design-system advocate.",
+    cta: "See my work",
+    ctaSecondary: "Let's chat",
+  },
 };
 
 export const sectionHeadings = {
@@ -75,6 +83,12 @@ export const sectionHeadings = {
     skills: "CAPABILITIES",
     experience: "EXPERIENCE",
     about: "ABOUT",
+  },
+  "mr-franz": {
+    projects: "Things I've Built ✨",
+    skills: "My Toolkit 🛠",
+    experience: "Where I've Been 🚀",
+    about: "A Bit About Me 👤",
   },
 };
 
@@ -103,7 +117,7 @@ export const projects: Project[] = [
       "AI-Enhanced Code Quality CLI. Extended an open-source SonarQube CLI with AI-assisted issue resolution. Automated issue fetching and analysis from SonarQube/SonarCloud, AI-driven fix suggestions integrated into developer workflows. Distributed via npm for DevOps integration.",
     tags: ["Node.js", "TypeScript", "SonarQube"],
     year: "Oct 2025 — Present",
-    link: "https://github.com/davideghiotto/sonarflow",
+    link: "https://github.com/davide97g/sonarflow",
   },
   {
     title: "Bitcompass",
@@ -111,7 +125,7 @@ export const projects: Project[] = [
       "Modular Web Architecture Toolkit for bootstrapping scalable web applications with standardized architecture and developer tooling. Modular frontend structure with TypeScript and modern build setup. Integrated Supabase for auth and backend services. Built to accelerate project setup and enforce code quality across teams.",
     tags: ["TypeScript", "React", "Supabase"],
     year: "Feb 2026 — Present",
-    link: "https://github.com/davideghiotto/bitcompass",
+    link: "https://github.com/davide97g/bitcompass",
   },
 ];
 
@@ -173,4 +187,5 @@ export const sectionOrder = {
   modern: ["hero", "projects", "skills", "experience", "about"] as const,
   luxury: ["hero", "about", "projects", "experience", "skills"] as const,
   editorial: ["hero", "experience", "projects", "skills", "about"] as const,
+  "mr-franz": ["hero", "projects", "skills", "experience", "about"] as const,
 };

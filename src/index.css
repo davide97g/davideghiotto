@@ -118,6 +118,51 @@
   }
 
   /* ═══════════════════════════════════════════
+     MR FRANZ — mrfranz.co style (lime, warm yellow bg, red-orange ticker)
+     ═══════════════════════════════════════════ */
+  [data-theme="mr-franz"] {
+    /* Light greenish-yellow bg, dark brown text, lime green primary */
+    --background: 72 35% 97%;
+    --foreground: 30 22% 16%;
+    --card: 0 0% 100%;
+    --card-foreground: 30 22% 16%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 22% 16%;
+    --primary: 85 58% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 72 25% 93%;
+    --secondary-foreground: 30 20% 28%;
+    --muted: 70 22% 95%;
+    --muted-foreground: 30 12% 42%;
+    --accent: 38 95% 55%;
+    --accent-foreground: 30 22% 16%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 72 18% 88%;
+    --input: 72 18% 88%;
+    --ring: 85 58% 48%;
+    --radius: 1.25rem;
+
+    --font-display: 'Fredoka', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+
+    --hero-gradient: linear-gradient(135deg, hsl(85 58% 48%), hsl(90 55% 52%));
+    --card-shadow: 0 2px 20px -4px hsl(85 58% 48% / 0.12), 0 8px 32px -8px hsl(30 22% 16% / 0.06);
+    --card-hover-shadow: 0 12px 40px -8px hsl(85 58% 48% / 0.18), 0 20px 50px -12px hsl(30 22% 16% / 0.08);
+    --section-spacing: 6rem;
+    --content-max-width: 72rem;
+    --transition-speed: 0.45s;
+    --transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* Style extras: ticker red-orange, badge orange, frame pink/lavender */
+    --mf-section-alt: 72 28% 96%;
+    --mf-ticker-bg: 12 92% 58%;
+    --mf-badge-orange: 38 95% 55%;
+    --mf-frame-border: 330 65% 92%;
+  }
+
+  /* ═══════════════════════════════════════════
      GLOBAL TRANSITIONS
      ═══════════════════════════════════════════ */
   * {
@@ -208,5 +253,85 @@
   [data-theme="editorial"] .card-themed:hover {
     background: hsl(var(--foreground));
     color: hsl(var(--background));
+  }
+
+  [data-theme="mr-franz"] .hero-gradient-text {
+    background: linear-gradient(135deg, hsl(85 58% 48%), hsl(90 55% 52%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  [data-theme="mr-franz"] .card-themed:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow);
+  }
+
+  /* Mr Franz: alternating section backgrounds */
+  [data-theme="mr-franz"] main section.section-spacing:nth-of-type(even) {
+    background: hsl(var(--mf-section-alt));
+  }
+
+  [data-theme="mr-franz"] main section.section-spacing:nth-of-type(even) .section-container {
+    position: relative;
+  }
+
+  /* Mr Franz: subtle grain */
+  [data-theme="mr-franz"] main {
+    position: relative;
+  }
+
+  [data-theme="mr-franz"] main::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Ticker: red-orange bar, white bold uppercase (like mrfranz cities bar) */
+  [data-theme="mr-franz"] .mf-ticker {
+    background: hsl(var(--mf-ticker-bg));
+    color: hsl(0 0% 100%);
+    padding: 0.875rem 0;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    overflow: hidden;
+    text-transform: uppercase;
+  }
+
+  /* Badge: warm orange/yellow (Solo il meglio style) */
+  [data-theme="mr-franz"] .mf-badge {
+    background: hsl(var(--mf-badge-orange));
+    color: hsl(30 22% 16%);
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 12px -2px hsl(var(--mf-badge-orange) / 0.4);
+  }
+
+  /* Hero image frame: soft pink/lavender border */
+  [data-theme="mr-franz"] .mf-hero-frame {
+    border: 4px solid hsl(var(--mf-frame-border));
+    box-shadow: 0 8px 32px -8px hsl(30 22% 16% / 0.12);
+  }
+
+  /* Subtle lime wave/blob behind hero content */
+  [data-theme="mr-franz"] .mf-hero-section::before {
+    content: "";
+    position: absolute;
+    top: -10%;
+    left: -15%;
+    width: 60%;
+    height: 80%;
+    background: radial-gradient(ellipse 80% 70% at 30% 40%, hsl(85 58% 48% / 0.08), transparent 60%);
+    pointer-events: none;
+    z-index: -1;
   }
 }

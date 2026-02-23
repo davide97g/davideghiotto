@@ -1,3 +1,5 @@
+import type { ThemeId } from "@/context/ThemeContext";
+
 export interface DiscoverySlide {
   type: "intro" | "fit" | "projects" | "skills" | "closing";
   title: string;
@@ -11,6 +13,7 @@ export interface CompanyDiscovery {
   greeting: string;
   tagline: string;
   accentColor: string;
+  themeOverride?: ThemeId;
   slides: DiscoverySlide[];
 }
 
@@ -59,9 +62,76 @@ const defaultSlides: DiscoverySlide[] = [
   },
 ];
 
+const MR_FRANZ_SLUG = "mr-franz";
+
+const mrFranzSlides: DiscoverySlide[] = [
+  {
+    type: "intro",
+    title: "Welcome, Mr Franz",
+    subtitle: "Your best travel buddy — I've prepared a custom experience for you. Viaggia come un local.",
+    highlight: "Let me show you why we'd be a great fit.",
+  },
+  {
+    type: "fit",
+    title: "Why I'm a Fit",
+    bullets: [
+      "Frontend lead with 5+ years building user-first products — no tourist traps, solo il meglio",
+      "Deep expertise in React, TypeScript, and design systems that scale",
+      "Track record of curated UX: performance, accessibility, and developer experience",
+      "Passionate about maps, flows, and experiences that feel local and verified",
+    ],
+  },
+  {
+    type: "projects",
+    title: "Relevant Work",
+    bullets: [
+      "Sonarflow — AI-enhanced code quality; focus on clarity and developer delight",
+      "Bitcompass — Modular web architecture and design-system tooling",
+      "Enterprise booking systems — Large-scale React apps and micro-frontends",
+      "Design systems — Consistent, scalable UI that serves real users",
+    ],
+  },
+  {
+    type: "skills",
+    title: "Skills That Match",
+    bullets: [
+      "Frontend: React, TypeScript, Next.js, TailwindCSS, Framer Motion",
+      "UX: Design Systems, Prototyping, Maps-friendly UIs, Performance",
+      "Backend: Node.js, Python, PostgreSQL, REST APIs",
+      "Practices: CI/CD, Testing, Accessibility, Documentation",
+    ],
+  },
+  {
+    type: "closing",
+    title: "Let's Build Together",
+    subtitle: "Ready to build the next best travel buddy experience?",
+    highlight: "Reach out at dghiotto.careers@gmail.com",
+  },
+];
+
+function normalizeCompanySlug(company: string): string {
+  const decoded = decodeURIComponent(company).trim().toLowerCase();
+  const slug = decoded.replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  if (slug === "mr-franz" || slug === "mrfranz") return MR_FRANZ_SLUG;
+  return slug || "your-company";
+}
+
 export function getDiscoveryContent(company: string): CompanyDiscovery {
-  const name = decodeURIComponent(company).replace(/[^a-zA-Z0-9\s]/g, "").trim() || "your company";
-  const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+  const normalized = normalizeCompanySlug(company);
+
+  if (normalized === MR_FRANZ_SLUG) {
+    return {
+      name: "Mr Franz",
+      greeting: "Hey, are you here from Mr Franz?",
+      tagline: "Your best travel buddy — I've prepared a custom experience for you.",
+      accentColor: "85 58% 48%",
+      themeOverride: "mr-franz",
+      slides: mrFranzSlides,
+    };
+  }
+
+  const rawName = decodeURIComponent(company).replace(/[^a-zA-Z0-9\s]/g, "").trim() || "your company";
+  const capitalized = rawName.charAt(0).toUpperCase() + rawName.slice(1);
 
   return {
     name: capitalized,

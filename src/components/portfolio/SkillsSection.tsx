@@ -18,6 +18,8 @@ export default function SkillsSection() {
             ? "text-5xl md:text-7xl tracking-tight"
             : theme === "luxury"
             ? "text-3xl md:text-4xl italic font-medium"
+            : theme === "mr-franz"
+            ? "text-3xl md:text-5xl font-bold hero-gradient-text"
             : "text-3xl md:text-4xl font-bold"
         }`}
       >
@@ -30,6 +32,8 @@ export default function SkillsSection() {
             ? "grid-cols-2 md:grid-cols-4"
             : theme === "luxury"
             ? "grid-cols-1 md:grid-cols-2 gap-12"
+            : theme === "mr-franz"
+            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
             : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         }`}
       >

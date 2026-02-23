@@ -7,6 +7,7 @@ const themes: { id: ThemeId; label: string; description: string }[] = [
   { id: "modern", label: "Modern", description: "Playful SaaS" },
   { id: "luxury", label: "Luxury", description: "High-End Brand" },
   { id: "editorial", label: "Editorial", description: "Minimal Product" },
+  { id: "mr-franz", label: "Mr Franz", description: "Travel buddy" },
 ];
 
 export default function ThemeSwitcher() {
