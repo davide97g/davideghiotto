@@ -35,38 +35,44 @@ function ModernHero() {
   const anim = animationPresets.modern;
 
   return (
-    <section className="min-h-[90vh] flex items-center justify-center section-container relative overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <img src={HERO_IMAGE_SRC} alt="" className="w-full h-full object-cover object-top opacity-55" aria-hidden />
-        <div className="absolute inset-0 bg-background/50" />
-      </div>
-      <motion.div
-        className="text-center max-w-2xl mx-auto relative z-10 drop-shadow-sm"
-        initial="hidden"
-        animate="visible"
-        variants={{ visible: anim.container }}
-      >
-        <motion.p variants={anim.item} className="text-lg text-muted-foreground mb-4 font-body">
-          {msg.greeting}
-        </motion.p>
-        <motion.h1
-          variants={anim.item}
-          className="text-5xl md:text-7xl font-bold font-display hero-gradient-text leading-tight mb-6"
+    <section className="min-h-[90vh] flex items-center section-container">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
+        <motion.div
+          className="text-center lg:text-left max-w-2xl mx-auto lg:mx-0"
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: anim.container }}
         >
-          {msg.heading}
-        </motion.h1>
-        <motion.p variants={anim.item} className="text-lg md:text-xl text-muted-foreground font-body mb-10 leading-relaxed">
-          {msg.subheading}
-        </motion.p>
-        <motion.div variants={anim.item} className="flex gap-4 justify-center">
-          <a href="#projects" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-display font-medium hover:opacity-90 transition-opacity">
-            {msg.cta} <ArrowDown size={16} />
-          </a>
-          <a href={`mailto:${bio.email}`} className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-border text-foreground font-display font-medium hover:bg-secondary transition-colors">
-            {msg.ctaSecondary}
-          </a>
+          <motion.p variants={anim.item} className="text-lg text-muted-foreground mb-4 font-body">
+            {msg.greeting}
+          </motion.p>
+          <motion.h1
+            variants={anim.item}
+            className="text-5xl md:text-7xl font-bold font-display hero-gradient-text leading-tight mb-6"
+          >
+            {msg.heading}
+          </motion.h1>
+          <motion.p variants={anim.item} className="text-lg md:text-xl text-muted-foreground font-body mb-10 leading-relaxed">
+            {msg.subheading}
+          </motion.p>
+          <motion.div variants={anim.item} className="flex gap-4 justify-center lg:justify-start">
+            <a href="#projects" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-display font-medium hover:opacity-90 transition-opacity">
+              {msg.cta} <ArrowDown size={16} />
+            </a>
+            <a href={`mailto:${bio.email}`} className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-border text-foreground font-display font-medium hover:bg-secondary transition-colors">
+              {msg.ctaSecondary}
+            </a>
+          </motion.div>
         </motion.div>
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          className="aspect-[3/4] max-h-[70vh] lg:max-h-none rounded-lg overflow-hidden shrink-0 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none"
+        >
+          <img src={HERO_IMAGE_SRC} alt={bio.name} className="w-full h-full object-cover object-top" />
+        </motion.div>
+      </div>
     </section>
   );
 }
@@ -106,15 +112,12 @@ function LuxuryHero() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-          className="hidden lg:block aspect-[3/4] rounded-sm overflow-hidden relative"
+          className="aspect-[3/4] max-h-[70vh] lg:max-h-none rounded-sm overflow-hidden shrink-0 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none"
         >
           <img src={HERO_IMAGE_SRC} alt={bio.name} className="w-full h-full object-cover object-top" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-12">
-            <div className="text-primary font-display text-2xl italic opacity-90">
-              {bio.name}
-            </div>
-          </div>
+          <p className="mt-4 text-primary font-display text-2xl italic text-center lg:text-left">
+            {bio.name}
+          </p>
         </motion.div>
       </div>
     </section>
@@ -126,38 +129,43 @@ function EditorialHero() {
   const anim = animationPresets.editorial;
 
   return (
-    <section className="min-h-[85vh] flex flex-col justify-end section-container pb-12 relative overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <img src={HERO_IMAGE_SRC} alt="" className="w-full h-full object-cover object-top opacity-55" aria-hidden />
-        <div className="absolute inset-0 bg-background/50" />
-      </div>
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={{ visible: anim.container }}
-        className="relative z-10 drop-shadow-sm"
-      >
-        <motion.h1
-          variants={anim.item}
-          className="text-6xl md:text-8xl lg:text-[10rem] font-display leading-[0.9] tracking-tight mb-8 whitespace-pre-line"
+    <section className="min-h-[85vh] flex flex-col justify-end section-container pb-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-end w-full">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: anim.container }}
         >
-          {msg.heading}
-        </motion.h1>
-        <motion.div variants={anim.item} className="w-full h-[2px] bg-foreground mb-6" />
-        <motion.div variants={anim.item} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-          <p className="text-base md:text-lg text-muted-foreground font-body max-w-md">
-            {msg.subheading}
-          </p>
-          <div className="flex gap-6 text-sm font-mono uppercase">
-            <a href="#projects" className="border-b-2 border-foreground pb-1 hover:text-accent transition-colors">
-              {msg.cta}
-            </a>
-            <a href={`mailto:${bio.email}`} className="border-b-2 border-transparent pb-1 hover:border-foreground transition-colors">
-              {msg.ctaSecondary}
-            </a>
-          </div>
+          <motion.h1
+            variants={anim.item}
+            className="text-6xl md:text-8xl lg:text-[10rem] font-display leading-[0.9] tracking-tight mb-8 whitespace-pre-line"
+          >
+            {msg.heading}
+          </motion.h1>
+          <motion.div variants={anim.item} className="w-full h-[2px] bg-foreground mb-6" />
+          <motion.div variants={anim.item} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <p className="text-base md:text-lg text-muted-foreground font-body max-w-md">
+              {msg.subheading}
+            </p>
+            <div className="flex gap-6 text-sm font-mono uppercase">
+              <a href="#projects" className="border-b-2 border-foreground pb-1 hover:text-accent transition-colors">
+                {msg.cta}
+              </a>
+              <a href={`mailto:${bio.email}`} className="border-b-2 border-transparent pb-1 hover:border-foreground transition-colors">
+                {msg.ctaSecondary}
+              </a>
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1], delay: 0.15 }}
+          className="aspect-[3/4] max-h-[60vh] lg:max-h-none rounded overflow-hidden shrink-0 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none"
+        >
+          <img src={HERO_IMAGE_SRC} alt={bio.name} className="w-full h-full object-cover object-top" />
+        </motion.div>
+      </div>
     </section>
   );
 }
