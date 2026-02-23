@@ -55,7 +55,7 @@ const defaultSlides: DiscoverySlide[] = [
     type: "closing",
     title: "Let's Build Together",
     subtitle: "I'm excited about the possibility of working with your team.",
-    highlight: "Ready to chat? Reach out at hello@alexchen.dev",
+    highlight: "Ready to chat? Reach out at dghiotto.careers@gmail.com",
   },
 ];
 
