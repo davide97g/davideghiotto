@@ -1,3 +1,4 @@
+import GradientText from "@/components/GradientText";
 import ProfileCard from "@/components/ProfileCard";
 import { ThemeId, useTheme } from "@/context/ThemeContext";
 import { bio, heroMessages } from "@/data/content";
@@ -59,9 +60,16 @@ function ModernHero() {
           </motion.p>
           <motion.h1
             variants={anim.item}
-            className="text-5xl md:text-7xl font-bold font-display hero-gradient-text leading-tight mb-6"
+            className="text-5xl md:text-7xl font-bold font-display leading-tight mb-6"
           >
-            {msg.heading}
+            <GradientText
+              colors={["#5227FF", "#B855E8", "#F25C2E"]}
+              animationSpeed={3}
+              showBorder={false}
+              className="custom-class"
+            >
+              {msg.heading}
+            </GradientText>
           </motion.h1>
           <motion.p variants={anim.item} className="text-lg md:text-xl text-muted-foreground font-body mb-10 leading-relaxed">
             {msg.subheading}
