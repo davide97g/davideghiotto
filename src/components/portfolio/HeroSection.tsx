@@ -28,14 +28,20 @@ const animationPresets: Record<ThemeId, { container: any; item: any }> = {
   },
 };
 
+const HERO_IMAGE_SRC = "/hero.jpg";
+
 function ModernHero() {
   const msg = heroMessages.modern;
   const anim = animationPresets.modern;
 
   return (
-    <section className="min-h-[90vh] flex items-center justify-center section-container">
+    <section className="min-h-[90vh] flex items-center justify-center section-container relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <img src={HERO_IMAGE_SRC} alt="" className="w-full h-full object-cover object-top opacity-55" aria-hidden />
+        <div className="absolute inset-0 bg-background/50" />
+      </div>
       <motion.div
-        className="text-center max-w-2xl mx-auto"
+        className="text-center max-w-2xl mx-auto relative z-10 drop-shadow-sm"
         initial="hidden"
         animate="visible"
         variants={{ visible: anim.container }}
@@ -100,11 +106,12 @@ function LuxuryHero() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-          className="hidden lg:block aspect-[3/4] rounded-sm overflow-hidden"
-          style={{ background: "var(--hero-gradient)" }}
+          className="hidden lg:block aspect-[3/4] rounded-sm overflow-hidden relative"
         >
-          <div className="w-full h-full flex items-end p-12">
-            <div className="text-primary font-display text-2xl italic opacity-60">
+          <img src={HERO_IMAGE_SRC} alt={bio.name} className="w-full h-full object-cover object-top" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-12">
+            <div className="text-primary font-display text-2xl italic opacity-90">
               {bio.name}
             </div>
           </div>
@@ -119,11 +126,16 @@ function EditorialHero() {
   const anim = animationPresets.editorial;
 
   return (
-    <section className="min-h-[85vh] flex flex-col justify-end section-container pb-12">
+    <section className="min-h-[85vh] flex flex-col justify-end section-container pb-12 relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <img src={HERO_IMAGE_SRC} alt="" className="w-full h-full object-cover object-top opacity-55" aria-hidden />
+        <div className="absolute inset-0 bg-background/50" />
+      </div>
       <motion.div
         initial="hidden"
         animate="visible"
         variants={{ visible: anim.container }}
+        className="relative z-10 drop-shadow-sm"
       >
         <motion.h1
           variants={anim.item}

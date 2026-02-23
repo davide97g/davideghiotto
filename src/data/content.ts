@@ -18,25 +18,40 @@ export interface SkillCategory {
   skills: string[];
 }
 
+export interface Bio {
+  name: string;
+  role: string;
+  location: string;
+  email: string;
+  phone?: string;
+  linkedin?: string;
+  github?: string;
+  summary: string;
+  values: string[];
+}
+
 export const heroMessages = {
   modern: {
     greeting: "Hey there! 👋",
-    heading: "I build delightful digital experiences",
-    subheading: "Full-stack developer & designer who loves turning complex problems into simple, beautiful solutions.",
+    heading: "Full-Stack Engineer & Frontend Lead",
+    subheading:
+      "5+ years building scalable enterprise platforms. AI-native developer integrating LLM systems, agent architectures, and AI-driven workflows into production.",
     cta: "See my work",
     ctaSecondary: "Let's chat",
   },
   luxury: {
     greeting: "",
-    heading: "Crafting Exceptional Digital Experiences",
-    subheading: "A meticulous approach to full-stack development and design — where every pixel serves a purpose.",
+    heading: "Full-Stack Engineer & Frontend Lead",
+    subheading:
+      "AI-native developer integrating LLM systems and agent architectures. Led a team of 5 engineers delivering modular React applications for large-scale booking systems.",
     cta: "View Portfolio",
     ctaSecondary: "Inquire",
   },
   editorial: {
     greeting: "",
-    heading: "DEVELOPER.\nDESIGNER.\nSTRATEGIST.",
-    subheading: "Building systems that scale. Designing interfaces that endure.",
+    heading: "FULL-STACK.\nFRONTEND LEAD.\nAI-NATIVE.",
+    subheading:
+      "Building systems that scale technically and organizationally. Performance, architecture clarity, and developer experience.",
     cta: "Work",
     ctaSecondary: "Contact",
   },
@@ -63,85 +78,94 @@ export const sectionHeadings = {
   },
 };
 
-export const bio = {
-  name: "Alex Chen",
-  role: "Full-Stack Developer & Designer",
-  location: "San Francisco, CA",
-  email: "hello@alexchen.dev",
+export const bio: Bio = {
+  name: "Davide Ghiotto",
+  role: "Full-Stack Engineer & Frontend Lead",
+  location: "Italy",
+  email: "dghiotto.careers@gmail.com",
+  phone: "+39 3455779838",
+  linkedin: "davide-ghiotto",
+  github: "davideghiotto",
   summary:
-    "I'm a developer and designer with 8+ years of experience building products for startups and enterprises. I specialize in React, TypeScript, and design systems. I believe great software is invisible — it just works.",
+    "Full-Stack Engineer & Frontend Lead with 5+ years building scalable enterprise platforms. AI-native developer integrating LLM systems, agent architectures, and AI-driven workflows into production. Experienced in micro-frontend architectures, high-availability backend systems, and AI-augmented development. Led a team of 5 engineers delivering modular React applications for large-scale booking systems.",
   values: [
-    "Obsessed with craft and detail",
-    "Systems thinking over quick fixes",
-    "Accessibility is non-negotiable",
-    "Ship fast, iterate faster",
+    "Strong focus on performance and architecture clarity",
+    "Developer experience and code quality",
+    "Systems that scale technically and organizationally",
+    "AI-assisted workflows: Cursor, Claude Code, Codex, Cline",
   ],
 };
 
 export const projects: Project[] = [
   {
-    title: "Velocity",
-    description: "A real-time collaboration platform for distributed teams. Built with WebSockets, React, and a custom CRDT engine.",
-    tags: ["React", "TypeScript", "WebSockets", "CRDT"],
-    year: "2024",
+    title: "Sonarflow",
+    description:
+      "AI-Enhanced Code Quality CLI. Extended an open-source SonarQube CLI with AI-assisted issue resolution. Automated issue fetching and analysis from SonarQube/SonarCloud, AI-driven fix suggestions integrated into developer workflows. Distributed via npm for DevOps integration.",
+    tags: ["Node.js", "TypeScript", "SonarQube"],
+    year: "Oct 2025 — Present",
+    link: "https://github.com/davideghiotto/sonarflow",
   },
   {
-    title: "Luminary",
-    description: "Design system and component library serving 40+ internal products. Includes tokens, primitives, and composable patterns.",
-    tags: ["Design Systems", "Storybook", "Figma", "CSS"],
-    year: "2023",
-  },
-  {
-    title: "Meridian",
-    description: "Analytics dashboard for climate data visualization. Processes 2M+ data points with interactive charts and maps.",
-    tags: ["D3.js", "Node.js", "PostgreSQL", "MapboxGL"],
-    year: "2023",
-  },
-  {
-    title: "Arcana",
-    description: "AI-powered writing assistant with real-time suggestions, tone analysis, and multi-language support.",
-    tags: ["OpenAI", "Next.js", "Redis", "TailwindCSS"],
-    year: "2022",
+    title: "Bitcompass",
+    description:
+      "Modular Web Architecture Toolkit for bootstrapping scalable web applications with standardized architecture and developer tooling. Modular frontend structure with TypeScript and modern build setup. Integrated Supabase for auth and backend services. Built to accelerate project setup and enforce code quality across teams.",
+    tags: ["TypeScript", "React", "Supabase"],
+    year: "Feb 2026 — Present",
+    link: "https://github.com/davideghiotto/bitcompass",
   },
 ];
 
 export const skillCategories: SkillCategory[] = [
   {
     name: "Frontend",
-    skills: ["React", "TypeScript", "Next.js", "TailwindCSS", "Framer Motion", "Three.js"],
+    skills: ["React", "Next.js", "Angular", "Vue 3", "TypeScript"],
   },
   {
     name: "Backend",
-    skills: ["Node.js", "Python", "PostgreSQL", "Redis", "GraphQL", "REST APIs"],
+    skills: ["Node.js", "Java (Spring)", ".NET", "Python"],
   },
   {
-    name: "Design",
-    skills: ["Figma", "Design Systems", "Prototyping", "Typography", "Motion Design"],
+    name: "Databases",
+    skills: ["PostgreSQL", "MongoDB", "Oracle", "MySQL"],
   },
   {
-    name: "Tools & Practices",
-    skills: ["Git", "CI/CD", "Testing", "Agile", "Documentation", "Accessibility"],
+    name: "Cloud & DevOps",
+    skills: ["Supabase", "Firebase", "AWS (basic)", "GitHub Actions", "Jenkins"],
+  },
+  {
+    name: "AI & Data",
+    skills: ["TensorFlow", "Scikit-learn", "Pandas", "R"],
   },
 ];
 
 export const experiences: Experience[] = [
   {
-    role: "Senior Full-Stack Engineer",
-    company: "Stellar Labs",
-    period: "2022 — Present",
-    description: "Leading frontend architecture and design system development for a B2B SaaS platform serving 500K+ users.",
+    role: "Frontend Team Leader",
+    company: "Bitrock",
+    period: "March 2023 — Present",
+    description:
+      "Frontend Team Lead of 5 developers. Building a large enterprise booking system with micro-frontend applications (independent React apps). Developed a full-stack vehicle fleet management app with Next.js and Supabase. Built Sonarflow, an AI-powered framework to automatically fix SonarQube issues and improve code quality.",
   },
   {
-    role: "Software Engineer",
-    company: "NovaTech",
-    period: "2019 — 2022",
-    description: "Built and shipped 3 major product features. Reduced bundle size by 40% and improved Core Web Vitals across all pages.",
+    role: "Data Scientist",
+    company: "Infodati",
+    period: "April 2022 — February 2023",
+    description:
+      "Prediction of customer score and opportunity outcomes using Python and Machine Learning. Integrated Python models inside the Qlik ecosystem.",
   },
   {
-    role: "Frontend Developer",
-    company: "PixelCraft Studio",
-    period: "2017 — 2019",
-    description: "Developed responsive web applications and interactive prototypes for agency clients across fintech and healthcare.",
+    role: "R&D Full Stack Developer",
+    company: "Namirial",
+    period: "October 2021 — September 2022",
+    description:
+      "Built cross-platform applications with Vue.js 3, Electron and .NET 6. Developed a digital signature application and a license manager. Agile SCRUM.",
+  },
+  {
+    role: "Full Stack Developer & Database Manager",
+    company: "Reply S.p.A — Cluster & Core Financial Services",
+    period: "November 2019 — October 2021",
+    description:
+      "Frontend: Angular. Backend: Java in a microservice-oriented architecture. Database: Oracle, MySQL.",
   },
 ];
 

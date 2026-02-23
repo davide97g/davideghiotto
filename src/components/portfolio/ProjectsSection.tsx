@@ -34,9 +34,14 @@ export default function ProjectsSection() {
             : "grid-cols-1 md:grid-cols-2 gap-6"
         }`}
       >
-        {projects.map((project, i) => (
+        {projects.map((project, i) => {
+          const Wrapper = project.link ? "a" : "div";
+          const wrapperProps = project.link
+            ? { href: project.link, target: "_blank", rel: "noopener noreferrer" }
+            : {};
+          return (
+          <Wrapper key={project.title} {...wrapperProps}>
           <motion.article
-            key={project.title}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -45,7 +50,7 @@ export default function ProjectsSection() {
               delay: i * (theme === "luxury" ? 0.15 : 0.08),
               ease: theme === "luxury" ? [0.16, 1, 0.3, 1] : [0.22, 1, 0.36, 1],
             }}
-            className="card-themed theme-transition p-6 md:p-8 group cursor-pointer"
+            className="card-themed theme-transition p-6 md:p-8 group cursor-pointer h-full block"
           >
             <div className="flex justify-between items-start mb-4">
               <span className="text-xs font-mono text-muted-foreground tracking-wider">
@@ -88,7 +93,9 @@ export default function ProjectsSection() {
               ))}
             </div>
           </motion.article>
-        ))}
+          </Wrapper>
+        );
+        })}
       </div>
     </section>
   );
