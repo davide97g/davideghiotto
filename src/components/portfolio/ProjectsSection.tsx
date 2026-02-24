@@ -76,7 +76,7 @@ export default function ProjectsSection() {
                   ? "text-xl uppercase tracking-wide font-bold"
                   : theme === "mr-franz"
                   ? "text-xl md:text-2xl font-bold text-foreground"
-                  : "text-xl md:text-2xl font-semibold"
+                  : "text-xl md:text-2xl font-semibold text-foreground"
               }`}
             >
               {project.title}
