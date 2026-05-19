@@ -1,7 +1,7 @@
 import { useTheme } from "@/context/ThemeContext";
 import { motion } from "framer-motion";
 import { projects, sectionHeadings } from "@/data/content";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github, Linkedin } from "lucide-react";
 
 export default function ProjectsSection() {
   const { theme } = useTheme();
@@ -39,8 +39,9 @@ export default function ProjectsSection() {
         }`}
       >
         {projects.map((project, i) => {
-          const Wrapper = project.link ? "a" : "div";
-          const wrapperProps = project.link
+          const hasMultiLink = Boolean(project.link && project.linkedin);
+          const Wrapper = !hasMultiLink && project.link ? "a" : "div";
+          const wrapperProps = !hasMultiLink && project.link
             ? { href: project.link, target: "_blank", rel: "noopener noreferrer" }
             : {};
           return (
@@ -63,10 +64,37 @@ export default function ProjectsSection() {
               <span className="text-xs font-mono text-muted-foreground tracking-wider">
                 {project.year}
               </span>
-              <ArrowUpRight
-                size={18}
-                className="text-muted-foreground group-hover:text-primary transition-colors"
-              />
+              {hasMultiLink ? (
+                <div className="flex items-center gap-2">
+                  {project.link && (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${project.title} on GitHub`}
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Github size={18} />
+                    </a>
+                  )}
+                  {project.linkedin && (
+                    <a
+                      href={project.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${project.title} on LinkedIn`}
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Linkedin size={18} />
+                    </a>
+                  )}
+                </div>
+              ) : (
+                <ArrowUpRight
+                  size={18}
+                  className="text-muted-foreground group-hover:text-primary transition-colors"
+                />
+              )}
             </div>
             <h3
               className={`font-display mb-3 ${

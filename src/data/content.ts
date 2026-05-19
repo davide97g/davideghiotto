@@ -4,6 +4,7 @@ export interface Project {
   tags: string[];
   year: string;
   link?: string;
+  linkedin?: string;
 }
 
 export interface Experience {
@@ -111,6 +112,15 @@ export const bio: Bio = {
 };
 
 export const projects: Project[] = [
+  {
+    title: "Pulse HR",
+    description:
+      "Open-source, people-first HR platform. Async status logs, kudos, growth and wellbeing with manager-safe sentiment (raw signals stay with the employee; managers see aggregated trends). Bun monorepo with TanStack Router, Hono API, Neon Postgres and an Astro marketing site. PWA-ready, REST + webhooks.",
+    tags: ["TypeScript", "Bun", "Hono"],
+    year: "May 2026 — Present",
+    link: "https://github.com/davide97g/pulse-hr",
+    linkedin: "https://www.linkedin.com/company/pulse-hr-official",
+  },
   {
     title: "Sonarflow",
     description:
