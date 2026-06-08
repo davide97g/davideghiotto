@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
 
-export type ThemeId = "modern" | "luxury" | "editorial" | "mr-franz";
+export type ThemeId = "modern" | "luxury" | "editorial" | "mr-franz" | "prima";
 
 interface ThemeContextType {
   theme: ThemeId;
@@ -13,7 +13,7 @@ const ThemeContext = createContext<ThemeContextType>({
   setTheme: () => {},
 });
 
-const VALID_THEMES: ThemeId[] = ["modern", "luxury", "editorial", "mr-franz"];
+const VALID_THEMES: ThemeId[] = ["modern", "luxury", "editorial", "mr-franz", "prima"];
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -8,6 +8,7 @@ const themes: { id: ThemeId; label: string; description: string }[] = [
   { id: "luxury", label: "Luxury", description: "High-End Brand" },
   { id: "editorial", label: "Editorial", description: "Minimal Product" },
   { id: "mr-franz", label: "Mr Franz", description: "Travel buddy" },
+  { id: "prima", label: "Prima", description: "Insurtech" },
 ];
 
 export default function ThemeSwitcher() {

@@ -175,6 +175,52 @@
   }
 
   /* ═══════════════════════════════════════════
+     PRIMA — prima.it insurtech (navy ink, violet brand,
+     teal CTA, airy white canvas, geometric sans)
+     ═══════════════════════════════════════════ */
+  [data-theme="prima"] {
+    --background: 0 0% 100%;
+    --foreground: 224 30% 17%;            /* #1E2538 navy ink */
+    --card: 0 0% 100%;
+    --card-foreground: 224 30% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 30% 17%;
+    --primary: 274 63% 37%;               /* #652399 Prima violet (brand chrome) */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 24% 96%;             /* #F3F3F8 light surface */
+    --secondary-foreground: 224 30% 22%;
+    --muted: 240 20% 95%;
+    --muted-foreground: 228 14% 38%;      /* #4C5165 muted text */
+    --accent: 190 100% 27%;               /* #00748B teal (action) */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 234 11% 86%;
+    --input: 234 11% 86%;
+    --ring: 274 63% 37%;
+    --radius: 0.75rem;                    /* 12px, like prima.it buttons */
+
+    --font-display: 'Manrope', sans-serif;
+    --font-body: 'Figtree', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+
+    --hero-gradient: linear-gradient(115deg, hsl(274 63% 37%), hsl(258 70% 45%), hsl(190 100% 30%));
+    --card-shadow: 0 4px 24px -6px hsl(224 30% 17% / 0.10);
+    --card-hover-shadow: 0 18px 44px -12px hsl(274 63% 37% / 0.20);
+    --section-spacing: 6rem;
+    --content-max-width: 72rem;
+    --transition-speed: 0.4s;
+    --transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* Style extras */
+    --pr-violet: 274 63% 37%;             /* brand violet */
+    --pr-teal: 190 100% 27%;              /* CTA teal dark */
+    --pr-teal-bright: 190 100% 38%;       /* CTA teal bright */
+    --pr-mint: 152 38% 90%;               /* faint corner blobs */
+    --cta-gradient: linear-gradient(45deg, hsl(190 100% 27%) 45%, hsl(190 100% 38%));
+  }
+
+  /* ═══════════════════════════════════════════
      GLOBAL TRANSITIONS
      ═══════════════════════════════════════════ */
   * {
@@ -345,5 +391,78 @@
     background: radial-gradient(ellipse 80% 70% at 30% 40%, hsl(85 58% 48% / 0.08), transparent 60%);
     pointer-events: none;
     z-index: -1;
+  }
+
+  /* ═══════════════════════════════════════════
+     PRIMA component styles
+     ═══════════════════════════════════════════ */
+  /* Generic teal-style CTA: uses --cta-gradient when a theme defines it,
+     otherwise falls back to the theme's primary color (no behavior change
+     for modern / mr-franz / etc.) */
+  .disc-cta {
+    background: var(--cta-gradient, hsl(var(--primary)));
+    color: hsl(var(--primary-foreground));
+  }
+
+  [data-theme="prima"] .hero-gradient-text {
+    background: linear-gradient(115deg, hsl(var(--pr-violet)), hsl(190 100% 32%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  [data-theme="prima"] .card-themed:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: hsl(var(--pr-violet) / 0.35);
+  }
+
+  /* Prima brand stage: airy white canvas with faint mint corner blobs */
+  .prima-stage {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .prima-stage::before,
+  .prima-stage::after {
+    content: "";
+    position: absolute;
+    border-radius: 9999px;
+    background: radial-gradient(circle at 35% 35%, hsl(var(--pr-mint) / 0.9), transparent 70%);
+    pointer-events: none;
+    z-index: -2;
+  }
+
+  .prima-stage::before {
+    top: -16%;
+    left: -10%;
+    width: 38vw;
+    height: 38vw;
+  }
+
+  .prima-stage::after {
+    bottom: -22%;
+    left: -8%;
+    width: 30vw;
+    height: 30vw;
+    background: radial-gradient(circle at 60% 40%, hsl(var(--pr-mint) / 0.7), transparent 70%);
+  }
+
+  /* Lowercase geometric "prima"-style wordmark */
+  .prima-wordmark {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    text-transform: lowercase;
+    color: hsl(var(--pr-violet));
+  }
+
+  /* Stat / metric value (the "€131*" energy) */
+  .prima-stat-value {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
   }
 }

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="DG monogram">
+  <defs>
+    <linearGradient id="dg-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5F42F0" />
+      <stop offset="52%" stop-color="#BE5EED" />
+      <stop offset="100%" stop-color="#F57347" />
+    </linearGradient>
+    <radialGradient id="dg-shine" cx="0.3" cy="0.2" r="0.9">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28" />
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect x="1" y="1" width="62" height="62" rx="15" fill="url(#dg-bg)" />
+  <rect x="1" y="1" width="62" height="62" rx="15" fill="url(#dg-shine)" />
+  <rect x="1.75" y="1.75" width="60.5" height="60.5" rx="14" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="1.25" />
+
+  <text x="32" y="33" text-anchor="middle" dominant-baseline="central"
+        font-family="'Space Grotesk','Segoe UI',system-ui,-apple-system,sans-serif"
+        font-size="31" font-weight="700" letter-spacing="-1.5" fill="#ffffff">DG</text>
+</svg>
