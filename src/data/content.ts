@@ -137,6 +137,14 @@ export const projects: Project[] = [
     year: "Feb 2026 — Present",
     link: "https://github.com/davide97g/bitcompass",
   },
+  {
+    title: "Claude Opus 5 (parody)",
+    description:
+      "A tongue-in-cheek parody landing page mimicking a fictional model announcement, built to explore SEO, static pre-rendering and Open Graph metadata. Fully static, with sitemap, structured meta tags and a leak-tracker page.",
+    tags: ["HTML", "SEO", "Static Site"],
+    year: "Jul 2026",
+    link: "https://opus5.davideghiotto.it/",
+  },
 ];
 
 export const skillCategories: SkillCategory[] = [
