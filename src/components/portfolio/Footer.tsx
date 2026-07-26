@@ -1,49 +1,27 @@
-import { useTheme } from "@/context/ThemeContext";
-import { bio } from "@/data/content";
+import { useLanguage } from "@/context/LanguageContext";
+import { bio, ui } from "@/data/content";
 
 export default function Footer() {
-  const { theme } = useTheme();
+  const { t } = useLanguage();
   const year = new Date().getFullYear();
 
   return (
-    <footer
-      className={`section-container py-8 border-t border-border theme-transition ${
-        theme === "editorial" ? "border-t-2 border-foreground" : ""
-      }`}
-    >
-      <div
-        className={`flex flex-col md:flex-row justify-between items-center gap-4 ${
-          theme === "luxury" ? "text-muted-foreground" : ""
-        }`}
-      >
-        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm font-body text-muted-foreground">
-          <p>© {year} {bio.name}. All rights reserved.</p>
-          <span className="hidden sm:inline">·</span>
-          <a href={`mailto:${bio.email}`} className="hover:text-primary transition-colors">
-            {bio.email}
+    <footer className="border-t border-border">
+      <div className="section-container flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-2">
+          <p className="hud">
+            © {year} {bio.name} — {t(ui.footer.rights)}
+          </p>
+          <a
+            href={bio.workshop}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hud link-wipe hud-accent self-start"
+          >
+            {t(ui.footer.workshop)} ↗ dacoder.it
           </a>
-          {bio.phone && (
-            <>
-              <span className="hidden sm:inline">·</span>
-              <a href={`tel:${bio.phone}`} className="hover:text-primary transition-colors">
-                {bio.phone}
-              </a>
-            </>
-          )}
-          {bio.linkedin && (
-            <a
-              href={`https://linkedin.com/in/${bio.linkedin}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
-            >
-              LinkedIn
-            </a>
-          )}
         </div>
-        <p className="text-xs font-mono text-muted-foreground tracking-wider">
-          Adaptive Theme Engine v1.0
-        </p>
+        <p className="hud">{t(ui.footer.built)}</p>
       </div>
     </footer>
   );

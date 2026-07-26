@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Locally installed agent skills (see skills.sh) — machine-local, not project source
+.claude/skills/
+skills-lock.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

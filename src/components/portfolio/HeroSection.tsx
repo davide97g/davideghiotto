@@ -1,293 +1,129 @@
-import GradientText from "@/components/GradientText";
-import ProfileCard from "@/components/ProfileCard";
-import { ThemeId, useTheme } from "@/context/ThemeContext";
-import { bio, heroMessages } from "@/data/content";
-import { motion } from "framer-motion";
-import { ArrowDown, Mail } from "lucide-react";
-
-const MR_FRANZ_SKILLS =
-  "React • TypeScript • Next.js • Node.js • PostgreSQL • Tailwind • Framer Motion • Supabase • Python • Vue • AWS • Figma • ";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const animationPresets: Record<ThemeId, { container: any; item: any }> = {
-  modern: {
-    container: { staggerChildren: 0.12, delayChildren: 0.2 },
-    item: {
-      hidden: { opacity: 0, y: 30 },
-      visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } },
-    },
-  },
-  luxury: {
-    container: { staggerChildren: 0.25, delayChildren: 0.4 },
-    item: {
-      hidden: { opacity: 0, y: 50 },
-      visible: { opacity: 1, y: 0, transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } },
-    },
-  },
-  editorial: {
-    container: { staggerChildren: 0.08, delayChildren: 0.1 },
-    item: {
-      hidden: { opacity: 0, x: -20 },
-      visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.33, 1, 0.68, 1] } },
-    },
-  },
-  "mr-franz": {
-    container: { staggerChildren: 0.1, delayChildren: 0.15 },
-    item: {
-      hidden: { opacity: 0, y: 24 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-    },
-  },
-};
-
-const HERO_IMAGE_SRC = "/hero.jpg";
-
-function ModernHero() {
-  const msg = heroMessages.modern;
-  const anim = animationPresets.modern;
-
-  return (
-    <section className="min-h-[90vh] flex items-center section-container">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
-        <motion.div
-          className="text-center lg:text-left max-w-2xl mx-auto lg:mx-0"
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: anim.container }}
-        >
-          <motion.p variants={anim.item} className="text-lg text-muted-foreground mb-4 font-body">
-            {msg.greeting}
-          </motion.p>
-          <motion.h1
-            variants={anim.item}
-            className="text-5xl md:text-7xl font-bold font-display leading-tight mb-6"
-          >
-            <GradientText
-              colors={["#5227FF", "#B855E8", "#F25C2E"]}
-              animationSpeed={3}
-              showBorder={false}
-              className="custom-class"
-            >
-              {msg.heading}
-            </GradientText>
-          </motion.h1>
-          <motion.p variants={anim.item} className="text-lg md:text-xl text-muted-foreground font-body mb-10 leading-relaxed">
-            {msg.subheading}
-          </motion.p>
-          <motion.div variants={anim.item} className="flex gap-4 justify-center lg:justify-start">
-            <a href="#projects" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-display font-medium hover:opacity-90 transition-opacity">
-              {msg.cta} <ArrowDown size={16} />
-            </a>
-            <a href={`mailto:${bio.email}`} className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border border-border text-foreground font-display font-medium hover:bg-secondary transition-colors">
-              {msg.ctaSecondary}
-            </a>
-          </motion.div>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          className="shrink-0 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none flex justify-center"
-        >
-          <ProfileCard
-            name={bio.name}
-            title={bio.role}
-            handle="github"
-            status="davide97g"
-            contactText="LinkedIn"
-            avatarUrl={HERO_IMAGE_SRC}
-            showUserInfo
-            enableTilt={true}
-            enableMobileTilt={false}
-            onContactClick={() => window.location.assign(`https://www.linkedin.com/in/${bio.linkedin}`)}
-            behindGlowColor="rgba(125, 190, 255, 0.67)"
-            iconUrl="/assets/demo/iconpattern.svg"
-            behindGlowEnabled
-            innerGradient="linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)"
-          />
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function LuxuryHero() {
-  const msg = heroMessages.luxury;
-  const anim = animationPresets.luxury;
-
-  return (
-    <section className="min-h-screen flex items-center section-container">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: anim.container }}
-        >
-          <motion.div variants={anim.item} className="w-16 h-[1px] bg-primary mb-8" />
-          <motion.h1
-            variants={anim.item}
-            className="text-5xl md:text-7xl lg:text-8xl font-display hero-gradient-text leading-[1.05] mb-8 font-medium"
-          >
-            {msg.heading}
-          </motion.h1>
-          <motion.p variants={anim.item} className="text-lg md:text-xl text-muted-foreground font-body leading-relaxed mb-10 max-w-md italic">
-            {msg.subheading}
-          </motion.p>
-          <motion.div variants={anim.item} className="flex gap-6">
-            <a href="#projects" className="inline-flex items-center gap-2 px-8 py-3 border border-primary text-primary font-display text-sm uppercase tracking-[0.2em] hover:bg-primary hover:text-primary-foreground transition-colors">
-              {msg.cta}
-            </a>
-            <a href={`mailto:${bio.email}`} className="inline-flex items-center gap-2 text-muted-foreground font-display text-sm uppercase tracking-[0.2em] hover:text-primary transition-colors">
-              {msg.ctaSecondary}
-            </a>
-          </motion.div>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-          className="aspect-[3/4] max-h-[70vh] lg:max-h-none rounded-sm overflow-hidden shrink-0 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none"
-        >
-          <img src={HERO_IMAGE_SRC} alt={bio.name} className="w-full h-full object-cover object-top" />
-          <p className="mt-4 text-primary font-display text-2xl italic text-center lg:text-left">
-            {bio.name}
-          </p>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function MrFranzHero() {
-  const msg = heroMessages["mr-franz"];
-  const anim = animationPresets["mr-franz"];
-
-  return (
-    <>
-      <section className="mf-hero-section min-h-[88vh] flex flex-col justify-center section-container pt-8 relative">
-        <motion.div
-          className="text-center max-w-3xl mx-auto"
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: anim.container }}
-        >
-          <motion.p
-            variants={anim.item}
-            className="text-xs font-mono uppercase tracking-[0.25em] text-primary mb-4 font-medium"
-          >
-            Your best travel buddy
-          </motion.p>
-          <motion.h1
-            variants={anim.item}
-            className="text-4xl md:text-6xl lg:text-7xl font-display font-bold hero-gradient-text leading-tight mb-6"
-          >
-            {msg.heading}
-          </motion.h1>
-          <motion.p
-            variants={anim.item}
-            className="text-lg md:text-xl text-muted-foreground font-body mb-10 leading-relaxed"
-          >
-            {msg.subheading}
-          </motion.p>
-          <motion.div variants={anim.item} className="flex flex-wrap gap-4 justify-center">
-            <a
-              href="#projects"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-display font-medium hover:opacity-95 transition-opacity shadow-lg shadow-primary/20"
-            >
-              {msg.cta} <ArrowDown size={18} />
-            </a>
-            <a
-              href={`mailto:${bio.email}`}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border-2 border-border text-foreground font-display font-medium hover:bg-secondary hover:border-primary/30 transition-colors"
-            >
-              <Mail size={18} />
-              {msg.ctaSecondary}
-            </a>
-          </motion.div>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
-          className="mt-12 lg:mt-16 w-full max-w-4xl mx-auto relative"
-        >
-          <div className="relative aspect-[2/1] rounded-2xl overflow-hidden mf-hero-frame">
-            <img
-              src={HERO_IMAGE_SRC}
-              alt={bio.name}
-              className="w-full h-full object-cover object-center rounded-[calc(1.25rem-4px)]"
-            />
-            <span className="absolute top-4 right-4 mf-badge">Full stack</span>
-          </div>
-        </motion.div>
-      </section>
-      <div className="mf-ticker">
-        <div className="inline-flex whitespace-nowrap animate-mf-ticker will-change-transform w-[200%]">
-          <span className="inline-block pr-12">{MR_FRANZ_SKILLS.repeat(3)}</span>
-          <span className="inline-block pr-12">{MR_FRANZ_SKILLS.repeat(3)}</span>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function EditorialHero() {
-  const msg = heroMessages.editorial;
-  const anim = animationPresets.editorial;
-
-  return (
-    <section className="min-h-[85vh] flex flex-col justify-end section-container pb-12">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-end w-full">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: anim.container }}
-        >
-          <motion.h1
-            variants={anim.item}
-            className="text-6xl md:text-8xl lg:text-[10rem] font-display leading-[0.9] tracking-tight mb-8 whitespace-pre-line"
-          >
-            {msg.heading}
-          </motion.h1>
-          <motion.div variants={anim.item} className="w-full h-[2px] bg-foreground mb-6" />
-          <motion.div variants={anim.item} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-            <p className="text-base md:text-lg text-muted-foreground font-body max-w-md">
-              {msg.subheading}
-            </p>
-            <div className="flex gap-6 text-sm font-mono uppercase">
-              <a href="#projects" className="border-b-2 border-foreground pb-1 hover:text-accent transition-colors">
-                {msg.cta}
-              </a>
-              <a href={`mailto:${bio.email}`} className="border-b-2 border-transparent pb-1 hover:border-foreground transition-colors">
-                {msg.ctaSecondary}
-              </a>
-            </div>
-          </motion.div>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1], delay: 0.15 }}
-          className="aspect-[3/4] max-h-[60vh] lg:max-h-none rounded overflow-hidden shrink-0 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none"
-        >
-          <img src={HERO_IMAGE_SRC} alt={bio.name} className="w-full h-full object-cover object-top" />
-        </motion.div>
-      </div>
-    </section>
-  );
-}
+import SplitReveal from "@/components/motion/SplitReveal";
+import { useLanguage } from "@/context/LanguageContext";
+import { bio, ui } from "@/data/content";
+import { channel } from "@/data/youtube";
+import { gsap, useGSAP } from "@/lib/gsap";
+import { useLenis } from "lenis/react";
+import { ArrowDown, Play } from "lucide-react";
+import { useRef } from "react";
 
 export default function HeroSection() {
-  const { theme } = useTheme();
+  const { t } = useLanguage();
+  const lenis = useLenis();
+  const scope = useRef<HTMLElement>(null);
+  const lines = t(ui.hero.headline);
 
-  switch (theme) {
-    case "luxury":
-      return <LuxuryHero />;
-    case "editorial":
-      return <EditorialHero />;
-    case "mr-franz":
-      return <MrFranzHero />;
-    default:
-      return <ModernHero />;
-  }
+  useGSAP(
+    () => {
+      const root = scope.current;
+      if (!root) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set(".hero-line-inner, .hero-fade", { yPercent: 0, opacity: 1 });
+      });
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
+
+        intro
+          .from(".hero-eyebrow", { opacity: 0, duration: 0.8 })
+          .from(
+            ".hero-line-inner",
+            { yPercent: 118, duration: 1.25, stagger: 0.09 },
+            0.1
+          )
+          .from(".hero-fade", { opacity: 0, y: 18, duration: 0.9, stagger: 0.08 }, 0.75);
+
+        // The headline drifts up and dims as the next section arrives.
+        gsap.to(".hero-drift", {
+          yPercent: -14,
+          opacity: 0.15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        return () => intro.kill();
+      });
+
+      return () => mm.revert();
+    },
+    { scope, dependencies: [lines] }
+  );
+
+  return (
+    <section
+      ref={scope}
+      id="hero"
+      className="relative flex min-h-[100svh] flex-col justify-end pb-16 pt-32"
+    >
+      <div className="section-container hero-drift w-full">
+        <p className="hero-eyebrow hud mb-10">{t(ui.hero.eyebrow)}</p>
+
+        <h1 className="display-xl uppercase">
+          {lines.map((line, i) => (
+            <span key={line} className="line-mask">
+              <span className={`hero-line-inner block ${i === lines.length - 1 ? "text-accent-glow" : ""}`}>
+                {line}
+              </span>
+            </span>
+          ))}
+        </h1>
+
+        <div className="mt-14 grid gap-12 border-t border-border pt-10 md:grid-cols-[1.3fr_1fr] md:items-start">
+          <SplitReveal
+            immediate
+            delay={0.85}
+            text={t(ui.hero.lead)}
+            className="hero-lead max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl"
+          />
+
+          <div className="flex flex-col gap-8">
+            <div className="hero-fade flex flex-wrap gap-3">
+              <a href="#work" className="btn-primary">
+                {t(ui.hero.ctaPrimary)} <ArrowDown size={14} />
+              </a>
+              <a
+                href={channel.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost"
+              >
+                <Play size={13} /> {t(ui.hero.ctaSecondary)}
+              </a>
+            </div>
+
+            <dl className="hero-fade grid grid-cols-2 gap-6 text-sm">
+              <div>
+                <dt className="hud mb-2">{t(ui.nav.profile)}</dt>
+                <dd className="font-mono text-foreground">{t(bio.role)}</dd>
+              </div>
+              <div>
+                <dt className="hud mb-2">{t(ui.channel.label)}</dt>
+                <dd className="font-mono text-foreground">{channel.handle}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={() => {
+          const target = document.getElementById("channel");
+          if (target && lenis) lenis.scrollTo(target, { offset: -40 });
+          else target?.scrollIntoView({ behavior: "smooth" });
+        }}
+        className="hero-fade section-container mt-16 flex items-center gap-3 text-left"
+      >
+        <span className="hud hud-accent animate-blink">▌</span>
+        <span className="hud">{t(ui.hero.scrollCue)}</span>
+      </button>
+    </section>
+  );
 }

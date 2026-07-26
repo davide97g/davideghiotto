@@ -13,40 +13,96 @@ Package manager is bun (see `bun.lockb`), but `npm`/`pnpm` work the same with `p
 - `npm run test` — Vitest single run (jsdom env, setup at `src/test/setup.ts`).
 - `npm run test:watch` — Vitest watch mode.
 - Run one test file: `npx vitest run src/path/to/file.test.ts` (or `... -t "case name"` to filter by test name).
+- `npm run fetch:youtube` — regenerates the `videos` array in `src/data/youtube.ts` from the channel RSS feed.
 - `npm run preview` — preview the production build.
 
 `@` resolves to `src/` (configured in both `vite.config.ts` and `vitest.config.ts`).
 
 ## Architecture
 
-This is a personal portfolio SPA (Vite + React 18 + TypeScript + Tailwind + shadcn-ui). The core architectural idea is that **theme drives both visual design AND content order**, and a UTM parameter can redirect visitors into a separate per-company slideshow.
+Single-page personal portfolio (Vite + React 18 + TypeScript + Tailwind + shadcn-ui) with one fixed
+visual identity — **terminal noir**: near-black canvas, off-white type, a single lime accent
+(`#8CFF2E`), and tiny wide-tracked uppercase mono labels used as HUD chrome. There is no theme
+switcher and no per-company deck; earlier versions had both and they were removed deliberately.
 
-### Theme system (the central abstraction)
+Two systems carry most of the design intent: **the scroll choreography** and **the bilingual copy layer**.
 
-Themes are not a styling toggle — they reshape the page.
+### Scroll choreography (GSAP + Lenis)
 
-- `src/context/ThemeContext.tsx` exposes `ThemeId = "modern" | "luxury" | "editorial" | "mr-franz"` via `useTheme()`. The current theme is mirrored to `<html data-theme="…">` and to the URL as `?theme=…`. The URL is the source of truth; reading/setting `theme` keeps `useSearchParams` in sync.
-- `src/index.css` defines a full set of CSS variables per `[data-theme="…"]` block (colors as HSL channels, radius, fonts, gradients, shadows). Tailwind reads these via `hsl(var(--…))` in `tailwind.config.ts`, so any utility like `bg-primary` or `text-foreground` is automatically themed.
-- `src/data/content.ts` exports per-theme variants of `heroMessages` and `sectionHeadings`, plus a `sectionOrder` record that dictates which sections render and in what order for each theme. `pages/Index.tsx` reads `sectionOrder[theme]` and maps each id through `sectionComponents` — there is no fixed layout.
-- Section components (`src/components/portfolio/*`) typically read `useTheme()` and branch on `theme` for layout, copy, or animation presets (see `HeroSection.tsx`'s `animationPresets` record keyed by `ThemeId`). When adding a new section or theme, expect to touch: the section component, `heroMessages`/`sectionHeadings`/`sectionOrder` in `content.ts`, the CSS variable block in `index.css`, and the themes list in `ThemeSwitcher.tsx`.
-- The `modern` theme is special-cased in `Index.tsx`: it renders a WebGL background via `DarkVeil` (OGL/Three) behind the content and applies a `.dark-veil-background` class that overrides foreground/border tokens for legibility. Cards keep the inner palette via `.card-themed`.
+- `src/lib/gsap.ts` registers `ScrollTrigger`, `SplitText` and `useGSAP` once and exports them plus
+  a `prefersReducedMotion()` helper. Import GSAP from here, never from `gsap` directly, so plugin
+  registration can't be missed.
+- `src/components/SmoothScroll.tsx` wraps the app in `ReactLenis root` and bridges Lenis to
+  ScrollTrigger (`lenis.on("scroll", ScrollTrigger.update)` plus `gsap.ticker.add(lenis.raf)`).
+  Without that bridge, pinned sections jitter. It also re-syncs ScrollTrigger after fonts load, on
+  `window.load`, and after an initial `#hash` jump — otherwise a page opened deep-linked leaves
+  reveals stuck at `opacity: 0`.
+- `src/lib/scrollSignal.ts` is a mutable module singleton (`{ progress, velocity }`) written by the
+  Lenis bridge and read inside rAF loops. It is intentionally **not** React state — these values
+  change every frame and must never re-render.
+- Reusable motion primitives live in `src/components/motion/`: `Reveal` (fade/lift children on
+  enter), `SplitReveal` (masked line-by-line `SplitText` reveal, `autoSplit` so it survives resize
+  and font swaps), `Marquee` (seamless double-track loop whose timescale is boosted by scroll
+  velocity).
+- Every animation branches through `gsap.matchMedia()` with a `(prefers-reduced-motion: reduce)`
+  arm that sets the final state instead of animating. When adding motion, add that arm too —
+  content must never be left invisible.
 
-### Routes & discovery flow
+### Bilingual copy layer
 
-`src/App.tsx` wraps everything in `QueryClientProvider`, `TooltipProvider`, `BrowserRouter`, then `ThemeProvider`. Routes:
+- `src/context/LanguageContext.tsx` exposes `LangId = "en" | "it"` via `useLanguage()`, mirrored to
+  `?lang=` in the URL, persisted to `localStorage`, and falling back to `navigator.language`. It also
+  sets `<html lang>`.
+- All copy lives in `src/data/content.ts` as `Localized<T> = Record<LangId, T>` values, read through
+  the `t()` helper from `useLanguage()` (`t(ui.hero.lead)`). `src/data/content.test.ts` walks the
+  whole tree and fails if any localized entry is missing a language, so adding English-only copy
+  breaks the suite by design.
+- `src/pages/Index.tsx` calls `ScrollTrigger.refresh()` when the language changes — swapping copy
+  changes every text length, and pins and scrub ranges have to be re-measured.
 
-- `/` → `pages/Index.tsx` — the themed portfolio. Shows `ThemeSwitcher` only if the URL contains `?admin` (any value).
-- `/discovery/:company` → `pages/Discovery.tsx` — a horizontal slide deck tailored per company, content from `src/data/discovery-content.ts` via `getDiscoveryContent(company)`. Each `CompanyDiscovery` may set `themeOverride`, which is applied locally with `data-theme` on the page wrapper (not via the global ThemeContext).
-- `*` → `pages/NotFound.tsx`.
+### Content and sections
 
-Discovery is triggered by a UTM param: `useUtmDetection` (`src/hooks/useUtmDetection.ts`) reads `?utm_source=…` from the current URL and, unless dismissed in `sessionStorage`, surfaces `DiscoveryToast`, which navigates to `/discovery/<utm_source>` on confirm. Dismissal is per-company and persists for the session.
+- `src/data/content.ts` holds `bio`, `ui` (all chrome strings), `summary`, `principles`,
+  `marqueeTerms`, `featuredProject`, `projects`, `stackGroups`, `experiences`, and `sectionOrder`.
+- `featuredProject` is the pinned lead project (currently **sharp**, the self-hosted Slack
+  alternative). Its copy, version and feature list mirror the official landing page at
+  sharp.davideghiotto.it, and its mark is that project's own favicon, stored at `public/sharp.svg`.
+  `src/components/portfolio/FeaturedProject.tsx` renders it and locally overrides `--primary` with
+  sharp's violet, so accent utilities inside the card adopt the project's brand instead of the site
+  lime. That local-override trick is the pattern to follow for any future brand-colored block.
+- `src/data/youtube.ts` holds channel meta and the latest videos. It is static because the YouTube
+  RSS feed sends no CORS headers and cannot be fetched from the browser; refresh it with
+  `npm run fetch:youtube` (`scripts/fetch-youtube.mjs`).
+- Sections are in `src/components/portfolio/` and are composed in fixed order by `Index.tsx`:
+  `HeroSection` → `ChannelSection` (01) → `WorkSection` (02, featured project + numbered list) →
+  `StackSection` (03) → `PathSection` (04) → `ProfileSection` (05) → `Footer`, with `Marquee` strips
+  between. Section numbering is hardcoded in each component; renumber if you reorder.
+- `ChannelSection` pins its video gallery and drags it horizontally on `min-width: 1024px` with
+  motion allowed; mobile and reduced-motion get a plain swipeable overflow list. YouTube thumbnails
+  use `hqdefault` scaled `1.35` inside an `aspect-video` box to crop the 4:3 letterboxing.
 
-### UI components
+### Design system
 
-- `src/components/ui/*` is shadcn-ui (config in `components.json`, `style: default`, icon library lucide). Treat these as vendored — modify them only when the design system needs to change globally.
-- `components.json` also registers a `@react-bits` registry (`https://reactbits.dev/r/{name}.json`) — visual effect components like `DarkVeil`, `GradientText`, `ProfileCard` originate there and live at `src/components/*` (not under `ui/`).
-- Portfolio-specific sections live in `src/components/portfolio/`. Two toaster systems coexist (`@/components/ui/toaster` and `sonner`); both are mounted in `App.tsx`.
+- `src/index.css` defines all tokens on `:root` (no `[data-theme]` blocks) plus the component layer:
+  `.hud`, `.section-marker`, `.display-xl` / `.display-lg`, `.line-mask`, `.panel` (+
+  `.panel-interactive`, `.panel-ticks`), `.tag`, `.btn-primary`, `.btn-ghost`, `.link-wipe`,
+  `.marquee-strip` / `.marquee-track` / `.marquee-invert`, and the `.grain` overlay utility.
+  Prefer these classes over ad-hoc utility stacks so the chrome stays consistent.
+- `src/components/ShaderBackdrop.tsx` is the fixed WebGL backdrop (OGL): flow-noise haze, a
+  receding grid and a scanline shimmer, with scroll velocity smearing the grid. Note `uResolution`
+  must be the drawing-buffer size, not the CSS size — `gl_FragCoord` is in device pixels, so using
+  CSS pixels shrinks the field to `1/dpr` of the canvas. It renders a single static frame under
+  reduced motion and returns early (falling back to the CSS background) if WebGL is unavailable.
+- `src/components/ui/*` is shadcn-ui (config in `components.json`) — treat as vendored. Fonts are
+  Space Grotesk (display), Inter (body) and JetBrains Mono (chrome), loaded in `index.html`.
+
+### Routes
+
+`src/App.tsx` wraps everything in `QueryClientProvider` → `TooltipProvider` → `BrowserRouter` →
+`LanguageProvider` → `SmoothScroll`. Only two routes: `/` (`pages/Index.tsx`) and `*`
+(`pages/NotFound.tsx`).
 
 ### Deployment
 
-`vercel.json` is an SPA fallback (`/(.*) → /index.html`). The `lovable-tagger` Vite plugin only runs in development mode (it's filtered out in `vite.config.ts` for production builds).
+`vercel.json` is an SPA fallback (`/(.*) → /index.html`). The `lovable-tagger` Vite plugin only
+runs in development mode (filtered out in `vite.config.ts` for production builds).

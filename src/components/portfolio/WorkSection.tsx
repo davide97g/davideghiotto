@@ -1,0 +1,98 @@
+import Reveal from "@/components/motion/Reveal";
+import SplitReveal from "@/components/motion/SplitReveal";
+import FeaturedProject from "@/components/portfolio/FeaturedProject";
+import { useLanguage } from "@/context/LanguageContext";
+import { projects, ui } from "@/data/content";
+import { ArrowUpRight, Github, Linkedin } from "lucide-react";
+
+export default function WorkSection() {
+  const { t } = useLanguage();
+
+  return (
+    <section id="work" className="section-container section-spacing">
+      <Reveal className="section-marker" stagger={0.06}>
+        <span className="hud hud-accent">02</span>
+        <span className="hud">{t(ui.work.label)}</span>
+      </Reveal>
+
+      <div className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-end">
+        <SplitReveal as="h2" text={t(ui.work.title)} className="display-lg" />
+        <Reveal>
+          <p className="max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
+            {t(ui.work.lead)}
+          </p>
+        </Reveal>
+      </div>
+
+      <div className="mt-16">
+        <FeaturedProject />
+      </div>
+
+      <Reveal className="mt-24 section-marker" stagger={0.06}>
+        <span className="hud">{t(ui.work.others)}</span>
+      </Reveal>
+
+      <Reveal as="ol" selector=".work-row" stagger={0.12} className="border-t border-border">
+        {projects.map((project, i) => (
+          <li key={project.title} className="work-row group border-b border-border">
+            <div className="grid gap-6 py-10 md:grid-cols-[4rem_1fr_auto] md:gap-10 md:py-12">
+              <span className="hud pt-3 transition-colors group-hover:text-primary">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+
+              <div className="max-w-2xl">
+                <h3 className="font-display text-3xl font-bold tracking-tight transition-transform duration-500 ease-out group-hover:translate-x-1 md:text-5xl">
+                  {project.title}
+                </h3>
+                <p className="mt-5 text-sm leading-relaxed text-muted-foreground md:text-base">
+                  {t(project.description)}
+                </p>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span key={tag} className="tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-start justify-between gap-6 md:flex-col md:items-end md:justify-start">
+                <span className="hud whitespace-nowrap">{project.year}</span>
+                <div className="flex items-center gap-4">
+                  {project.linkedin && (
+                    <a
+                      href={project.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${project.title} — LinkedIn`}
+                      className="text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      <Linkedin size={18} />
+                    </a>
+                  )}
+                  {project.link && (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${project.title} — ${
+                        project.link.includes("github") ? "GitHub" : "Live site"
+                      }`}
+                      className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      {project.link.includes("github") ? (
+                        <Github size={18} />
+                      ) : (
+                        <ArrowUpRight size={20} />
+                      )}
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </Reveal>
+    </section>
+  );
+}

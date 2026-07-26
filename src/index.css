@@ -2,259 +2,96 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════
+   TERMINAL NOIR — single design system.
+   Near-black canvas, off-white type, one lime accent, HUD chrome.
+   ═══════════════════════════════════════════════════════════════ */
+
 @layer base {
-  /* ═══════════════════════════════════════════
-     MODERN TECH / PLAYFUL SAAS
-     ═══════════════════════════════════════════ */
-  [data-theme="modern"] {
-    --background: 220 25% 97%;
-    --foreground: 225 30% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 225 30% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 225 30% 12%;
-    --primary: 250 85% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 250 30% 95%;
-    --secondary-foreground: 250 40% 30%;
-    --muted: 220 15% 93%;
-    --muted-foreground: 220 10% 45%;
-    --accent: 15 90% 62%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 90%;
-    --input: 220 15% 90%;
-    --ring: 250 85% 60%;
-    --radius: 1rem;
-
-    --font-display: 'Space Grotesk', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'Space Mono', monospace;
-
-    --hero-gradient: linear-gradient(135deg, hsl(250 85% 60%), hsl(280 80% 65%), hsl(15 90% 62%));
-    --card-shadow: 0 4px 24px -4px hsl(250 85% 60% / 0.08);
-    --card-hover-shadow: 0 12px 40px -8px hsl(250 85% 60% / 0.15);
-    --section-spacing: 6rem;
-    --content-max-width: 72rem;
-    --transition-speed: 0.35s;
-    --transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* Modern theme with DarkVeil: light text on dark background */
-  [data-theme="modern"] .dark-veil-background {
-    --foreground: 0 0% 98%;
-    --muted-foreground: 0 0% 72%;
-    --border: 0 0% 35%;
-  }
-  [data-theme="modern"] .dark-veil-background .card-themed {
-    --foreground: 225 30% 12%;
-    --muted-foreground: 220 10% 45%;
-    --border: 220 15% 90%;
-  }
-
-  /* ═══════════════════════════════════════════
-     LUXURY / HIGH-END BRAND
-     ═══════════════════════════════════════════ */
-  [data-theme="luxury"] {
-    --background: 225 30% 6%;
-    --foreground: 40 25% 92%;
-    --card: 225 25% 10%;
-    --card-foreground: 40 25% 92%;
-    --popover: 225 25% 10%;
-    --popover-foreground: 40 25% 92%;
-    --primary: 40 70% 55%;
-    --primary-foreground: 225 30% 6%;
-    --secondary: 225 15% 14%;
-    --secondary-foreground: 40 20% 80%;
-    --muted: 225 15% 12%;
-    --muted-foreground: 225 10% 50%;
-    --accent: 15 45% 58%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 225 12% 18%;
-    --input: 225 12% 18%;
-    --ring: 40 70% 55%;
+  :root {
+    --background: 220 11% 4%;             /* #08090A */
+    --surface: 213 10% 7%;                /* #0F1113 */
+    --surface-raised: 213 10% 10%;        /* #16191C */
+    --foreground: 30 13% 95%;             /* #F4F2F0 */
+    --card: 213 10% 7%;
+    --card-foreground: 30 13% 95%;
+    --popover: 213 10% 10%;
+    --popover-foreground: 30 13% 95%;
+    --primary: 93 100% 59%;               /* #8CFF2E lime */
+    --primary-foreground: 220 11% 4%;
+    --secondary: 213 10% 12%;
+    --secondary-foreground: 30 10% 82%;
+    --muted: 213 10% 11%;
+    --muted-foreground: 30 6% 62%;
+    --accent: 93 100% 59%;
+    --accent-foreground: 220 11% 4%;
+    --destructive: 4 90% 58%;
+    --destructive-foreground: 30 13% 95%;
+    --border: 213 8% 16%;
+    --input: 213 8% 16%;
+    --ring: 93 100% 59%;
     --radius: 0.125rem;
 
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'Cormorant Garamond', serif;
-    --font-mono: 'Space Mono', monospace;
+    --font-display: "Space Grotesk", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-    --hero-gradient: linear-gradient(160deg, hsl(40 70% 55% / 0.15), transparent 60%);
-    --card-shadow: 0 4px 30px -4px hsl(0 0% 0% / 0.4);
-    --card-hover-shadow: 0 8px 50px -8px hsl(40 70% 55% / 0.2);
-    --section-spacing: 8rem;
-    --content-max-width: 76rem;
-    --transition-speed: 0.6s;
-    --transition-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --section-spacing: clamp(6rem, 12vw, 11rem);
+    --content-max-width: 82rem;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* ═══════════════════════════════════════════
-     EDITORIAL / MINIMAL / PRODUCT-FOCUSED
-     ═══════════════════════════════════════════ */
-  [data-theme="editorial"] {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 8%;
-    --card: 0 0% 98%;
-    --card-foreground: 0 0% 8%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 8%;
-    --primary: 0 0% 8%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 20%;
-    --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 0 85% 48%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 82%;
-    --input: 0 0% 82%;
-    --ring: 0 0% 8%;
-    --radius: 0;
-
-    --font-display: 'Bebas Neue', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'Space Mono', monospace;
-
-    --hero-gradient: none;
-    --card-shadow: none;
-    --card-hover-shadow: 0 0 0 1px hsl(0 0% 8%);
-    --section-spacing: 4rem;
-    --content-max-width: 68rem;
-    --transition-speed: 0.2s;
-    --transition-ease: cubic-bezier(0.33, 1, 0.68, 1);
-  }
-
-  /* ═══════════════════════════════════════════
-     MR FRANZ — mrfranz.co style (lime, warm yellow bg, red-orange ticker)
-     ═══════════════════════════════════════════ */
-  [data-theme="mr-franz"] {
-    /* Light greenish-yellow bg, dark brown text, lime green primary */
-    --background: 72 35% 97%;
-    --foreground: 30 22% 16%;
-    --card: 0 0% 100%;
-    --card-foreground: 30 22% 16%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 30 22% 16%;
-    --primary: 85 58% 48%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 72 25% 93%;
-    --secondary-foreground: 30 20% 28%;
-    --muted: 70 22% 95%;
-    --muted-foreground: 30 12% 42%;
-    --accent: 38 95% 55%;
-    --accent-foreground: 30 22% 16%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 72 18% 88%;
-    --input: 72 18% 88%;
-    --ring: 85 58% 48%;
-    --radius: 1.25rem;
-
-    --font-display: 'Fredoka', sans-serif;
-    --font-body: 'DM Sans', sans-serif;
-    --font-mono: 'Space Mono', monospace;
-
-    --hero-gradient: linear-gradient(135deg, hsl(85 58% 48%), hsl(90 55% 52%));
-    --card-shadow: 0 2px 20px -4px hsl(85 58% 48% / 0.12), 0 8px 32px -8px hsl(30 22% 16% / 0.06);
-    --card-hover-shadow: 0 12px 40px -8px hsl(85 58% 48% / 0.18), 0 20px 50px -12px hsl(30 22% 16% / 0.08);
-    --section-spacing: 6rem;
-    --content-max-width: 72rem;
-    --transition-speed: 0.45s;
-    --transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
-
-    /* Style extras: ticker red-orange, badge orange, frame pink/lavender */
-    --mf-section-alt: 72 28% 96%;
-    --mf-ticker-bg: 12 92% 58%;
-    --mf-badge-orange: 38 95% 55%;
-    --mf-frame-border: 330 65% 92%;
-  }
-
-  /* ═══════════════════════════════════════════
-     PRIMA — prima.it insurtech (navy ink, violet brand,
-     teal CTA, airy white canvas, geometric sans)
-     ═══════════════════════════════════════════ */
-  [data-theme="prima"] {
-    --background: 0 0% 100%;
-    --foreground: 224 30% 17%;            /* #1E2538 navy ink */
-    --card: 0 0% 100%;
-    --card-foreground: 224 30% 17%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 224 30% 17%;
-    --primary: 274 63% 37%;               /* #652399 Prima violet (brand chrome) */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 24% 96%;             /* #F3F3F8 light surface */
-    --secondary-foreground: 224 30% 22%;
-    --muted: 240 20% 95%;
-    --muted-foreground: 228 14% 38%;      /* #4C5165 muted text */
-    --accent: 190 100% 27%;               /* #00748B teal (action) */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 234 11% 86%;
-    --input: 234 11% 86%;
-    --ring: 274 63% 37%;
-    --radius: 0.75rem;                    /* 12px, like prima.it buttons */
-
-    --font-display: 'Manrope', sans-serif;
-    --font-body: 'Figtree', sans-serif;
-    --font-mono: 'Space Mono', monospace;
-
-    --hero-gradient: linear-gradient(115deg, hsl(274 63% 37%), hsl(258 70% 45%), hsl(190 100% 30%));
-    --card-shadow: 0 4px 24px -6px hsl(224 30% 17% / 0.10);
-    --card-hover-shadow: 0 18px 44px -12px hsl(274 63% 37% / 0.20);
-    --section-spacing: 6rem;
-    --content-max-width: 72rem;
-    --transition-speed: 0.4s;
-    --transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
-
-    /* Style extras */
-    --pr-violet: 274 63% 37%;             /* brand violet */
-    --pr-teal: 190 100% 27%;              /* CTA teal dark */
-    --pr-teal-bright: 190 100% 38%;       /* CTA teal bright */
-    --pr-mint: 152 38% 90%;               /* faint corner blobs */
-    --cta-gradient: linear-gradient(45deg, hsl(190 100% 27%) 45%, hsl(190 100% 38%));
-  }
-
-  /* ═══════════════════════════════════════════
-     GLOBAL TRANSITIONS
-     ═══════════════════════════════════════════ */
   * {
     @apply border-border;
   }
 
+  /* Lenis drives scrolling; native smooth scroll would fight it. */
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
-    transition:
-      background-color var(--transition-speed) var(--transition-ease),
-      color var(--transition-speed) var(--transition-ease);
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.94;
+    text-wrap: balance;
   }
 
-  code, pre {
+  code, pre, .font-mono {
     font-family: var(--font-mono);
   }
 
-  .theme-transition {
-    transition:
-      background-color var(--transition-speed) var(--transition-ease),
-      color var(--transition-speed) var(--transition-ease),
-      border-color var(--transition-speed) var(--transition-ease),
-      box-shadow var(--transition-speed) var(--transition-ease),
-      transform var(--transition-speed) var(--transition-ease),
-      border-radius var(--transition-speed) var(--transition-ease);
+  ::selection {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  /* Focus ring that survives on a near-black canvas. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 3px;
+  }
+
+  /* Lenis needs the html/body chain uncontained. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
   }
 }
 
@@ -265,204 +102,256 @@
     padding-inline: 1.5rem;
   }
 
+  @media (min-width: 768px) {
+    .section-container {
+      padding-inline: 2.5rem;
+    }
+  }
+
   .section-spacing {
     padding-block: var(--section-spacing);
   }
 
-  .hero-gradient-text {
-    background: var(--hero-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* ── HUD chrome ────────────────────────────────────────────── */
+
+  /* The tiny wide-tracked uppercase label used as instrument-panel text. */
+  .hud {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
   }
 
-  [data-theme="editorial"] .hero-gradient-text {
-    background: none;
-    -webkit-text-fill-color: currentColor;
+  .hud-accent {
+    color: hsl(var(--primary));
   }
 
-  [data-theme="luxury"] .hero-gradient-text {
-    background: linear-gradient(135deg, hsl(40 70% 55%), hsl(40 50% 70%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* Section header: index number, rule, label. */
+  .section-marker {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid hsl(var(--border));
   }
 
-  .card-themed {
-    background: hsl(var(--card));
+  .section-marker::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, hsl(var(--border)), transparent);
+  }
+
+  /* ── Display type ──────────────────────────────────────────── */
+
+  .display-xl {
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 11vw, 9.5rem);
+    font-weight: 700;
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+  }
+
+  .display-lg {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    font-weight: 700;
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+  }
+
+  .text-accent-glow {
+    color: hsl(var(--primary));
+    text-shadow: 0 0 32px hsl(var(--primary) / 0.35);
+  }
+
+  /* Line-mask reveal: each line sits in an overflow-hidden strip so GSAP can
+     slide it up from below the mask edge. */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+  }
+
+  /* ── Surfaces ──────────────────────────────────────────────── */
+
+  .panel {
+    position: relative;
+    background: hsl(var(--surface) / 0.72);
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
-    box-shadow: var(--card-shadow);
-    transition: all var(--transition-speed) var(--transition-ease);
+    backdrop-filter: blur(12px);
+    transition:
+      border-color 0.4s var(--ease-out-expo),
+      background-color 0.4s var(--ease-out-expo),
+      transform 0.4s var(--ease-out-expo);
   }
 
-  .card-themed:hover {
-    box-shadow: var(--card-hover-shadow);
+  .panel-interactive:hover {
+    border-color: hsl(var(--primary) / 0.55);
+    background: hsl(var(--surface-raised) / 0.85);
+    transform: translateY(-2px);
   }
 
-  [data-theme="modern"] .card-themed:hover {
-    transform: translateY(-4px);
+  /* Corner ticks — cheap way to make a plain rectangle read as an instrument. */
+  .panel-ticks::before,
+  .panel-ticks::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-color: hsl(var(--primary) / 0.6);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-expo);
   }
 
-  [data-theme="luxury"] .card-themed:hover {
-    border-color: hsl(var(--primary) / 0.4);
+  .panel-ticks::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1px solid;
+    border-left: 1px solid;
   }
 
-  [data-theme="editorial"] .card-themed:hover {
+  .panel-ticks::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+  }
+
+  .panel-ticks:hover::before,
+  .panel-ticks:hover::after {
+    opacity: 1;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* ── Controls ──────────────────────────────────────────────── */
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.6rem;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: var(--radius);
+    transition: box-shadow 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 0 1px hsl(var(--primary)), 0 12px 40px -12px hsl(var(--primary) / 0.7);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.6rem;
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: var(--radius);
+    transition: border-color 0.4s var(--ease-out-expo), color 0.4s var(--ease-out-expo);
+  }
+
+  .btn-ghost:hover {
+    border-color: hsl(var(--primary) / 0.6);
+    color: hsl(var(--primary));
+  }
+
+  /* Link with a wipe-in underline. */
+  .link-wipe {
+    position: relative;
+    display: inline-block;
+  }
+
+  .link-wipe::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease-out-expo);
+  }
+
+  .link-wipe:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* ── Marquee ───────────────────────────────────────────────── */
+
+  .marquee-strip {
+    display: flex;
+    overflow: hidden;
+    border-block: 1px solid hsl(var(--border));
+    padding-block: 0.9rem;
+    user-select: none;
+  }
+
+  .marquee-track {
+    display: flex;
+    flex-shrink: 0;
+    gap: 2.5rem;
+    padding-right: 2.5rem;
+    white-space: nowrap;
+    will-change: transform;
+  }
+
+  /* Inverted variant — the white strip that breaks up a dark page. */
+  .marquee-invert {
     background: hsl(var(--foreground));
     color: hsl(var(--background));
+    border-color: hsl(var(--foreground));
   }
+}
 
-  [data-theme="mr-franz"] .hero-gradient-text {
-    background: linear-gradient(135deg, hsl(85 58% 48%), hsl(90 55% 52%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  [data-theme="mr-franz"] .card-themed:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--card-hover-shadow);
-  }
-
-  /* Mr Franz: alternating section backgrounds */
-  [data-theme="mr-franz"] main section.section-spacing:nth-of-type(even) {
-    background: hsl(var(--mf-section-alt));
-  }
-
-  [data-theme="mr-franz"] main section.section-spacing:nth-of-type(even) .section-container {
-    position: relative;
-  }
-
-  /* Mr Franz: subtle grain */
-  [data-theme="mr-franz"] main {
-    position: relative;
-  }
-
-  [data-theme="mr-franz"] main::before {
+@layer utilities {
+  .grain::before {
     content: "";
     position: fixed;
     inset: 0;
+    z-index: 50;
     pointer-events: none;
-    z-index: 0;
-    opacity: 0.025;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.022;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Anything purely decorative stops moving; layout-critical reveals are handled
+   in JS via gsap.matchMedia so content never stays hidden. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
   }
 
-  /* Ticker: red-orange bar, white bold uppercase (like mrfranz cities bar) */
-  [data-theme="mr-franz"] .mf-ticker {
-    background: hsl(var(--mf-ticker-bg));
-    color: hsl(0 0% 100%);
-    padding: 0.875rem 0;
-    font-family: var(--font-display);
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    overflow: hidden;
-    text-transform: uppercase;
-  }
-
-  /* Badge: warm orange/yellow (Solo il meglio style) */
-  [data-theme="mr-franz"] .mf-badge {
-    background: hsl(var(--mf-badge-orange));
-    color: hsl(30 22% 16%);
-    padding: 0.35rem 0.85rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    box-shadow: 0 2px 12px -2px hsl(var(--mf-badge-orange) / 0.4);
-  }
-
-  /* Hero image frame: soft pink/lavender border */
-  [data-theme="mr-franz"] .mf-hero-frame {
-    border: 4px solid hsl(var(--mf-frame-border));
-    box-shadow: 0 8px 32px -8px hsl(30 22% 16% / 0.12);
-  }
-
-  /* Subtle lime wave/blob behind hero content */
-  [data-theme="mr-franz"] .mf-hero-section::before {
-    content: "";
-    position: absolute;
-    top: -10%;
-    left: -15%;
-    width: 60%;
-    height: 80%;
-    background: radial-gradient(ellipse 80% 70% at 30% 40%, hsl(85 58% 48% / 0.08), transparent 60%);
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  /* ═══════════════════════════════════════════
-     PRIMA component styles
-     ═══════════════════════════════════════════ */
-  /* Generic teal-style CTA: uses --cta-gradient when a theme defines it,
-     otherwise falls back to the theme's primary color (no behavior change
-     for modern / mr-franz / etc.) */
-  .disc-cta {
-    background: var(--cta-gradient, hsl(var(--primary)));
-    color: hsl(var(--primary-foreground));
-  }
-
-  [data-theme="prima"] .hero-gradient-text {
-    background: linear-gradient(115deg, hsl(var(--pr-violet)), hsl(190 100% 32%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  [data-theme="prima"] .card-themed:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--card-hover-shadow);
-    border-color: hsl(var(--pr-violet) / 0.35);
-  }
-
-  /* Prima brand stage: airy white canvas with faint mint corner blobs */
-  .prima-stage {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-  }
-
-  .prima-stage::before,
-  .prima-stage::after {
-    content: "";
-    position: absolute;
-    border-radius: 9999px;
-    background: radial-gradient(circle at 35% 35%, hsl(var(--pr-mint) / 0.9), transparent 70%);
-    pointer-events: none;
-    z-index: -2;
-  }
-
-  .prima-stage::before {
-    top: -16%;
-    left: -10%;
-    width: 38vw;
-    height: 38vw;
-  }
-
-  .prima-stage::after {
-    bottom: -22%;
-    left: -8%;
-    width: 30vw;
-    height: 30vw;
-    background: radial-gradient(circle at 60% 40%, hsl(var(--pr-mint) / 0.7), transparent 70%);
-  }
-
-  /* Lowercase geometric "prima"-style wordmark */
-  .prima-wordmark {
-    font-family: var(--font-display);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    text-transform: lowercase;
-    color: hsl(var(--pr-violet));
-  }
-
-  /* Stat / metric value (the "€131*" energy) */
-  .prima-stat-value {
-    font-family: var(--font-display);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1;
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
 }

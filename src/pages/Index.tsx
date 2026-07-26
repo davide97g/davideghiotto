@@ -1,69 +1,53 @@
-import DarkVeil from "@/components/DarkVeil";
-import DiscoveryToast from "@/components/DiscoveryToast";
-import AboutSection from "@/components/portfolio/AboutSection";
-import ExperienceSection from "@/components/portfolio/ExperienceSection";
+import Marquee from "@/components/motion/Marquee";
+import Nav from "@/components/Nav";
+import ChannelSection from "@/components/portfolio/ChannelSection";
 import Footer from "@/components/portfolio/Footer";
 import HeroSection from "@/components/portfolio/HeroSection";
-import ProjectsSection from "@/components/portfolio/ProjectsSection";
-import SkillsSection from "@/components/portfolio/SkillsSection";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
-import { useTheme } from "@/context/ThemeContext";
-import { sectionOrder } from "@/data/content";
-import { AnimatePresence, motion } from "framer-motion";
-import { useSearchParams } from "react-router-dom";
+import PathSection from "@/components/portfolio/PathSection";
+import ProfileSection from "@/components/portfolio/ProfileSection";
+import StackSection from "@/components/portfolio/StackSection";
+import WorkSection from "@/components/portfolio/WorkSection";
+import ScrollRail from "@/components/ScrollRail";
+import ShaderBackdrop from "@/components/ShaderBackdrop";
+import { useLanguage } from "@/context/LanguageContext";
+import { marqueeTerms } from "@/data/content";
+import { ScrollTrigger } from "@/lib/gsap";
+import { useEffect } from "react";
 
-const sectionComponents: Record<string, React.FC> = {
-  hero: HeroSection,
-  projects: ProjectsSection,
-  skills: SkillsSection,
-  experience: ExperienceSection,
-  about: AboutSection,
-};
+const terms = marqueeTerms.map((term) => (
+  <span key={term} className="font-display text-sm font-semibold uppercase tracking-[0.18em]">
+    {term}
+  </span>
+));
 
-const Index = () => {
-  const { theme } = useTheme();
-  const [searchParams] = useSearchParams();
-  const isAdmin = searchParams.has("admin");
-  const order = sectionOrder[theme];
+export default function Index() {
+  const { lang } = useLanguage();
+
+  // Swapping language changes every text length, so every pinned section and
+  // scrub range has to be re-measured.
+  useEffect(() => {
+    const id = window.setTimeout(() => ScrollTrigger.refresh(), 120);
+    return () => window.clearTimeout(id);
+  }, [lang]);
 
   return (
-    <div
-      className={`min-h-screen text-foreground theme-transition relative ${theme === "modern" ? "dark-veil-background" : "bg-background"}`}
-    >
-      {theme === "modern" && (
-        <div className="fixed inset-0 z-0 flex items-center justify-center pointer-events-none">
-          <div className="absolute inset-0 w-full h-full min-w-[1080px] min-h-[1080px]">
-            <DarkVeil
-              hueShift={0}
-              noiseIntensity={0}
-              scanlineIntensity={0}
-              speed={0.5}
-              scanlineFrequency={0}
-              warpAmount={0}
-              resolutionScale={1}
-            />
-          </div>
-        </div>
-      )}
-      <AnimatePresence mode="wait">
-        <motion.main className="relative z-10"
-          key={theme}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.35 }}
-        >
-          {order.map((sectionId) => {
-            const Component = sectionComponents[sectionId];
-            return Component ? <Component key={sectionId} /> : null;
-          })}
-          <Footer />
-        </motion.main>
-      </AnimatePresence>
-      {isAdmin && <ThemeSwitcher />}
-      <DiscoveryToast />
+    <div className="grain relative min-h-screen">
+      <ShaderBackdrop />
+      <Nav />
+      <ScrollRail />
+
+      <main>
+        <HeroSection />
+        <Marquee items={terms} className="marquee-invert" duration={40} />
+        <ChannelSection />
+        <WorkSection />
+        <Marquee items={terms} direction="right" duration={46} />
+        <StackSection />
+        <PathSection />
+        <ProfileSection />
+      </main>
+
+      <Footer />
     </div>
   );
-};
-
-export default Index;
+}
