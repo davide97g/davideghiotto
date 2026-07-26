@@ -14,6 +14,7 @@ Package manager is bun (see `bun.lockb`), but `npm`/`pnpm` work the same with `p
 - `npm run test:watch` — Vitest watch mode.
 - Run one test file: `npx vitest run src/path/to/file.test.ts` (or `... -t "case name"` to filter by test name).
 - `npm run fetch:youtube` — regenerates the `videos` array in `src/data/youtube.ts` from the channel RSS feed.
+- `npm run sitemap` — regenerates `public/sitemap.xml` from `src/data/journal.ts` (`scripts/generate-sitemap.mjs`). `build` and `build:dev` run it first, so the committed file only goes stale if a note is added without building; `src/data/sitemap.test.ts` catches that.
 - `npm run preview` — preview the production build.
 
 `@` resolves to `src/` (configured in both `vite.config.ts` and `vitest.config.ts`).

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+>
+  <url>
+    <loc>https://davideghiotto.it/</loc>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://davideghiotto.it/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://davideghiotto.it/?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://davideghiotto.it/" />
+  </url>
+  <url>
+    <loc>https://davideghiotto.it/journal/ho-staccato-tutto</loc>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://davideghiotto.it/journal/ho-staccato-tutto?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://davideghiotto.it/journal/ho-staccato-tutto?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://davideghiotto.it/journal/ho-staccato-tutto" />
+  </url>
+  <url>
+    <loc>https://davideghiotto.it/journal/il-costo-non-e-il-prezzo-del-token</loc>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://davideghiotto.it/journal/il-costo-non-e-il-prezzo-del-token?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://davideghiotto.it/journal/il-costo-non-e-il-prezzo-del-token?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://davideghiotto.it/journal/il-costo-non-e-il-prezzo-del-token" />
+  </url>
+  <url>
+    <loc>https://davideghiotto.it/journal/orchestratore-non-scrive-codice</loc>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://davideghiotto.it/journal/orchestratore-non-scrive-codice?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://davideghiotto.it/journal/orchestratore-non-scrive-codice?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://davideghiotto.it/journal/orchestratore-non-scrive-codice" />
+  </url>
+  <url>
+    <loc>https://davideghiotto.it/journal/riusare-batte-rigenerare</loc>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://davideghiotto.it/journal/riusare-batte-rigenerare?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://davideghiotto.it/journal/riusare-batte-rigenerare?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://davideghiotto.it/journal/riusare-batte-rigenerare" />
+  </url>
+  <url>
+    <loc>https://davideghiotto.it/journal/ho-smesso-di-scrivere-codice</loc>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://davideghiotto.it/journal/ho-smesso-di-scrivere-codice?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://davideghiotto.it/journal/ho-smesso-di-scrivere-codice?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://davideghiotto.it/journal/ho-smesso-di-scrivere-codice" />
+  </url>
+</urlset>
