@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 const LINKS = [
   { id: "channel", label: ui.nav.channel },
   { id: "work", label: ui.nav.work },
+  { id: "journal", label: ui.nav.journal },
   { id: "stack", label: ui.nav.stack },
   { id: "path", label: ui.nav.path },
   { id: "profile", label: ui.nav.profile },
@@ -74,7 +75,7 @@ export default function Nav() {
           <span className="sm:hidden">DG</span>
         </a>
 
-        <nav className="hidden items-center gap-7 md:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {LINKS.map((link) => (
             <button
               key={link.id}
@@ -110,7 +111,7 @@ export default function Nav() {
 
           <button
             onClick={() => setOpen((v) => !v)}
-            className="hud border border-border px-2.5 py-1.5 md:hidden"
+            className="hud border border-border px-2.5 py-1.5 lg:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
           >
@@ -122,7 +123,7 @@ export default function Nav() {
       {open && (
         <nav
           id="mobile-nav"
-          className="border-t border-border/60 bg-background/95 px-6 py-4 md:hidden"
+          className="border-t border-border/60 bg-background/95 px-6 py-4 lg:hidden"
         >
           {LINKS.map((link) => (
             <button

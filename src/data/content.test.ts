@@ -2,8 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   experiences,
   featuredProject,
+  journalEntries,
+  journalPlatforms,
   principles,
   projects,
+  sectionOrder,
   stackGroups,
   summary,
   ui,
@@ -34,7 +37,21 @@ function collect(value: unknown, path: string, found: Array<[string, unknown]>) 
 
 describe("localized content", () => {
   const found: Array<[string, unknown]> = [];
-  collect({ ui, summary, principles, projects, stackGroups, experiences, featuredProject }, "root", found);
+  collect(
+    {
+      ui,
+      summary,
+      principles,
+      projects,
+      stackGroups,
+      experiences,
+      featuredProject,
+      journalEntries,
+      journalPlatforms,
+    },
+    "root",
+    found
+  );
 
   it("finds localized strings to check", () => {
     expect(found.length).toBeGreaterThan(40);
@@ -63,5 +80,47 @@ describe("featured project", () => {
   it("is not duplicated in the secondary project list", () => {
     const titles = projects.map((p) => p.title.toLowerCase());
     expect(titles).not.toContain(featuredProject.name.toLowerCase());
+  });
+});
+
+describe("secondary projects", () => {
+  it("lists the gated sites first, right below the featured one", () => {
+    expect(projects.slice(0, 2).map((p) => p.title)).toEqual(["Thumb Studio", "Channeling"]);
+  });
+
+  it("gives the gated ones a screenshot standing in for the live site", () => {
+    const gated = projects.filter((p) => ["Thumb Studio", "Channeling"].includes(p.title));
+    expect(gated).toHaveLength(2);
+
+    for (const project of gated) {
+      expect(project.link, project.title).toMatch(/^https:\/\/\w+\.davideghiotto\.it\/$/);
+      expect(project.badge, project.title).toBeDefined();
+      expect(project.shot?.avif, project.title).toMatch(/^\/shot-.+\.avif$/);
+      expect(project.shot?.fallback, project.title).toMatch(/^\/shot-.+\.jpg$/);
+    }
+  });
+});
+
+describe("journal", () => {
+  it("is a detached section between work and stack", () => {
+    expect([...sectionOrder]).toEqual([
+      "hero",
+      "channel",
+      "work",
+      "journal",
+      "stack",
+      "path",
+      "profile",
+    ]);
+  });
+
+  it("has a LinkedIn platform to fall back on while there are no entries", () => {
+    const linkedin = journalPlatforms.find((p) => p.id === "linkedin");
+    expect(linkedin?.url).toContain("linkedin.com/in/");
+  });
+
+  it("only references platforms it can render an icon for", () => {
+    const ids = journalPlatforms.map((p) => p.id);
+    for (const entry of journalEntries) expect(ids).toContain(entry.platform);
   });
 });

@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import ChannelSection from "@/components/portfolio/ChannelSection";
 import Footer from "@/components/portfolio/Footer";
 import HeroSection from "@/components/portfolio/HeroSection";
+import JournalSection from "@/components/portfolio/JournalSection";
 import PathSection from "@/components/portfolio/PathSection";
 import ProfileSection from "@/components/portfolio/ProfileSection";
 import StackSection from "@/components/portfolio/StackSection";
@@ -41,6 +42,7 @@ export default function Index() {
         <Marquee items={terms} className="marquee-invert" duration={40} />
         <ChannelSection />
         <WorkSection />
+        <JournalSection />
         <Marquee items={terms} direction="right" duration={46} />
         <StackSection />
         <PathSection />

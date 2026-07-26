@@ -63,27 +63,51 @@ Two systems carry most of the design intent: **the scroll choreography** and **t
 ### Content and sections
 
 - `src/data/content.ts` holds `bio`, `ui` (all chrome strings), `summary`, `principles`,
-  `marqueeTerms`, `featuredProject`, `projects`, `stackGroups`, `experiences`, and `sectionOrder`.
+  `marqueeTerms`, `featuredProject`, `projects`, `journalEntries`, `journalPlatforms`, `stackGroups`,
+  `experiences`, and `sectionOrder`.
 - `featuredProject` is the pinned lead project (currently **sharp**, the self-hosted Slack
   alternative). Its copy, version and feature list mirror the official landing page at
   sharp.davideghiotto.it, and its mark is that project's own favicon, stored at `public/sharp.svg`.
   `src/components/portfolio/FeaturedProject.tsx` renders it and locally overrides `--primary` with
   sharp's violet, so accent utilities inside the card adopt the project's brand instead of the site
   lime. That local-override trick is the pattern to follow for any future brand-colored block.
-- `src/components/portfolio/HeroPortrait.tsx` is the cut-out portrait: a normal block above the
-  headline on mobile, absolutely positioned bleeding off the bottom-right from `lg` up, where it is
-  dimmed and desaturated behind the display type and carries a left-to-right scrim so white and lime
-  text stay legible over it. Assets are `public/davide-{900,1600}.avif` (~49 KB / ~166 KB) with
-  `public/davide-900.png` as the fallback in a `<picture>`. The alpha cut-out was generated on macOS
-  with Vision (`VNGenerateForegroundInstanceMaskRequest`) — no third-party tool — and encoded to
-  AVIF through ImageIO; regenerate the same way if the photo changes.
+- Two alpha cut-out portraits carry the page. `src/components/portfolio/HeroPortrait.tsx` is the
+  hero one: a normal block above the headline on mobile, absolutely positioned bleeding off the
+  bottom-right from `lg` up, where it is dimmed and desaturated behind the display type and carries
+  a left-to-right scrim so white and lime text stay legible over it (assets
+  `public/davide-{900,1600}.avif`, ~49 KB / ~166 KB, `public/davide-900.png` as the `<picture>`
+  fallback). `src/components/portfolio/JournalPortrait.tsx` is the pointing one inside the journal
+  band — its raised hand sits top-right in the frame, which is why the figure is placed left of the
+  copy and reads as pointing at the notes; it also gets a scrubbed vertical parallax (assets
+  `public/davide-point-{900,1600}.avif`, ~42 KB / ~118 KB, plus `davide-point-900.png`).
+- Cut-outs are generated on macOS with Vision (`VNGenerateForegroundInstanceMaskRequest`) — no
+  third-party tool. `scripts/cutout.swift` is that pipeline: `swift scripts/cutout.swift <input>
+  <output.png> [rotationDegreesClockwise]` reads HEIC, masks every foreground instance, crops to
+  their extent and writes straight-alpha PNG. Resize and AVIF-encode the result with `sips`
+  (`sips -Z 1600 …`, then `sips -s format avif -s formatOptions 60 …`), which also goes through
+  ImageIO. Verify alpha survived with `sips -g hasAlpha out.avif`.
 - `src/data/youtube.ts` holds channel meta and the latest videos. It is static because the YouTube
   RSS feed sends no CORS headers and cannot be fetched from the browser; refresh it with
   `npm run fetch:youtube` (`scripts/fetch-youtube.mjs`).
 - Sections are in `src/components/portfolio/` and are composed in fixed order by `Index.tsx`:
   `HeroSection` → `ChannelSection` (01) → `WorkSection` (02, featured project + numbered list) →
-  `StackSection` (03) → `PathSection` (04) → `ProfileSection` (05) → `Footer`, with `Marquee` strips
-  between. Section numbering is hardcoded in each component; renumber if you reorder.
+  `JournalSection` (detached) → `StackSection` (03) → `PathSection` (04) → `ProfileSection` (05) →
+  `Footer`, with `Marquee` strips between. Section numbering is hardcoded in each component;
+  renumber if you reorder.
+- `JournalSection` is the detached band: full-bleed on `bg-surface/45` between top and bottom rules,
+  and deliberately **unnumbered** (its marker is a `◢` instead of an index) so the numbered sections
+  still read 01 → 05. It holds `journalEntries` — empty until the first note goes live, in which case
+  it renders an explicit dashed empty state with a LinkedIn CTA rather than filler — plus the
+  `journalPlatforms` rail (LinkedIn, YouTube, GitHub, dacoder.it). Publishing a note is just pushing
+  an entry into `journalEntries`; `platform` must match a `journalPlatforms` id, since that id is
+  what maps to a lucide icon.
+- `projects` entries may carry a `badge` (rendered under the year, e.g. "Private repo") and a `shot`
+  (`{ avif, fallback, alt }`) — a cropped screenshot standing in for a live site that is
+  password-gated or private, rendered as a `panel` preview inside the row. Screenshots are cropped
+  free of browser chrome with `ffmpeg -vf "crop=W:H:0:137,scale=1400:-2"` and encoded to
+  `public/shot-*.avif` with a `.jpg` fallback.
+- The nav switches to the burger menu below `lg` (not `md`): six labels plus the name and language
+  toggle do not fit a 768 px bar.
 - `ChannelSection` pins its video gallery and drags it horizontally on `min-width: 1024px` with
   motion allowed; mobile and reduced-motion get a plain swipeable overflow list. YouTube thumbnails
   use `hqdefault` scaled `1.35` inside an `aspect-video` box to crop the 4:3 letterboxing.

@@ -1,7 +1,15 @@
 import type { LangId } from "@/context/LanguageContext";
+import { channel } from "@/data/youtube";
 
 /** A string (or any value) that exists in both site languages. */
 export type Localized<T = string> = Record<LangId, T>;
+
+/** Screenshot preview for a project whose live site is gated or hard to show. */
+export interface ProjectShot {
+  avif: string;
+  fallback: string;
+  alt: Localized;
+}
 
 export interface Project {
   title: string;
@@ -10,7 +18,21 @@ export interface Project {
   year: string;
   link?: string;
   linkedin?: string;
+  /** Small badge next to the year — e.g. a closed-source or gated-access note. */
+  badge?: Localized;
+  shot?: ProjectShot;
 }
+
+export interface JournalEntry {
+  title: Localized;
+  excerpt: Localized;
+  /** ISO date; formatted per-language at render time. */
+  date: string;
+  platform: JournalPlatformId;
+  link: string;
+}
+
+export type JournalPlatformId = "linkedin" | "youtube" | "github" | "site";
 
 export interface Experience {
   role: Localized;
@@ -43,6 +65,7 @@ export const ui = {
   nav: {
     channel: { en: "Channel", it: "Canale" },
     work: { en: "Work", it: "Progetti" },
+    journal: { en: "Journal", it: "Diario" },
     stack: { en: "Stack", it: "Stack" },
     path: { en: "Trajectory", it: "Percorso" },
     profile: { en: "Profile", it: "Profilo" },
@@ -98,6 +121,22 @@ export const ui = {
     visit: { en: "Open sharp", it: "Apri sharp" },
     source: { en: "Source", it: "Codice" },
     others: { en: "Also shipping", it: "Altri progetti" },
+    preview: { en: "Preview", it: "Anteprima" },
+  },
+  journal: {
+    label: { en: "Journal", it: "Diario" },
+    title: { en: "Thinking out loud.", it: "Pensieri ad alta voce." },
+    lead: {
+      en: "A working diary: what agents got right, what they broke, and the calls I'd make differently. Written in the open, posted where the conversation already is.",
+      it: "Un diario di lavoro: cosa hanno azzeccato gli agenti, cosa hanno rotto e le scelte che rifarei diversamente. Scritto in pubblico e pubblicato dove la conversazione è già in corso.",
+    },
+    latest: { en: "Latest notes", it: "Ultime note" },
+    empty: {
+      en: "First note is being written. New entries land here as soon as they go live.",
+      it: "La prima nota è in scrittura. Le prossime compaiono qui appena pubblicate.",
+    },
+    platforms: { en: "Where I post", it: "Dove pubblico" },
+    readOn: { en: "Read on", it: "Leggi su" },
   },
   stack: {
     label: { en: "Stack", it: "Stack" },
@@ -236,6 +275,44 @@ export const featuredProject = {
 
 export const projects: Project[] = [
   {
+    title: "Thumb Studio",
+    description: {
+      en: "Browser thumbnail editor for the channel, built because every generic design tool fights the 1280×720 workflow. Layer stack for text, freehand strokes, cut-out logos and emoji effects, a reusable asset library, project archive with autosave, undo/redo and one-click PNG export. Backgrounds come from a parametric generator — the 'Grainient' preset warps three colours with tunable frequency, amplitude and grain.",
+      it: "Editor di thumbnail nel browser, nato perché ogni tool di design generico combatte con il workflow 1280×720. Stack di livelli per testo, tratti a mano libera, logo scontornati ed effetti emoji, libreria di asset riutilizzabili, archivio progetti con autosave, undo/redo ed export PNG in un click. Gli sfondi arrivano da un generatore parametrico: il preset «Grainient» deforma tre colori con frequenza, ampiezza e grana regolabili.",
+    },
+    tags: ["TypeScript", "Canvas", "Image Export"],
+    year: "2026 —",
+    link: "https://thumb.davideghiotto.it/",
+    badge: { en: "Gated access", it: "Accesso protetto" },
+    shot: {
+      avif: "/shot-thumb-studio.avif",
+      fallback: "/shot-thumb-studio.jpg",
+      alt: {
+        en: "Thumb Studio editor: layer list, 1280×720 canvas and background effect controls",
+        it: "Editor Thumb Studio: lista livelli, canvas 1280×720 e controlli dell'effetto di sfondo",
+      },
+    },
+  },
+  {
+    title: "Channeling",
+    description: {
+      en: "A personal signal archive. It ingests the videos I watch and the notes I keep, then answers questions with citations back to the exact source and timestamp — every claim traceable to a video second or a topic file. Answers, topics and resources are linked into a force-directed graph you can walk, with saved threads, follow-up questions and a swappable model behind them.",
+      it: "Un archivio personale di segnali. Assorbe i video che guardo e le note che tengo, poi risponde citando la fonte esatta e il timestamp — ogni affermazione risalibile al secondo del video o al file di argomento. Risposte, argomenti e risorse finiscono in un grafo force-directed navigabile, con thread salvati, domande di follow-up e modello sostituibile.",
+    },
+    tags: ["TypeScript", "RAG", "Knowledge Graph"],
+    year: "2026 —",
+    link: "https://channeling.davideghiotto.it/",
+    badge: { en: "Private repo", it: "Repo privata" },
+    shot: {
+      avif: "/shot-channeling.avif",
+      fallback: "/shot-channeling.jpg",
+      alt: {
+        en: "Channeling: a cited answer next to its force-directed knowledge graph",
+        it: "Channeling: una risposta con citazioni accanto al suo grafo di conoscenza force-directed",
+      },
+    },
+  },
+  {
     title: "Pulse HR",
     description: {
       en: "Open-source, people-first HR platform. Async status logs, kudos, growth and wellbeing with manager-safe sentiment — raw signals stay with the employee, managers see aggregated trends. Bun monorepo: TanStack Router, Hono API, Neon Postgres, Astro marketing site.",
@@ -275,6 +352,75 @@ export const projects: Project[] = [
     tags: ["HTML", "SEO", "Static Site"],
     year: "2026",
     link: "https://opus5.davideghiotto.it/",
+  },
+];
+
+/**
+ * Journal entries, newest first.
+ *
+ * Deliberately empty until the first note is live: `JournalSection` renders an
+ * explicit empty state instead of filler, so publishing a note is just pushing
+ * an entry here.
+ *
+ *   {
+ *     title: { en: "…", it: "…" },
+ *     excerpt: { en: "…", it: "…" },
+ *     date: "2026-07-26",
+ *     platform: "linkedin",
+ *     link: "https://www.linkedin.com/posts/…",
+ *   }
+ */
+export const journalEntries: JournalEntry[] = [];
+
+export interface JournalPlatform {
+  id: JournalPlatformId;
+  name: string;
+  handle: string;
+  url: string;
+  focus: Localized;
+}
+
+/** Where the notes actually get published, and what each channel carries. */
+export const journalPlatforms: JournalPlatform[] = [
+  {
+    id: "linkedin",
+    name: "LinkedIn",
+    handle: `/in/${bio.linkedin}`,
+    url: `https://www.linkedin.com/in/${bio.linkedin}`,
+    focus: {
+      en: "Long-form notes on agents, architecture and team practice",
+      it: "Note lunghe su agenti, architettura e pratica di team",
+    },
+  },
+  {
+    id: "youtube",
+    name: "YouTube",
+    handle: channel.handle,
+    url: channel.url,
+    focus: {
+      en: "The same thinking, live and unedited",
+      it: "Gli stessi ragionamenti, in diretta e senza tagli",
+    },
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    handle: `/${bio.github}`,
+    url: `https://github.com/${bio.github}`,
+    focus: {
+      en: "Commits, prototypes and the code behind each note",
+      it: "Commit, prototipi e il codice dietro ogni nota",
+    },
+  },
+  {
+    id: "site",
+    name: "dacoder.it",
+    handle: "/workshop",
+    url: bio.workshop,
+    focus: {
+      en: "Open-source workshop and long-running experiments",
+      it: "Laboratorio open-source ed esperimenti a lungo termine",
+    },
   },
 ];
 
@@ -343,7 +489,19 @@ export const experiences: Experience[] = [
   },
 ];
 
-/** Section render order, and the anchor ids the nav points at. */
-export const sectionOrder = ["hero", "channel", "work", "stack", "path", "profile"] as const;
+/**
+ * Section render order, and the anchor ids the nav points at. `journal` is the
+ * detached band between Work and Stack — it carries no section number, which is
+ * why the numbered sections still read 01 → 05.
+ */
+export const sectionOrder = [
+  "hero",
+  "channel",
+  "work",
+  "journal",
+  "stack",
+  "path",
+  "profile",
+] as const;
 
 export type SectionId = (typeof sectionOrder)[number];

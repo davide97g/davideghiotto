@@ -54,10 +54,42 @@ export default function WorkSection() {
                     </span>
                   ))}
                 </div>
+
+                {/* Screenshot stands in for the live site when it is gated. */}
+                {project.shot && (
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="panel panel-interactive mt-8 block overflow-hidden"
+                  >
+                    <span className="hud flex items-center gap-3 border-b border-border px-4 py-3">
+                      <span className="h-1.5 w-1.5 shrink-0 bg-primary" aria-hidden />
+                      {t(ui.work.preview)}
+                    </span>
+                    <picture>
+                      <source type="image/avif" srcSet={project.shot.avif} />
+                      <img
+                        src={project.shot.fallback}
+                        width={1400}
+                        height={809}
+                        loading="lazy"
+                        decoding="async"
+                        alt={t(project.shot.alt)}
+                        className="block w-full opacity-90 transition-opacity duration-500 group-hover:opacity-100"
+                      />
+                    </picture>
+                  </a>
+                )}
               </div>
 
               <div className="flex items-start justify-between gap-6 md:flex-col md:items-end md:justify-start">
-                <span className="hud whitespace-nowrap">{project.year}</span>
+                <div className="flex flex-col items-start gap-3 md:items-end">
+                  <span className="hud whitespace-nowrap">{project.year}</span>
+                  {project.badge && (
+                    <span className="tag whitespace-nowrap">{t(project.badge)}</span>
+                  )}
+                </div>
                 <div className="flex items-center gap-4">
                   {project.linkedin && (
                     <a
