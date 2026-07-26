@@ -89,7 +89,7 @@ export default function Nav() {
 
         <div className="flex items-center gap-3">
           <div
-            className="flex items-center border border-border"
+            className="lang-switch flex items-center border border-border"
             role="group"
             aria-label={t(ui.lang.label)}
           >
@@ -111,7 +111,7 @@ export default function Nav() {
 
           <button
             onClick={() => setOpen((v) => !v)}
-            className="hud border border-border px-2.5 py-1.5 lg:hidden"
+            className="hud nav-menu-toggle border border-border px-2.5 py-1.5 lg:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
           >
@@ -123,13 +123,13 @@ export default function Nav() {
       {open && (
         <nav
           id="mobile-nav"
-          className="border-t border-border/60 bg-background/95 px-6 py-4 lg:hidden"
+          className="mobile-nav-enter border-t border-border/60 bg-background/95 px-6 py-4 lg:hidden"
         >
           {LINKS.map((link) => (
             <button
               key={link.id}
               onClick={() => goTo(link.id)}
-              className="hud block w-full py-3 text-left"
+              className="mobile-nav-item hud block w-full py-3 text-left"
             >
               {t(link.label)}
             </button>

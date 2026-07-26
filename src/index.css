@@ -39,6 +39,7 @@
     --section-spacing: clamp(6rem, 12vw, 11rem);
     --content-max-width: 82rem;
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   * {
@@ -194,6 +195,33 @@
     transform: translateY(-2px);
   }
 
+  .panel-interactive:active {
+    transform: translateY(0) scale(0.992);
+  }
+
+  /* A contained light sweep gives interactive media a terminal-screen response
+     without adding a continuously running effect. */
+  .card-scan {
+    overflow: hidden;
+  }
+
+  .card-scan::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(112deg, transparent 35%, hsl(var(--primary) / 0.1) 50%, transparent 65%);
+    transform: translateX(-110%);
+    transition: transform 0.7s var(--ease-out-expo), opacity 0.3s ease;
+  }
+
+  .card-scan:hover::before {
+    opacity: 1;
+    transform: translateX(110%);
+  }
+
   /* Corner ticks — cheap way to make a plain rectangle read as an instrument. */
   .panel-ticks::before,
   .panel-ticks::after {
@@ -258,6 +286,11 @@
     transform: translateY(-2px);
   }
 
+  .btn-primary:active,
+  .btn-ghost:active {
+    transform: translateY(0) scale(0.97);
+  }
+
   .btn-ghost {
     display: inline-flex;
     align-items: center;
@@ -277,6 +310,15 @@
   .btn-ghost:hover {
     border-color: hsl(var(--primary) / 0.6);
     color: hsl(var(--primary));
+  }
+
+  .btn-ghost {
+    transition: border-color 0.4s var(--ease-out-expo), color 0.4s var(--ease-out-expo), transform 0.2s var(--ease-out-soft), background-color 0.3s var(--ease-out-soft);
+  }
+
+  .btn-ghost:hover {
+    background: hsl(var(--surface-raised) / 0.7);
+    transform: translateY(-1px);
   }
 
   /* Link with a wipe-in underline. */
@@ -300,6 +342,123 @@
 
   .link-wipe:hover::after {
     transform: scaleX(1);
+  }
+
+  /* Lists use a tiny leading rule, leaving content hierarchy intact. */
+  .micro-row {
+    position: relative;
+    transition: background-color 0.35s var(--ease-out-soft), padding-left 0.35s var(--ease-out-soft);
+  }
+
+  .micro-row::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 1px;
+    background: hsl(var(--primary));
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.35s var(--ease-out-expo);
+  }
+
+  .micro-row:hover {
+    padding-left: 0.75rem;
+    background: hsl(var(--surface-raised) / 0.35);
+  }
+
+  .micro-row:hover::before {
+    transform: scaleY(0.72);
+  }
+
+  .tag {
+    transition: color 0.25s var(--ease-out-soft), border-color 0.25s var(--ease-out-soft), transform 0.25s var(--ease-out-soft), background-color 0.25s var(--ease-out-soft);
+  }
+
+  a:hover .tag,
+  .tag:hover {
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary) / 0.55);
+    background: hsl(var(--primary) / 0.06);
+    transform: translateY(-1px);
+  }
+
+  .contact-link {
+    position: relative;
+    transition: color 0.3s var(--ease-out-soft), background-color 0.3s var(--ease-out-soft), padding-left 0.35s var(--ease-out-soft);
+  }
+
+  .contact-link:hover {
+    padding-left: 1.5rem;
+    background: hsl(var(--primary) / 0.045);
+  }
+
+  .lang-switch button {
+    position: relative;
+    transition: color 0.25s var(--ease-out-soft), background-color 0.25s var(--ease-out-soft), transform 0.2s var(--ease-out-soft);
+  }
+
+  .lang-switch button:hover {
+    transform: translateY(-1px);
+  }
+
+  .lang-switch button[aria-pressed="true"] {
+    box-shadow: inset 0 -2px 0 hsl(var(--primary-foreground) / 0.55);
+  }
+
+  .nav-menu-toggle {
+    transition: border-color 0.25s var(--ease-out-soft), color 0.25s var(--ease-out-soft), background-color 0.25s var(--ease-out-soft), transform 0.2s var(--ease-out-soft);
+  }
+
+  .nav-menu-toggle:hover {
+    border-color: hsl(var(--primary) / 0.6);
+    color: hsl(var(--primary));
+    transform: translateY(-1px);
+  }
+
+  .mobile-nav-enter {
+    animation: mobile-nav-enter 0.28s var(--ease-out-soft) both;
+  }
+
+  .mobile-nav-item {
+    animation: mobile-nav-item-enter 0.34s var(--ease-out-soft) both;
+  }
+
+  .mobile-nav-item:nth-child(2) { animation-delay: 0.025s; }
+  .mobile-nav-item:nth-child(3) { animation-delay: 0.05s; }
+  .mobile-nav-item:nth-child(4) { animation-delay: 0.075s; }
+  .mobile-nav-item:nth-child(5) { animation-delay: 0.1s; }
+  .mobile-nav-item:nth-child(6) { animation-delay: 0.125s; }
+
+  .stack-group {
+    transition: background-color 0.35s var(--ease-out-soft), transform 0.35s var(--ease-out-soft);
+  }
+
+  .stack-group:hover {
+    background: hsl(var(--surface-raised));
+    transform: translateY(-2px);
+  }
+
+  .path-item > span[aria-hidden] {
+    transition: background-color 0.3s var(--ease-out-soft), box-shadow 0.3s var(--ease-out-soft), transform 0.3s var(--ease-out-soft);
+  }
+
+  .path-item:hover > span[aria-hidden] {
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.12), 0 0 14px hsl(var(--primary) / 0.65);
+    transform: translateX(-50%) scale(1.35);
+  }
+
+  .section-marker::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    background: hsl(var(--primary));
+    box-shadow: 0 0 16px hsl(var(--primary) / 0.5);
+    transform: scale(0.65);
+    transition: transform 0.35s var(--ease-out-expo);
+  }
+
+  section:hover .section-marker::before {
+    transform: scale(1);
   }
 
   /* ── Long-form copy ────────────────────────────────────────── */
@@ -464,6 +623,34 @@
     color: hsl(var(--background));
     border-color: hsl(var(--foreground));
   }
+
+  .page-enter {
+    animation: page-enter 0.2s var(--ease-out-soft) both;
+  }
+
+  .not-found-enter {
+    animation: not-found-enter 0.55s var(--ease-out-expo) both;
+  }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes not-found-enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mobile-nav-enter {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mobile-nav-item-enter {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @layer utilities {
@@ -490,5 +677,12 @@
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
+  }
+
+  .page-enter,
+  .not-found-enter,
+  .mobile-nav-enter,
+  .mobile-nav-item {
+    animation: none;
   }
 }

@@ -91,7 +91,7 @@ export default function JournalSection() {
                 className="border-t border-border"
               >
                 {journalPosts.map((post) => (
-                  <li key={post.slug} className="journal-entry border-b border-border">
+                  <li key={post.slug} className="journal-entry micro-row border-b border-border">
                     <Link to={`/journal/${post.slug}`} className="group block py-7">
                       <span className="hud">
                         <time dateTime={post.date}>{formatDate(post.date)}</time>
@@ -139,7 +139,7 @@ export default function JournalSection() {
               {journalPlatforms.map((platform) => {
                 const Icon = PLATFORM_ICON[platform.id];
                 return (
-                  <li key={platform.id} className="journal-platform">
+                  <li key={platform.id} className="journal-platform micro-row">
                     <a
                       href={platform.url}
                       target="_blank"

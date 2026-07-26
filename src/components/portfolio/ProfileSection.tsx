@@ -45,7 +45,7 @@ export default function ProfileSection() {
           <li className="contact-row">
             <a
               href={`mailto:${bio.email}`}
-              className="flex items-center gap-4 p-5 transition-colors hover:text-primary"
+              className="contact-link flex items-center gap-4 p-5 hover:text-primary"
             >
               <Mail size={16} className="text-primary" />
               <span className="font-mono text-sm">{bio.email}</span>
@@ -56,7 +56,7 @@ export default function ProfileSection() {
               href={`https://www.linkedin.com/in/${bio.linkedin}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-4 p-5 transition-colors hover:text-primary"
+              className="contact-link flex items-center gap-4 p-5 hover:text-primary"
             >
               <Linkedin size={16} className="text-primary" />
               <span className="font-mono text-sm">/{bio.linkedin}</span>
@@ -67,7 +67,7 @@ export default function ProfileSection() {
               href={`https://github.com/${bio.github}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-4 p-5 transition-colors hover:text-primary"
+              className="contact-link flex items-center gap-4 p-5 hover:text-primary"
             >
               <Github size={16} className="text-primary" />
               <span className="font-mono text-sm">/{bio.github}</span>
@@ -78,7 +78,7 @@ export default function ProfileSection() {
               href={channel.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-4 p-5 transition-colors hover:text-primary"
+              className="contact-link flex items-center gap-4 p-5 hover:text-primary"
             >
               <Youtube size={16} className="text-primary" />
               <span className="font-mono text-sm">{channel.handle}</span>

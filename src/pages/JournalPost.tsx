@@ -1,6 +1,8 @@
 import Nav from "@/components/Nav";
 import ShaderBackdrop from "@/components/ShaderBackdrop";
 import Footer from "@/components/portfolio/Footer";
+import PostMotion from "@/components/motion/PostMotion";
+import Reveal from "@/components/motion/Reveal";
 import { useLanguage } from "@/context/LanguageContext";
 import { bio, ui } from "@/data/content";
 import {
@@ -120,26 +122,29 @@ export default function JournalPost() {
               )}
             </div>
 
-            <h1 className="display-lg mt-7 max-w-4xl">{t(post.title)}</h1>
-            <p className="mt-7 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              {t(post.excerpt)}
-            </p>
+            <Reveal className="mt-7" y={18} start="top 92%">
+              <h1 className="display-lg max-w-4xl">{t(post.title)}</h1>
+              <p className="mt-7 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+                {t(post.excerpt)}
+              </p>
+            </Reveal>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Reveal className="mt-8 flex flex-wrap items-center gap-3" y={14} start="top 92%">
               {post.tags.map((tag) => (
                 <span key={tag} className="tag">
                   {tag}
                 </span>
               ))}
-            </div>
+            </Reveal>
           </header>
 
           {/* The live the note is drawn from — every quote inside links back into it. */}
+          <Reveal className="mt-12" y={20} start="top 88%">
           <a
             href={watchUrl(post.video)}
             target="_blank"
             rel="noopener noreferrer"
-            className="panel panel-interactive group mt-12 flex flex-col gap-5 p-5 sm:flex-row sm:items-center"
+            className="panel panel-interactive card-scan group flex flex-col gap-5 p-5 sm:flex-row sm:items-center"
           >
             <img
               src={thumbnailUrl(post.video)}
@@ -162,7 +167,9 @@ export default function JournalPost() {
               className="ml-auto hidden shrink-0 text-muted-foreground transition-all duration-500 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary sm:block"
             />
           </a>
+          </Reveal>
 
+          <PostMotion contentKey={`${post.slug}:${lang}:${body.length}`}>
           <div className="post-body mt-16">
             {body ? (
               <Markdown remarkPlugins={[remarkGfm]}>{body}</Markdown>
@@ -170,9 +177,10 @@ export default function JournalPost() {
               <p className="hud">···</p>
             )}
           </div>
+          </PostMotion>
         </article>
 
-        <aside className="mt-24 border-t border-border pt-10">
+        <Reveal as="aside" className="mt-24 border-t border-border pt-10" y={20} start="top 88%">
           <h2 className="hud">{t(ui.journal.alsoOn)}</h2>
           <div className="mt-6 flex flex-wrap gap-3">
             {post.crossPost ? (
@@ -200,7 +208,7 @@ export default function JournalPost() {
           <ul className="mt-6 border-t border-border">
             {others.map((other) => (
               <li key={other.slug} className="border-b border-border">
-                <Link to={`/journal/${other.slug}`} className="group block py-6">
+                <Link to={`/journal/${other.slug}`} className="micro-row group block py-6">
                   <h3 className="font-display text-lg font-bold tracking-tight transition-colors group-hover:text-primary md:text-xl">
                     {t(other.title)}
                   </h3>
@@ -211,7 +219,7 @@ export default function JournalPost() {
               </li>
             ))}
           </ul>
-        </aside>
+        </Reveal>
       </main>
 
       <Footer />

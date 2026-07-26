@@ -34,7 +34,7 @@ export default function WorkSection() {
 
       <Reveal as="ol" selector=".work-row" stagger={0.12} className="border-t border-border">
         {projects.map((project, i) => (
-          <li key={project.title} className="work-row group border-b border-border">
+          <li key={project.title} className="work-row micro-row group border-b border-border">
             <div className="grid gap-6 py-10 md:grid-cols-[4rem_1fr_auto] md:gap-10 md:py-12">
               <span className="hud pt-3 transition-colors group-hover:text-primary">
                 {String(i + 1).padStart(2, "0")}
@@ -61,7 +61,7 @@ export default function WorkSection() {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="panel panel-interactive mt-8 block overflow-hidden"
+                    className="panel panel-interactive card-scan mt-8 block overflow-hidden"
                   >
                     <span className="hud flex items-center gap-3 border-b border-border px-4 py-3">
                       <span className="h-1.5 w-1.5 shrink-0 bg-primary" aria-hidden />

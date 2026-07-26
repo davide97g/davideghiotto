@@ -131,14 +131,14 @@ export default function ChannelSection() {
                 href={watchUrl(video.id)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="panel panel-interactive panel-ticks group flex h-full flex-col"
+                className="panel panel-interactive panel-ticks card-scan group flex h-full flex-col"
               >
                 <div className="relative aspect-video overflow-hidden border-b border-border">
                   <img
                     src={thumbnailUrl(video.id)}
                     alt=""
                     loading="lazy"
-                    className="h-full w-full scale-[1.35] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.42]"
+                  className="h-full w-full scale-[1.35] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.42] group-active:scale-[1.38]"
                   />
                   <span className="hud absolute left-3 top-3 bg-background/80 px-2 py-1">
                     {String(i + 1).padStart(2, "0")}
