@@ -70,6 +70,13 @@ Two systems carry most of the design intent: **the scroll choreography** and **t
   `src/components/portfolio/FeaturedProject.tsx` renders it and locally overrides `--primary` with
   sharp's violet, so accent utilities inside the card adopt the project's brand instead of the site
   lime. That local-override trick is the pattern to follow for any future brand-colored block.
+- `src/components/portfolio/HeroPortrait.tsx` is the cut-out portrait: a normal block above the
+  headline on mobile, absolutely positioned bleeding off the bottom-right from `lg` up, where it is
+  dimmed and desaturated behind the display type and carries a left-to-right scrim so white and lime
+  text stay legible over it. Assets are `public/davide-{900,1600}.avif` (~49 KB / ~166 KB) with
+  `public/davide-900.png` as the fallback in a `<picture>`. The alpha cut-out was generated on macOS
+  with Vision (`VNGenerateForegroundInstanceMaskRequest`) — no third-party tool — and encoded to
+  AVIF through ImageIO; regenerate the same way if the photo changes.
 - `src/data/youtube.ts` holds channel meta and the latest videos. It is static because the YouTube
   RSS feed sends no CORS headers and cannot be fetched from the browser; refresh it with
   `npm run fetch:youtube` (`scripts/fetch-youtube.mjs`).

@@ -148,7 +148,7 @@
 
   .display-xl {
     font-family: var(--font-display);
-    font-size: clamp(2.75rem, 11vw, 9.5rem);
+    font-size: clamp(2.75rem, 9.6vw, 8.5rem);
     font-weight: 700;
     line-height: 0.88;
     letter-spacing: -0.045em;

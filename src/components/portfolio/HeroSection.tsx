@@ -1,6 +1,7 @@
 import SplitReveal from "@/components/motion/SplitReveal";
+import HeroPortrait from "@/components/portfolio/HeroPortrait";
 import { useLanguage } from "@/context/LanguageContext";
-import { bio, ui } from "@/data/content";
+import { ui } from "@/data/content";
 import { channel } from "@/data/youtube";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useLenis } from "lenis/react";
@@ -21,7 +22,11 @@ export default function HeroSection() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        gsap.set(".hero-line-inner, .hero-fade", { yPercent: 0, opacity: 1 });
+        gsap.set(".hero-line-inner, .hero-fade, .hero-portrait", {
+          yPercent: 0,
+          opacity: 1,
+          scale: 1,
+        });
       });
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
@@ -36,10 +41,29 @@ export default function HeroSection() {
           )
           .from(".hero-fade", { opacity: 0, y: 18, duration: 0.9, stagger: 0.08 }, 0.75);
 
+        intro.fromTo(
+          ".hero-portrait",
+          { opacity: 0, scale: 1.06, yPercent: 4 },
+          { opacity: 1, scale: 1, yPercent: 0, duration: 1.6, ease: "expo.out" },
+          0
+        );
+
         // The headline drifts up and dims as the next section arrives.
         gsap.to(".hero-drift", {
           yPercent: -14,
           opacity: 0.15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        // The portrait leaves slower than the type, which reads as depth.
+        gsap.to(".hero-portrait", {
+          yPercent: 12,
           ease: "none",
           scrollTrigger: {
             trigger: root,
@@ -61,10 +85,12 @@ export default function HeroSection() {
     <section
       ref={scope}
       id="hero"
-      className="relative flex min-h-[100svh] flex-col justify-end pb-16 pt-32"
+      className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-16 pt-28 lg:pb-10 lg:pt-24"
     >
-      <div className="section-container hero-drift w-full">
-        <p className="hero-eyebrow hud mb-10">{t(ui.hero.eyebrow)}</p>
+      <HeroPortrait />
+
+      <div className="section-container hero-drift relative z-10 w-full">
+        <p className="hero-eyebrow hud mb-8 lg:mb-7">{t(ui.hero.eyebrow)}</p>
 
         <h1 className="display-xl uppercase">
           {lines.map((line, i) => (
@@ -76,7 +102,9 @@ export default function HeroSection() {
           ))}
         </h1>
 
-        <div className="mt-14 grid gap-12 border-t border-border pt-10 md:grid-cols-[1.3fr_1fr] md:items-start">
+        {/* From lg up the portrait occupies the right of the hero, so this block
+            stays inside the left column instead of sitting on top of him. */}
+        <div className="mt-12 grid gap-10 border-t border-border pt-9 md:grid-cols-[1.3fr_1fr] md:items-start lg:mt-9 lg:max-w-[56%] lg:grid-cols-1 lg:gap-7 lg:pt-7">
           <SplitReveal
             immediate
             delay={0.85}
@@ -84,46 +112,37 @@ export default function HeroSection() {
             className="hero-lead max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl"
           />
 
-          <div className="flex flex-col gap-8">
-            <div className="hero-fade flex flex-wrap gap-3">
-              <a href="#work" className="btn-primary">
-                {t(ui.hero.ctaPrimary)} <ArrowDown size={14} />
-              </a>
-              <a
-                href={channel.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost"
-              >
-                <Play size={13} /> {t(ui.hero.ctaSecondary)}
-              </a>
-            </div>
-
-            <dl className="hero-fade grid grid-cols-2 gap-6 text-sm">
-              <div>
-                <dt className="hud mb-2">{t(ui.nav.profile)}</dt>
-                <dd className="font-mono text-foreground">{t(bio.role)}</dd>
-              </div>
-              <div>
-                <dt className="hud mb-2">{t(ui.channel.label)}</dt>
-                <dd className="font-mono text-foreground">{channel.handle}</dd>
-              </div>
-            </dl>
+          <div className="hero-fade flex flex-wrap gap-3">
+            <a href="#work" className="btn-primary">
+              {t(ui.hero.ctaPrimary)} <ArrowDown size={14} />
+            </a>
+            <a
+              href={channel.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost"
+            >
+              <Play size={13} /> {t(ui.hero.ctaSecondary)}
+            </a>
           </div>
         </div>
       </div>
 
-      <button
-        onClick={() => {
-          const target = document.getElementById("channel");
-          if (target && lenis) lenis.scrollTo(target, { offset: -40 });
-          else target?.scrollIntoView({ behavior: "smooth" });
-        }}
-        className="hero-fade section-container mt-16 flex items-center gap-3 text-left"
-      >
-        <span className="hud hud-accent animate-blink">▌</span>
-        <span className="hud">{t(ui.hero.scrollCue)}</span>
-      </button>
+      {/* w-full matters: section-container's auto inline margins would otherwise
+          centre this flex item inside the column-flex section. */}
+      <div className="section-container relative z-10 mt-14 w-full lg:mt-8">
+        <button
+          onClick={() => {
+            const target = document.getElementById("channel");
+            if (target && lenis) lenis.scrollTo(target, { offset: -40 });
+            else target?.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="hero-fade flex items-center gap-3 text-left"
+        >
+          <span className="hud hud-accent animate-blink">▌</span>
+          <span className="hud">{t(ui.hero.scrollCue)}</span>
+        </button>
+      </div>
     </section>
   );
 }
