@@ -1,5 +1,4 @@
 import type { LangId } from "@/context/LanguageContext";
-import { channel } from "@/data/youtube";
 
 /** A string (or any value) that exists in both site languages. */
 export type Localized<T = string> = Record<LangId, T>;
@@ -23,16 +22,6 @@ export interface Project {
   shot?: ProjectShot;
 }
 
-export interface JournalEntry {
-  title: Localized;
-  excerpt: Localized;
-  /** ISO date; formatted per-language at render time. */
-  date: string;
-  platform: JournalPlatformId;
-  link: string;
-}
-
-export type JournalPlatformId = "linkedin" | "youtube" | "github" | "site";
 
 export interface Experience {
   role: Localized;
@@ -137,6 +126,11 @@ export const ui = {
     },
     platforms: { en: "Where I post", it: "Dove pubblico" },
     readOn: { en: "Read on", it: "Leggi su" },
+    read: { en: "Read the note", it: "Leggi la nota" },
+    back: { en: "All notes", it: "Tutte le note" },
+    minutes: { en: "min read", it: "min di lettura" },
+    watch: { en: "Watch the source live", it: "Guarda la live sorgente" },
+    alsoOn: { en: "Also published on", it: "Pubblicato anche su" },
   },
   stack: {
     label: { en: "Stack", it: "Stack" },
@@ -352,75 +346,6 @@ export const projects: Project[] = [
     tags: ["HTML", "SEO", "Static Site"],
     year: "2026",
     link: "https://opus5.davideghiotto.it/",
-  },
-];
-
-/**
- * Journal entries, newest first.
- *
- * Deliberately empty until the first note is live: `JournalSection` renders an
- * explicit empty state instead of filler, so publishing a note is just pushing
- * an entry here.
- *
- *   {
- *     title: { en: "…", it: "…" },
- *     excerpt: { en: "…", it: "…" },
- *     date: "2026-07-26",
- *     platform: "linkedin",
- *     link: "https://www.linkedin.com/posts/…",
- *   }
- */
-export const journalEntries: JournalEntry[] = [];
-
-export interface JournalPlatform {
-  id: JournalPlatformId;
-  name: string;
-  handle: string;
-  url: string;
-  focus: Localized;
-}
-
-/** Where the notes actually get published, and what each channel carries. */
-export const journalPlatforms: JournalPlatform[] = [
-  {
-    id: "linkedin",
-    name: "LinkedIn",
-    handle: `/in/${bio.linkedin}`,
-    url: `https://www.linkedin.com/in/${bio.linkedin}`,
-    focus: {
-      en: "Long-form notes on agents, architecture and team practice",
-      it: "Note lunghe su agenti, architettura e pratica di team",
-    },
-  },
-  {
-    id: "youtube",
-    name: "YouTube",
-    handle: channel.handle,
-    url: channel.url,
-    focus: {
-      en: "The same thinking, live and unedited",
-      it: "Gli stessi ragionamenti, in diretta e senza tagli",
-    },
-  },
-  {
-    id: "github",
-    name: "GitHub",
-    handle: `/${bio.github}`,
-    url: `https://github.com/${bio.github}`,
-    focus: {
-      en: "Commits, prototypes and the code behind each note",
-      it: "Commit, prototipi e il codice dietro ogni nota",
-    },
-  },
-  {
-    id: "site",
-    name: "dacoder.it",
-    handle: "/workshop",
-    url: bio.workshop,
-    focus: {
-      en: "Open-source workshop and long-running experiments",
-      it: "Laboratorio open-source ed esperimenti a lungo termine",
-    },
   },
 ];
 

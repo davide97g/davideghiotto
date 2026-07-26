@@ -2,11 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   experiences,
   featuredProject,
-  journalEntries,
-  journalPlatforms,
   principles,
   projects,
-  sectionOrder,
   stackGroups,
   summary,
   ui,
@@ -46,8 +43,6 @@ describe("localized content", () => {
       stackGroups,
       experiences,
       featuredProject,
-      journalEntries,
-      journalPlatforms,
     },
     "root",
     found
@@ -98,29 +93,5 @@ describe("secondary projects", () => {
       expect(project.shot?.avif, project.title).toMatch(/^\/shot-.+\.avif$/);
       expect(project.shot?.fallback, project.title).toMatch(/^\/shot-.+\.jpg$/);
     }
-  });
-});
-
-describe("journal", () => {
-  it("is a detached section between work and stack", () => {
-    expect([...sectionOrder]).toEqual([
-      "hero",
-      "channel",
-      "work",
-      "journal",
-      "stack",
-      "path",
-      "profile",
-    ]);
-  });
-
-  it("has a LinkedIn platform to fall back on while there are no entries", () => {
-    const linkedin = journalPlatforms.find((p) => p.id === "linkedin");
-    expect(linkedin?.url).toContain("linkedin.com/in/");
-  });
-
-  it("only references platforms it can render an icon for", () => {
-    const ids = journalPlatforms.map((p) => p.id);
-    for (const entry of journalEntries) expect(ids).toContain(entry.platform);
   });
 });

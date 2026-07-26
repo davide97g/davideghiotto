@@ -96,11 +96,34 @@ Two systems carry most of the design intent: **the scroll choreography** and **t
   renumber if you reorder.
 - `JournalSection` is the detached band: full-bleed on `bg-surface/45` between top and bottom rules,
   and deliberately **unnumbered** (its marker is a `◢` instead of an index) so the numbered sections
-  still read 01 → 05. It holds `journalEntries` — empty until the first note goes live, in which case
-  it renders an explicit dashed empty state with a LinkedIn CTA rather than filler — plus the
-  `journalPlatforms` rail (LinkedIn, YouTube, GitHub, dacoder.it). Publishing a note is just pushing
-  an entry into `journalEntries`; `platform` must match a `journalPlatforms` id, since that id is
-  what maps to a lucide icon.
+  still read 01 → 05. It lists `journalPosts` from `src/data/journal.ts` — each row linking to
+  `/journal/:slug` — plus the `journalPlatforms` rail (LinkedIn, YouTube, GitHub, dacoder.it). With
+  no posts it falls back to a dashed empty state and a LinkedIn CTA rather than filler.
+
+### The journal
+
+- `src/data/journal.ts` owns everything journal: `journalPosts` (slug, ISO date, localized
+  title/excerpt, tags, and the `video` id the note quotes), `journalPlatforms`, and the body
+  loaders. Post bodies are markdown at `src/content/journal/<slug>.<lang>.md`, pulled in by a
+  **non-eager** `import.meta.glob(… "?raw")` — they must stay lazy, since the landing page never
+  renders one and eager loading put every body in the main chunk. `loadPostBody` is therefore async
+  and `readingMinutes` takes the loaded body, not a slug.
+- `src/pages/JournalPost.tsx` is the `/journal/:slug` route, lazy-imported in `App.tsx` so
+  react-markdown (~160 KB) stays out of the landing chunk. It renders the body with
+  `react-markdown` + `remark-gfm` (the notes lean on GFM tables) inside `.post-body`, sets
+  `document.title`, resets Lenis scroll on slug change, and falls back to an in-page 404 for an
+  unknown slug.
+- `.post-body` in `src/index.css` is the only prose scale on the site (68ch measure, lime-ruled
+  blockquotes, mono uppercase table headers, tables scrolling inside their own `overflow-x`).
+  `@tailwindcss/typography` is a dependency but is deliberately **not** registered as a plugin —
+  the notes are the only prose here, so the scale is hand-rolled to match the HUD chrome.
+- Adding a note: two markdown files (`.en.md` and `.it.md`) plus one `journalPosts` entry.
+  `src/data/journal.test.ts` fails if a language file is missing or thin, if a `[TK` marker survives,
+  or if any `@ HH:MM:SS](…&t=Ns)` deep link disagrees with its label — the notes quote the streams by
+  timestamp, so a mislabelled link silently misattributes a quote. `src/pages/JournalPost.test.tsx`
+  renders the real route and asserts the markdown, both languages and the 404 path.
+- Drafts (LinkedIn cuts, unresolved `[TK]`s, cross-post copy) live in `drafts/journal/` and are not
+  shipped — only `src/content/journal/` is.
 - `projects` entries may carry a `badge` (rendered under the year, e.g. "Private repo") and a `shot`
   (`{ avif, fallback, alt }`) — a cropped screenshot standing in for a live site that is
   password-gated or private, rendered as a `panel` preview inside the row. Screenshots are cropped

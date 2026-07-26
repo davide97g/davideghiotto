@@ -2,14 +2,11 @@ import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
 import JournalPortrait from "@/components/portfolio/JournalPortrait";
 import { useLanguage } from "@/context/LanguageContext";
-import {
-  journalEntries,
-  journalPlatforms,
-  ui,
-  type JournalPlatformId,
-} from "@/data/content";
+import { ui } from "@/data/content";
+import { journalPlatforms, journalPosts, type JournalPlatformId } from "@/data/journal";
 import { ArrowUpRight, Github, Linkedin, Terminal, Youtube } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const PLATFORM_ICON: Record<JournalPlatformId, LucideIcon> = {
   linkedin: Linkedin,
@@ -21,9 +18,10 @@ const PLATFORM_ICON: Record<JournalPlatformId, LucideIcon> = {
 const linkedin = journalPlatforms.find((p) => p.id === "linkedin") ?? journalPlatforms[0];
 
 /**
- * Detached band, sitting between Work (02) and Stack (03): a full-bleed strip on
- * a raised surface with no section number, so the numbered sections still read
- * 01 → 05. Holds the diary entries and the platforms they are published on.
+ * Detached band, sitting between Work (02) and Stack (03): a full-bleed strip on a
+ * raised surface with no section number, so the numbered sections still read
+ * 01 → 05. Lists the journal posts (each a route under `/journal/:slug`) and the
+ * platforms they are cross-posted on.
  */
 export default function JournalSection() {
   const { lang, t } = useLanguage();
@@ -69,7 +67,7 @@ export default function JournalSection() {
               <h3 className="hud mb-6">{t(ui.journal.latest)}</h3>
             </Reveal>
 
-            {journalEntries.length === 0 ? (
+            {journalPosts.length === 0 ? (
               <Reveal>
                 <div className="border border-dashed border-border p-8">
                   <p className="max-w-md text-sm leading-relaxed text-muted-foreground md:text-base">
@@ -92,39 +90,37 @@ export default function JournalSection() {
                 stagger={0.1}
                 className="border-t border-border"
               >
-                {journalEntries.map((entry) => {
-                  const Icon = PLATFORM_ICON[entry.platform];
-                  return (
-                    <li key={entry.link} className="journal-entry border-b border-border">
-                      <a
-                        href={entry.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex gap-6 py-7"
-                      >
-                        <Icon
-                          size={16}
-                          className="mt-1.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <span className="hud">
-                            <time dateTime={entry.date}>{formatDate(entry.date)}</time>
+                {journalPosts.map((post) => (
+                  <li key={post.slug} className="journal-entry border-b border-border">
+                    <Link to={`/journal/${post.slug}`} className="group block py-7">
+                      <span className="hud">
+                        <time dateTime={post.date}>{formatDate(post.date)}</time>
+                      </span>
+
+                      <h4 className="mt-3 font-display text-xl font-bold tracking-tight transition-colors group-hover:text-primary md:text-2xl">
+                        {t(post.title)}
+                      </h4>
+                      <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                        {t(post.excerpt)}
+                      </p>
+
+                      <div className="mt-5 flex flex-wrap items-center gap-3">
+                        {post.tags.map((tag) => (
+                          <span key={tag} className="tag">
+                            {tag}
                           </span>
-                          <h4 className="mt-3 font-display text-xl font-bold tracking-tight transition-colors group-hover:text-primary md:text-2xl">
-                            {t(entry.title)}
-                          </h4>
-                          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                            {t(entry.excerpt)}
-                          </p>
-                        </div>
-                        <ArrowUpRight
-                          size={18}
-                          className="mt-1 shrink-0 text-muted-foreground transition-all duration-500 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"
-                        />
-                      </a>
-                    </li>
-                  );
-                })}
+                        ))}
+                        <span className="hud ml-auto flex items-center gap-2 transition-colors group-hover:text-primary">
+                          {t(ui.journal.read)}
+                          <ArrowUpRight
+                            size={14}
+                            className="transition-transform duration-500 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                          />
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
               </Reveal>
             )}
           </div>
