@@ -63,6 +63,11 @@ export default function RalPage() {
         if (!cancelled) setHydrated(true);
         return;
       }
+      // Absolute expiresAt in localStorage → correct remaining time even before the API answers.
+      if (!cancelled) {
+        setAccess(stored);
+        setSecondsLeft(unlockSecondsLeft(stored));
+      }
       const result = await loadRalSessionData();
       if (cancelled) return;
       if (result.ok) {
@@ -73,6 +78,7 @@ export default function RalPage() {
       } else {
         setAccess(null);
         setData(null);
+        setSecondsLeft(0);
       }
       setHydrated(true);
     })();
@@ -81,7 +87,8 @@ export default function RalPage() {
     };
   }, []);
 
-  // Live countdown + hard lock when expiresAt elapses (no full-page reload).
+  // Live countdown from absolute expiresAt — re-sync on tab focus so background
+  // throttling never leaves a stale clock after the user comes back.
   useEffect(() => {
     if (!access?.expiresAt) {
       setSecondsLeft(0);
@@ -102,7 +109,16 @@ export default function RalPage() {
 
     tick();
     const id = window.setInterval(tick, 1000);
-    return () => window.clearInterval(id);
+    const onResume = () => {
+      if (document.visibilityState === "visible") tick();
+    };
+    document.addEventListener("visibilitychange", onResume);
+    window.addEventListener("focus", onResume);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", onResume);
+      window.removeEventListener("focus", onResume);
+    };
   }, [access]);
 
   useEffect(() => {
@@ -212,17 +228,47 @@ export default function RalPage() {
         </div>
 
         {unlocked && access && (
-          <div className="mt-10 flex flex-wrap items-center gap-3 border border-primary/35 bg-primary/5 px-4 py-3">
-            <Eye size={14} className="text-primary" />
-            <p className="hud text-primary">{t(ui.ral.unlocked)}</p>
-            <span className="hud text-muted-foreground">{access.email}</span>
-            <span className="ml-auto inline-flex items-center gap-2 hud text-muted-foreground">
-              <Timer size={12} className="text-primary" />
-              {t(ui.ral.expiresIn)}{" "}
-              <span className="tabular-nums text-primary">
-                {formatUnlockCountdown(secondsLeft)}
-              </span>
-            </span>
+          <div
+            className={`mt-10 grid overflow-hidden border sm:grid-cols-[minmax(0,1fr)_auto] ${
+              secondsLeft <= 300
+                ? "border-primary bg-primary/15"
+                : "border-primary/50 bg-primary/10"
+            }`}
+            role="status"
+            aria-live="polite"
+            aria-label={`${t(ui.ral.expiresIn)} ${formatUnlockCountdown(secondsLeft)}`}
+          >
+            <div className="flex min-w-0 flex-wrap items-center gap-3 px-4 py-4 sm:px-5">
+              <Eye size={16} className="shrink-0 text-primary" aria-hidden />
+              <div className="min-w-0">
+                <p className="hud text-primary">{t(ui.ral.unlocked)}</p>
+                <p className="mt-1 truncate font-mono text-sm text-foreground sm:text-base">
+                  {access.email}
+                </p>
+              </div>
+            </div>
+
+            <div
+              className={`flex items-center gap-4 border-t border-primary/35 px-4 py-4 sm:border-l sm:border-t-0 sm:px-6 ${
+                secondsLeft <= 300 ? "bg-primary/20" : "bg-primary/15"
+              }`}
+            >
+              <Timer
+                size={22}
+                className={`shrink-0 text-primary ${secondsLeft <= 300 ? "animate-pulse" : ""}`}
+                aria-hidden
+              />
+              <div className="min-w-[7.5rem]">
+                <p className="hud text-primary">{t(ui.ral.expiresIn)}</p>
+                <p
+                  className={`mt-1 font-mono text-3xl font-bold tabular-nums tracking-tight text-accent-glow sm:text-4xl ${
+                    secondsLeft <= 300 ? "animate-pulse" : ""
+                  }`}
+                >
+                  {formatUnlockCountdown(secondsLeft)}
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
