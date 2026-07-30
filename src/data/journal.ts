@@ -16,8 +16,11 @@ export interface JournalPost {
   title: Localized;
   excerpt: Localized;
   tags: string[];
-  /** YouTube id the post is anchored to — used for the header thumbnail. */
-  video: string;
+  /**
+   * YouTube id the post is anchored to — used for the header thumbnail. Absent on
+   * notes that aren't drawn from a stream (the header then skips the video card).
+   */
+  video?: string;
   /** Where it was also published, once it is cross-posted. */
   crossPost?: { platform: JournalPlatformId; url: string };
 }
@@ -34,6 +37,19 @@ export interface JournalPlatform {
 
 /** Newest first — this is the order the journal band renders. */
 export const journalPosts: JournalPost[] = [
+  {
+    slug: "ral-in-chiaro",
+    date: "2026-07-30",
+    title: {
+      en: "My salary is public. Here is the page.",
+      it: "La mia RAL è pubblica. Ecco la pagina.",
+    },
+    excerpt: {
+      en: "Gross figures behind a one-time-code email gate, expiring in an hour, fail-closed — and why the EU pay transparency rules in force since 7 June 2026 make hiding them pointless.",
+      it: "Cifre lorde dietro un gate email con codice monouso, scadenza a un'ora, fail-closed — e perché le regole UE sulla trasparenza retributiva in vigore dal 7 giugno 2026 rendono inutile nasconderle.",
+    },
+    tags: ["Transparency", "RAL", "EU 2023/970"],
+  },
   {
     slug: "ho-staccato-tutto",
     date: "2026-07-26",

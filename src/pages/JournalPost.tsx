@@ -138,7 +138,9 @@ export default function JournalPost() {
             </Reveal>
           </header>
 
-          {/* The live the note is drawn from — every quote inside links back into it. */}
+          {/* The live the note is drawn from — every quote inside links back into it.
+              Notes written outside a stream carry no video and skip this card. */}
+          {post.video && (
           <Reveal className="mt-12" y={20} start="top 88%">
           <a
             href={watchUrl(post.video)}
@@ -168,6 +170,7 @@ export default function JournalPost() {
             />
           </a>
           </Reveal>
+          )}
 
           <PostMotion contentKey={`${post.slug}:${lang}:${body.length}`}>
           <div className="post-body mt-16">

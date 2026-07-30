@@ -1,5 +1,5 @@
 import { LanguageProvider } from "@/context/LanguageContext";
-import { journalPosts } from "@/data/journal";
+import { findPost, journalPosts } from "@/data/journal";
 import JournalPost from "@/pages/JournalPost";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -18,7 +18,10 @@ const renderPost = (slug: string, lang: "en" | "it") =>
   );
 
 describe("journal post page", () => {
-  const post = journalPosts[0];
+  // Stream-sourced notes carry the quotes, tables and deep links; notes written
+  // outside a live have no video and must render without the source card.
+  const post = journalPosts.find((p) => p.video)!;
+  const detached = journalPosts.find((p) => !p.video);
 
   it("renders the note's title and body markdown", async () => {
     renderPost(post.slug, "it");
@@ -39,9 +42,10 @@ describe("journal post page", () => {
   });
 
   it("renders the English body when the language is English", async () => {
-    renderPost(post.slug, "en");
+    const en = findPost("ho-staccato-tutto")!;
+    renderPost(en.slug, "en");
 
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(post.title.en);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(en.title.en);
     await waitFor(() =>
       expect(document.querySelector(".post-body")?.textContent ?? "").toContain(
         "Managed services"
@@ -59,6 +63,16 @@ describe("journal post page", () => {
       `a[href="https://www.youtube.com/watch?v=${post.video}"]`
     );
     expect(source).toBeInTheDocument();
+  });
+
+  it("renders a note with no source live without the video card", async () => {
+    if (!detached) return;
+    renderPost(detached.slug, "it");
+
+    await waitFor(() =>
+      expect(document.querySelector(".post-body")?.textContent ?? "").not.toBe("")
+    );
+    expect(document.querySelector('a[href*="youtube.com/watch"]')).toBeNull();
   });
 
   it("falls back to a 404 view for an unknown slug", () => {

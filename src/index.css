@@ -657,6 +657,29 @@
     border-top: 1px solid hsl(var(--border));
   }
 
+  /* Screenshots carry small HUD type, so they need more room than the 68ch measure.
+     A paragraph holding nothing but an image breaks out of it — but only from `lg`
+     up, where the container has slack on both sides; narrower than that the extra
+     width would push the page into horizontal scroll. */
+  .post-body p:has(> img:only-child) {
+    margin-block: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .post-body p:has(> img:only-child) {
+      width: calc(100% + 8rem);
+      margin-inline-start: -4rem;
+    }
+  }
+
+  .post-body img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--surface));
+  }
+
   /* ── Marquee ───────────────────────────────────────────────── */
 
   .marquee-strip {

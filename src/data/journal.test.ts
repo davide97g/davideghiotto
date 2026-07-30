@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { sectionOrder } from "./content";
 import {
@@ -47,12 +49,28 @@ describe("journal posts", () => {
     for (const slug of slugs) expect(slug).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
   });
 
-  it("carries an ISO date and a source video", () => {
+  it("carries an ISO date, and a well-formed video id when it has one", () => {
     for (const post of journalPosts) {
       expect(post.date, post.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(Number.isNaN(new Date(post.date).getTime()), post.slug).toBe(false);
-      expect(post.video, post.slug).toMatch(/^[\w-]{11}$/);
+      // Notes not drawn from a stream carry no video — but a present id must be usable.
+      if (post.video !== undefined) expect(post.video, post.slug).toMatch(/^[\w-]{11}$/);
     }
+  });
+
+  it("keeps every referenced image in public/", async () => {
+    const missing: string[] = [];
+    for (const post of journalPosts) {
+      for (const lang of LANGS) {
+        const body = await loadPostBody(post.slug, lang);
+        for (const [, src] of body.matchAll(/!\[[^\]]*\]\((\/[^)\s]+)\)/g)) {
+          if (!existsSync(join(process.cwd(), "public", src))) {
+            missing.push(`${post.slug}.${lang}: ${src}`);
+          }
+        }
+      }
+    }
+    expect(missing).toEqual([]);
   });
 
   it.each(LANGS)("has a %s body file for every post", (lang) => {
