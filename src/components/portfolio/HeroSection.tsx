@@ -5,8 +5,9 @@ import { ui } from "@/data/content";
 import { channel } from "@/data/youtube";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useLenis } from "lenis/react";
-import { ArrowDown, Play } from "lucide-react";
+import { ArrowDown, Play, Sparkles } from "lucide-react";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 
 export default function HeroSection() {
   const { t } = useLanguage();
@@ -124,6 +125,16 @@ export default function HeroSection() {
             >
               <Play size={13} /> {t(ui.hero.ctaSecondary)}
             </a>
+            <Link to="/ral" className="btn-ral group">
+              <span className="btn-ral-glow" aria-hidden />
+              <Sparkles size={13} className="relative text-primary" />
+              <span className="relative flex flex-col items-start gap-0.5 text-left">
+                <span>{t(ui.ral.cta)}</span>
+                <span className="text-[0.6rem] font-normal tracking-[0.14em] text-muted-foreground transition-colors group-hover:text-primary/80">
+                  {t(ui.ral.ctaHint)}
+                </span>
+              </span>
+            </Link>
           </div>
         </div>
       </div>

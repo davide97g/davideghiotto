@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
  * code on the landing page — so it loads on demand instead of in the main chunk.
  */
 const JournalPost = lazy(() => import("./pages/JournalPost"));
+const RalPage = lazy(() => import("./pages/Ral"));
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/journal/:slug" element={<JournalPost />} />
+                  <Route path="/ral" element={<RalPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </PageTransition>

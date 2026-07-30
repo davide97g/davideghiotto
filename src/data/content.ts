@@ -166,6 +166,101 @@ export const ui = {
   lang: {
     label: { en: "Language", it: "Lingua" },
   },
+  ral: {
+    label: { en: "Compensation", it: "Compenso" },
+    title: {
+      en: "RAL disclosure.",
+      it: "Disclosure della RAL.",
+    },
+    lead: {
+      en: "An open look at how my gross annual salary moved across companies — from the first Reply offer to the current Bitrock number. Exact figures unlock with a work email.",
+      it: "Uno sguardo aperto a come è cambiata la mia RAL tra le aziende — dalla prima offerta Reply al numero attuale in Bitrock. Le cifre precise si sbloccano con una email di lavoro.",
+    },
+    back: { en: "Back home", it: "Torna alla home" },
+    cta: { en: "See my RAL", it: "Vedi la mia RAL" },
+    ctaHint: {
+      en: "Current gross · full history",
+      it: "Lordo attuale · storico completo",
+    },
+    lockedHint: {
+      en: "Figures locked — reveal to unlock",
+      it: "Cifre bloccate — rivela per sbloccare",
+    },
+    reveal: { en: "Reveal RAL", it: "Rivela RAL" },
+    revealHint: {
+      en: "Email gate · one step",
+      it: "Gate email · un passo",
+    },
+    unlocked: {
+      en: "Unlocked for",
+      it: "Sbloccato per",
+    },
+    currentLabel: { en: "Current", it: "Attuale" },
+    chartLabel: { en: "Trajectory", it: "Traiettoria" },
+    chartTitle: {
+      en: "RAL over time.",
+      it: "RAL nel tempo.",
+    },
+    chartLead: {
+      en: "Each step is a bump. Coloured bands mark the employer so Reply, Namirial, Infodati and Bitrock stay recognisable at a glance.",
+      it: "Ogni scalino è un aumento. Le bande colorate segnano il datore di lavoro: Reply, Namirial, Infodati e Bitrock restano riconoscibili a colpo d'occhio.",
+    },
+    chartAxis: {
+      en: "X · time  ·  Y · gross annual RAL",
+      it: "X · tempo  ·  Y · RAL lorda annua",
+    },
+    stats: {
+      current: { en: "Current RAL", it: "RAL attuale" },
+      growth: { en: "Total growth", it: "Crescita totale" },
+      multiple: { en: "vs first offer", it: "vs prima offerta" },
+    },
+    timeline: {
+      label: { en: "Employers", it: "Aziende" },
+      title: {
+        en: "Where the bumps landed.",
+        it: "Dove sono arrivati gli aumenti.",
+      },
+      lead: {
+        en: "Same path as the CV — each company carries its RAL steps underneath.",
+        it: "Lo stesso percorso del CV — ogni azienda porta sotto i suoi step di RAL.",
+      },
+      present: { en: "present", it: "oggi" },
+      locked: {
+        en: "Amounts stay redacted until you reveal.",
+        it: "Gli importi restano oscurati finché non riveli.",
+      },
+    },
+    gate: {
+      eyebrow: { en: "Access gate", it: "Gate di accesso" },
+      title: {
+        en: "Share an email to read the numbers.",
+        it: "Condividi un'email per leggere i numeri.",
+      },
+      lead: {
+        en: "Recruiters, founders, curious peers — drop a real address and the chart unlocks. No spam, just a receipt that you showed up.",
+        it: "Recruiter, founder, colleghi curiosi — lascia un indirizzo vero e il grafico si sblocca. Niente spam, solo la traccia che ti sei presentato.",
+      },
+      badge: { en: "Mock check · live soon", it: "Check mock · live a breve" },
+      emailLabel: { en: "Work email", it: "Email di lavoro" },
+      placeholder: { en: "you@company.com", it: "tu@azienda.com" },
+      submit: { en: "Unlock RAL", it: "Sblocca RAL" },
+      pending: { en: "Checking", it: "Verifica" },
+      footnote: {
+        en: "Validation is mocked for now — any plausible email works. A real capture service lands later.",
+        it: "La validazione è mockata per ora — funziona qualsiasi email plausibile. Il servizio reale arriva dopo.",
+      },
+      errors: {
+        invalid: {
+          en: "That doesn't look like a usable email.",
+          it: "Non sembra un'email utilizzabile.",
+        },
+        network: {
+          en: "Couldn't store the unlock — try again.",
+          it: "Non riesco a salvare lo sblocco — riprova.",
+        },
+      },
+    },
+  },
 };
 
 export const summary: Localized = {

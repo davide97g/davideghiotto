@@ -22,6 +22,10 @@ describe("sitemap", () => {
     expect(sitemap).toContain(`<loc>${SITE}/</loc>`);
   });
 
+  it("lists the RAL disclosure page", () => {
+    expect(sitemap).toContain(`<loc>${SITE}/ral</loc>`);
+  });
+
   it("lists every journal post exactly once", () => {
     for (const post of journalPosts) {
       const loc = `<loc>${SITE}/journal/${post.slug}</loc>`;
@@ -29,8 +33,8 @@ describe("sitemap", () => {
     }
   });
 
-  it("has one url entry per post plus the landing page", () => {
-    expect(sitemap.split("<url>").length - 1).toBe(journalPosts.length + 1);
+  it("has one url entry per post plus the landing and RAL pages", () => {
+    expect(sitemap.split("<url>").length - 1).toBe(journalPosts.length + 2);
   });
 
   it("carries each post's own date as its lastmod", () => {

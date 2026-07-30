@@ -321,6 +321,65 @@
     transform: translateY(-1px);
   }
 
+  /* RAL disclosure CTA — lime-rimmed HUD chip that stands apart from the two main CTAs. */
+  .btn-ral {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1.25rem;
+    border: 1px solid hsl(var(--primary) / 0.45);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.08),
+      hsl(var(--surface-raised) / 0.4) 55%,
+      transparent
+    );
+    color: hsl(var(--foreground));
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition:
+      border-color 0.4s var(--ease-out-expo),
+      transform 0.35s var(--ease-out-expo),
+      box-shadow 0.4s var(--ease-out-expo);
+  }
+
+  .btn-ral-glow {
+    position: absolute;
+    inset: -40% auto auto -20%;
+    width: 70%;
+    height: 140%;
+    background: radial-gradient(circle, hsl(var(--primary) / 0.35), transparent 68%);
+    opacity: 0.55;
+    transition: opacity 0.4s var(--ease-out-expo), transform 0.6s var(--ease-out-expo);
+  }
+
+  .btn-ral:hover {
+    border-color: hsl(var(--primary) / 0.85);
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px hsl(var(--primary) / 0.25),
+      0 14px 36px -16px hsl(var(--primary) / 0.55);
+  }
+
+  .btn-ral:hover .btn-ral-glow {
+    opacity: 1;
+    transform: translate(18%, 8%);
+  }
+
+  .btn-ral:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .btn-ral-compact {
+    padding: 0.7rem 1.1rem;
+  }
+
   /* Link with a wipe-in underline. */
   .link-wipe {
     position: relative;

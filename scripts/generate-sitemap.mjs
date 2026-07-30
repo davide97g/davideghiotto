@@ -57,6 +57,12 @@ const entry = ({ path, lastmod, changefreq, priority }) =>
 
 const urls = [
   entry({ path: "/", lastmod: latest, changefreq: "weekly", priority: "1.0" }),
+  entry({
+    path: "/ral",
+    lastmod: latest,
+    changefreq: "monthly",
+    priority: "0.7",
+  }),
   ...posts.map((post) =>
     entry({
       path: `/journal/${post.slug}`,
@@ -77,4 +83,4 @@ ${urls.join("\n")}
 `;
 
 writeFileSync(resolve(root, "public/sitemap.xml"), xml);
-console.log(`sitemap: wrote ${urls.length} urls (1 landing + ${posts.length} notes)`);
+console.log(`sitemap: wrote ${urls.length} urls (1 landing + 1 ral + ${posts.length} notes)`);

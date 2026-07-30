@@ -3,6 +3,7 @@ import { bio, ui } from "@/data/content";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useLenis } from "lenis/react";
 import { useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const LINKS = [
   { id: "channel", label: ui.nav.channel },
@@ -20,6 +21,9 @@ export default function Nav() {
   const lenis = useLenis();
   const shell = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const onHome = location.pathname === "/";
 
   // Slide the bar out of the way going down, bring it back going up.
   useGSAP(
@@ -47,8 +51,22 @@ export default function Nav() {
     { scope: shell }
   );
 
+  const goHome = () => {
+    setOpen(false);
+    if (onHome) {
+      if (lenis) lenis.scrollTo(0);
+      else window.scrollTo({ top: 0 });
+      return;
+    }
+    navigate("/");
+  };
+
   const goTo = (id: string) => {
     setOpen(false);
+    if (!onHome) {
+      navigate(`/#${id}`);
+      return;
+    }
     const target = document.getElementById(id);
     if (!target) return;
     if (lenis) lenis.scrollTo(target, { offset: -40 });
@@ -61,19 +79,15 @@ export default function Nav() {
       className="fixed inset-x-0 top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl"
     >
       <div className="section-container flex h-14 items-center justify-between gap-6">
-        <a
-          href="#hero"
-          onClick={(e) => {
-            e.preventDefault();
-            if (lenis) lenis.scrollTo(0);
-            else window.scrollTo({ top: 0 });
-          }}
+        <button
+          type="button"
+          onClick={goHome}
           className="hud whitespace-nowrap text-foreground"
         >
           <span className="text-primary">◢</span>{" "}
           <span className="hidden sm:inline">{bio.name}</span>
           <span className="sm:hidden">DG</span>
-        </a>
+        </button>
 
         <nav className="hidden items-center gap-6 lg:flex">
           {LINKS.map((link) => (
@@ -85,6 +99,13 @@ export default function Nav() {
               {t(link.label)}
             </button>
           ))}
+          <Link
+            to="/ral"
+            onClick={() => setOpen(false)}
+            className="hud link-wipe text-primary transition-colors hover:text-foreground"
+          >
+            {t(ui.ral.cta)}
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -134,6 +155,13 @@ export default function Nav() {
               {t(link.label)}
             </button>
           ))}
+          <Link
+            to="/ral"
+            onClick={() => setOpen(false)}
+            className="mobile-nav-item hud block w-full py-3 text-left text-primary"
+          >
+            {t(ui.ral.cta)}
+          </Link>
         </nav>
       )}
     </header>
