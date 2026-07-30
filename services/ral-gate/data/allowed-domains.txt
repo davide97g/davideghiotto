@@ -1,0 +1,95 @@
+# Never treated as disposable — checked before the blocklist, for the address
+# domain AND for MX hostnames. A bad upstream blocklist entry must not lock out
+# gmail, and legitimate custom domains that forward through a free relay must
+# stay usable.
+#
+# Refreshed by hand. `npm run fetch:disposable` never touches this file.
+
+# --- major consumer providers -------------------------------------------------
+gmail.com
+googlemail.com
+outlook.com
+outlook.it
+hotmail.com
+hotmail.it
+live.com
+live.it
+msn.com
+yahoo.com
+yahoo.it
+yahoo.co.uk
+ymail.com
+aol.com
+icloud.com
+me.com
+mac.com
+gmx.com
+gmx.net
+gmx.de
+web.de
+mail.com
+zoho.com
+zohomail.com
+fastmail.com
+fastmail.fm
+hey.com
+tutanota.com
+tutanota.de
+tuta.io
+tuta.com
+protonmail.com
+protonmail.ch
+proton.me
+pm.me
+mail.ru
+yandex.com
+yandex.ru
+
+# --- italian providers / ISPs -------------------------------------------------
+libero.it
+virgilio.it
+tiscali.it
+alice.it
+tin.it
+fastwebnet.it
+inwind.it
+iol.it
+email.it
+poste.it
+pec.it
+aruba.it
+legalmail.it
+
+# --- masked relays: forward to a real, verified mailbox -----------------------
+# Single-use addresses, but a real human is behind them and the OTP arrives.
+privaterelay.appleid.com
+icloud.com.cn
+mozmail.com
+relay.firefox.com
+duck.com
+
+# --- mail infrastructure seen as MX for legitimate custom domains ------------
+# Forwarding/hosting providers whose hostnames some blocklists carry.
+improvmx.com
+forwardemail.net
+mx.cloudflare.net
+googlemail.com
+google.com
+outlook.com
+protection.outlook.com
+messagingengine.com
+mailgun.org
+sendgrid.net
+zoho.eu
+registrar-servers.com
+secureserver.net
+ionos.com
+ionos.de
+one.com
+ovh.net
+gandi.net
+migadu.com
+mailbox.org
+posteo.de
+runbox.com
+purelymail.com

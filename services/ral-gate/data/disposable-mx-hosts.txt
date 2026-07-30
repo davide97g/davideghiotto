@@ -1,0 +1,66 @@
+# Mail backends used by throwaway services.
+#
+# This is the layer that catches domains registered *after* the last blocklist
+# refresh: the operators rotate domains constantly but keep pointing MX at the
+# same handful of hosts. Matching is by parent domain, so `mx1.foo.com` matches
+# an entry of `foo.com`.
+#
+# Most backends are already named after a brand in disposable-domains.txt (which
+# is checked here too) — this file is for the ones that aren't.
+# Hand-maintained; `npm run fetch:disposable` never touches it.
+
+# --- large throwaway operators ------------------------------------------------
+mailinator.com
+1secmail.com
+1secmail.net
+1secmail.org
+temp-mail.org
+temp-mail.io
+tempmail.dev
+tempmailo.com
+yopmail.com
+yopmail.net
+guerrillamail.com
+guerrillamail.org
+mail.tm
+mailtm.com
+dropmail.me
+maildrop.cc
+mailsac.com
+inboxkitten.com
+mailnesia.com
+dispostable.com
+getnada.com
+nada.email
+moakt.com
+tempr.email
+discard.email
+emailondeck.com
+mailcatch.com
+throwawaymail.com
+trashmail.com
+trashmail.net
+mytemp.email
+altmails.com
+etempmail.com
+minuteinbox.com
+fakemail.net
+internxt.com
+tmailor.com
+smailpro.com
+emailfake.com
+generator.email
+mail-temp.com
+luxusmail.org
+mailpoof.com
+harakirimail.com
+spambog.com
+spam4.me
+grr.la
+sharklasers.com
+mailexpire.com
+jetable.org
+mohmal.com
+tempmailaddress.com
+byom.de
+muellmail.com

@@ -2,8 +2,8 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
 import { config } from "./config.js";
-import { clearExpiredUnlocks } from "./db.js";
-import { loadDisposableDomains } from "./emailPolicy.js";
+import { clearExpiredUnlocks, pruneRequestLog } from "./db.js";
+import { loadDisposableDomains, policyListSizes } from "./emailPolicy.js";
 import { registerRoutes } from "./routes.js";
 
 loadDisposableDomains();
@@ -38,9 +38,18 @@ const cleanupTimer = setInterval(() => {
 }, CLEANUP_MS);
 cleanupTimer.unref?.();
 
+// Audit rows are personal data — drop them past the retention window.
+const PRUNE_MS = 3_600_000;
+const pruneTimer = setInterval(() => {
+  const n = pruneRequestLog(config.logRetentionDays);
+  if (n > 0) app.log.info({ pruned: n }, "request log pruned");
+}, PRUNE_MS);
+pruneTimer.unref?.();
+
 try {
   await app.listen({ port: config.port, host: config.host });
   app.log.info(
+    { policy: policyListSizes(), admin: Boolean(config.adminToken) },
     `ral-gate listening on ${config.host}:${config.port} (mail=${Boolean(config.resendApiKey) ? "resend" : "dev-console"}, sessionTtl=${config.sessionTtlSeconds}s)`
   );
 } catch (err) {

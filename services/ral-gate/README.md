@@ -60,11 +60,75 @@ out.
 
 ## Anti temp-mail
 
-- Format + MX / A record check
-- Disposable domain list in `data/disposable-domains.txt`
-- Per-email and per-IP rate limits
+Three layers, cheapest first. Each one rejects with `error: "disposable"` or `"invalid"`.
 
-Refresh the list periodically from [disposable-email-domains](https://github.com/disposable-email-domains/disposable-email-domains).
+**1. Shape.** Format, RFC length caps (64 local / 254 total), placeholder local parts (`test@`,
+`qwerty@`), reserved TLDs (`.invalid`, `.local`, `.test`, `.example`, `.onion`, …). Domains are
+canonicalized to punycode first, so an IDN lookalike can't walk past an ASCII list.
+
+**2. Domain lists.** `data/allowed-domains.txt` is checked *first* and always wins — a bad upstream
+entry must never lock out gmail. Then `data/disposable-domains.txt` (~8k domains) with parent
+matching, so `foo.mailinator.com` is caught by the `mailinator.com` entry.
+
+**3. MX backends.** This is the layer that catches domains registered *after* the last list refresh.
+Throwaway operators rotate domains constantly but keep pointing MX at the same few hosts, so the
+exchange hostnames are matched against `data/disposable-mx-hosts.txt` **and** the main blocklist —
+a brand-new unlisted domain still resolves its MX to `mail.yopmail.com`.
+
+The A/AAAA fallback stays: RFC 5321 implicit MX is real and small legitimate domains rely on it, so
+dropping it would reject genuine contacts. There is no SMTP `RCPT TO` probe — it is unreliable, gets
+the sending IP blocked, and the OTP already proves the mailbox exists. DNS has a 3s deadline and a
+short-TTL cache so a blackholed resolver can't hold a request open.
+
+**Identity, not strings.** `d.a.vide+ral@gmail.com` and `davide@gmail.com` are one mailbox. Rate
+limits, the OTP row and the unlock row all key on the canonical form (sub-addressing stripped
+everywhere, dots stripped only for Gmail/Googlemail where they are ignored) — otherwise one mailbox
+buys unlimited codes. Mail still goes to the address as typed.
+
+Policy decisions, deliberate: free consumer providers (gmail, outlook, proton, libero, …) are
+**allowed** — blocking them costs real contacts and barely slows anyone who can register a €5
+domain. Masked relays (Apple Hide My Email, Firefox Relay, DuckDuckGo) are **allowed** too: they
+forward to a verified human mailbox and the code arrives.
+
+### Refreshing the list
+
+```bash
+npm run fetch:disposable
+```
+
+Pulls [disposable-email-domains](https://github.com/disposable-email-domains/disposable-email-domains),
+subtracts `data/allowed-domains.txt`, adds `data/disposable-extra.txt`, and refuses to write a list
+under 2,000 domains (so a moved or truncated upstream file fails loudly instead of shipping a filter
+that blocks nothing). The two local files are never written to, so a refresh can't drop a hand-made
+decision. Upstream removed their own `allowlist.conf`, which makes `data/allowed-domains.txt` the
+only guard against a bad upstream entry — keep it current.
+
+`npm test` (in this directory) covers alias canonicalization, MX matching, allowlist precedence and
+the reserved-TLD rejections.
+
+## Who asked — request log
+
+Every hit on `/request`, `/verify` and `/data` writes one `request_log` row: timestamp, address as
+typed, canonical address, domain, outcome, IP, `X-Forwarded-For`, user agent, referer, origin,
+`Accept-Language`, Cloudflare's `CF-IPCountry` when proxied, and the MX hosts the domain resolved to.
+`outcome` is the exact exit path — `sent`, `unlocked`, `served`, `wrong_code`, `disposable_domain`,
+`disposable_mx`, `no_mail_records`, `rate_limit_email`, `mail_error`, …
+
+Read it with `ADMIN_TOKEN` set:
+
+```bash
+# browser table
+open "https://ral-api.davideghiotto.it/v1/admin/requests?format=html&token=…"   # or send the header
+
+# JSON: totals, per-mailbox rollup, recent events
+curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+  "https://ral-api.davideghiotto.it/v1/admin/requests?limit=200"
+```
+
+Filters: `kind`, `outcome`, `email` (substring), `limit`, `offset`, `format=html`. The endpoint is
+closed entirely when `ADMIN_TOKEN` is unset, and the response is `no-store`.
+
+These rows are personal data. `LOG_RETENTION_DAYS` (default 180) sweeps them hourly.
 
 ## Data privacy
 

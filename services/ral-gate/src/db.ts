@@ -33,6 +33,10 @@ db.exec(`
     kind TEXT NOT NULL,
     created_at TEXT NOT NULL
   );
+
+  CREATE INDEX IF NOT EXISTS idx_request_log_email ON request_log (kind, email, created_at);
+  CREATE INDEX IF NOT EXISTS idx_request_log_ip ON request_log (kind, ip, created_at);
+  CREATE INDEX IF NOT EXISTS idx_request_log_created ON request_log (created_at);
 `);
 
 // Older DBs may predate expires_at — add it and expire legacy rows immediately.
@@ -41,6 +45,38 @@ if (!unlockCols.some((c) => c.name === "expires_at")) {
   db.exec(`ALTER TABLE unlocks ADD COLUMN expires_at TEXT`);
   db.exec(`UPDATE unlocks SET expires_at = unlocked_at WHERE expires_at IS NULL`);
 }
+
+/**
+ * request_log started as (email, ip, kind, created_at). Everything else is added
+ * here so an existing SQLite file on the volume upgrades in place — SQLite only
+ * allows one column per ALTER, and re-adding an existing column is an error, so
+ * each one is guarded.
+ */
+const REQUEST_LOG_COLUMNS: Record<string, string> = {
+  canonical_email: "TEXT",
+  email_domain: "TEXT",
+  outcome: "TEXT",
+  user_agent: "TEXT",
+  referer: "TEXT",
+  origin: "TEXT",
+  accept_language: "TEXT",
+  country: "TEXT",
+  mx_hosts: "TEXT",
+  forwarded_for: "TEXT",
+};
+
+const logCols = new Set(
+  (db.pragma("table_info(request_log)") as { name: string }[]).map((c) => c.name)
+);
+for (const [name, type] of Object.entries(REQUEST_LOG_COLUMNS)) {
+  if (!logCols.has(name)) db.exec(`ALTER TABLE request_log ADD COLUMN ${name} ${type}`);
+}
+
+// After the migration, since rate limiting keys on the canonical address.
+db.exec(
+  `CREATE INDEX IF NOT EXISTS idx_request_log_canonical
+     ON request_log (kind, canonical_email, created_at)`
+);
 
 export type OtpRow = {
   email: string;
@@ -136,7 +172,168 @@ export function logRequest(kind: string, email: string | null, ip: string | null
   ).run(email, ip, kind, new Date().toISOString());
 }
 
-export function countRecent(kind: string, key: "email" | "ip", value: string, sinceIso: string) {
+/** Everything worth keeping about one hit on the gate. */
+export interface RequestLogEntry {
+  kind: string;
+  /** Address as typed (normalized case). Absent when the body never parsed. */
+  email?: string | null;
+  /** Identity form — sub-addressing and provider dots removed. */
+  canonicalEmail?: string | null;
+  emailDomain?: string | null;
+  /** How the request ended: ok, invalid, disposable, disposable_mx, … */
+  outcome?: string | null;
+  ip?: string | null;
+  forwardedFor?: string | null;
+  userAgent?: string | null;
+  referer?: string | null;
+  origin?: string | null;
+  acceptLanguage?: string | null;
+  /** Cloudflare's CF-IPCountry, when the request came through the proxy. */
+  country?: string | null;
+  /** MX hostnames the domain resolved to, comma-joined. */
+  mxHosts?: string | null;
+}
+
+export function logRequestDetails(entry: RequestLogEntry) {
+  db.prepare(
+    `INSERT INTO request_log (
+       kind, email, canonical_email, email_domain, outcome,
+       ip, forwarded_for, user_agent, referer, origin, accept_language, country,
+       mx_hosts, created_at
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(
+    entry.kind,
+    entry.email ?? null,
+    entry.canonicalEmail ?? null,
+    entry.emailDomain ?? null,
+    entry.outcome ?? null,
+    entry.ip ?? null,
+    entry.forwardedFor ?? null,
+    entry.userAgent ?? null,
+    entry.referer ?? null,
+    entry.origin ?? null,
+    entry.acceptLanguage ?? null,
+    entry.country ?? null,
+    entry.mxHosts ?? null,
+    new Date().toISOString()
+  );
+}
+
+export interface RequestLogRow {
+  id: number;
+  created_at: string;
+  kind: string;
+  outcome: string | null;
+  email: string | null;
+  canonical_email: string | null;
+  email_domain: string | null;
+  ip: string | null;
+  forwarded_for: string | null;
+  country: string | null;
+  user_agent: string | null;
+  referer: string | null;
+  origin: string | null;
+  accept_language: string | null;
+  mx_hosts: string | null;
+}
+
+/** Newest first, optionally filtered by kind / outcome / email substring. */
+export function listRequests(opts: {
+  limit?: number;
+  offset?: number;
+  kind?: string;
+  outcome?: string;
+  email?: string;
+} = {}): RequestLogRow[] {
+  const limit = Math.min(Math.max(opts.limit ?? 100, 1), 1000);
+  const offset = Math.max(opts.offset ?? 0, 0);
+  const where: string[] = [];
+  const params: unknown[] = [];
+
+  if (opts.kind) {
+    where.push("kind = ?");
+    params.push(opts.kind);
+  }
+  if (opts.outcome) {
+    where.push("outcome = ?");
+    params.push(opts.outcome);
+  }
+  if (opts.email) {
+    where.push("(email LIKE ? OR canonical_email LIKE ?)");
+    params.push(`%${opts.email}%`, `%${opts.email}%`);
+  }
+
+  return db
+    .prepare(
+      `SELECT id, created_at, kind, outcome, email, canonical_email, email_domain,
+              ip, forwarded_for, country, user_agent, referer, origin,
+              accept_language, mx_hosts
+         FROM request_log
+         ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+        ORDER BY created_at DESC, id DESC
+        LIMIT ? OFFSET ?`
+    )
+    .all(...params, limit, offset) as RequestLogRow[];
+}
+
+/**
+ * One row per mailbox: how many times it asked, whether it ever unlocked, and
+ * when it was last seen. This is the "who looked at my numbers" view.
+ */
+export function listEmailActivity(limit = 200) {
+  return db
+    .prepare(
+      `SELECT
+         COALESCE(canonical_email, email) AS email,
+         MIN(created_at)                  AS first_seen,
+         MAX(created_at)                  AS last_seen,
+         COUNT(*)                         AS events,
+         SUM(kind = 'request')            AS code_requests,
+         SUM(kind = 'verify')             AS verify_attempts,
+         SUM(outcome = 'unlocked')        AS unlocks,
+         SUM(kind = 'data')               AS data_reads,
+         SUM(kind LIKE '%_blocked')       AS blocked,
+         COUNT(DISTINCT ip)               AS distinct_ips,
+         MAX(country)                     AS country,
+         MAX(email_domain)                AS domain
+       FROM request_log
+       WHERE COALESCE(canonical_email, email) IS NOT NULL
+       GROUP BY COALESCE(canonical_email, email)
+       ORDER BY last_seen DESC
+       LIMIT ?`
+    )
+    .all(Math.min(Math.max(limit, 1), 1000));
+}
+
+export function requestTotals() {
+  const byOutcome = db
+    .prepare(
+      `SELECT kind, COALESCE(outcome, 'unknown') AS outcome, COUNT(*) AS n
+         FROM request_log GROUP BY kind, outcome ORDER BY n DESC`
+    )
+    .all();
+  const totals = db
+    .prepare(
+      `SELECT COUNT(*) AS events,
+              COUNT(DISTINCT COALESCE(canonical_email, email)) AS mailboxes,
+              COUNT(DISTINCT ip) AS ips,
+              MIN(created_at) AS since
+         FROM request_log`
+    )
+    .get();
+  return { totals, byOutcome };
+}
+
+/** Drop request_log rows older than the retention window. 0 days = keep all. */
+export function pruneRequestLog(days: number): number {
+  if (!days || days <= 0) return 0;
+  const cutoff = new Date(Date.now() - days * 86_400_000).toISOString();
+  return db.prepare(`DELETE FROM request_log WHERE created_at < ?`).run(cutoff).changes;
+}
+
+export type RateKey = "email" | "canonical_email" | "ip";
+
+export function countRecent(kind: string, key: RateKey, value: string, sinceIso: string) {
   return (
     db
       .prepare(
@@ -154,7 +351,7 @@ export function countRecent(kind: string, key: "email" | "ip", value: string, si
  */
 export function recentTimestamps(
   kind: string,
-  key: "email" | "ip",
+  key: RateKey,
   value: string,
   sinceIso: string
 ): string[] {

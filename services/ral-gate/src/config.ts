@@ -22,6 +22,16 @@ export const config = {
   sessionSecret: required("SESSION_SECRET", "dev-only-change-me-please-32chars"),
   databasePath: path.resolve(root, process.env.DATABASE_PATH ?? "./data/ral-gate.sqlite"),
   disposablePath: path.resolve(root, "./data/disposable-domains.txt"),
+  disposableMxPath: path.resolve(root, "./data/disposable-mx-hosts.txt"),
+  allowlistPath: path.resolve(root, "./data/allowed-domains.txt"),
+  /** DNS deadline — a blackholed resolver must not hold a request open. */
+  dnsTimeoutMs: Number(process.env.DNS_TIMEOUT_MS ?? 3000),
+  dnsCacheTtlSeconds: Number(process.env.DNS_CACHE_TTL_SECONDS ?? 600),
+  dnsNegativeTtlSeconds: Number(process.env.DNS_NEGATIVE_TTL_SECONDS ?? 60),
+  /** Bearer token for GET /v1/admin/requests. Unset → the endpoint is closed. */
+  adminToken: process.env.ADMIN_TOKEN?.trim() || "",
+  /** Request-log retention. Older rows are swept hourly. 0 keeps everything. */
+  logRetentionDays: Number(process.env.LOG_RETENTION_DAYS ?? 180),
   resendApiKey: process.env.RESEND_API_KEY?.trim() || "",
   emailFrom: process.env.EMAIL_FROM ?? "RAL Gate <onboarding@resend.dev>",
   otpTtlSeconds: Number(process.env.OTP_TTL_SECONDS ?? 600),
