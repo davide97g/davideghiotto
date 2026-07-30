@@ -48,6 +48,16 @@ Checklist when standing it up again elsewhere:
 
 `deploy/ral-gate.service` is the bare-systemd alternative, kept for a non-Docker host.
 
+## Rate limits
+
+Rolling 1-hour window: 3 code requests per email, 10 per IP, 30 verify attempts per IP.
+
+A 429 says when the caller can try again — `Retry-After` plus
+`{ error: "rate_limit", retryAfterSeconds, retryAfterMinutes }` — and the gate dialog shows that
+wait instead of a vague "try later". Blocked attempts are logged under `request_blocked` /
+`verify_blocked` rather than counted, so re-clicking the button can't push the quoted wait further
+out.
+
 ## Anti temp-mail
 
 - Format + MX / A record check

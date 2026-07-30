@@ -146,3 +146,24 @@ export function countRecent(kind: string, key: "email" | "ip", value: string, si
       .get(kind, value, sinceIso) as { n: number }
   ).n;
 }
+
+/**
+ * Timestamps of the matching rows still inside the window, oldest first.
+ * Rate limiting needs the timestamps, not just the count: the oldest hit is what
+ * tells the caller how long until a slot frees up again.
+ */
+export function recentTimestamps(
+  kind: string,
+  key: "email" | "ip",
+  value: string,
+  sinceIso: string
+): string[] {
+  const rows = db
+    .prepare(
+      `SELECT created_at FROM request_log
+       WHERE kind = ? AND ${key} = ? AND created_at >= ?
+       ORDER BY created_at ASC`
+    )
+    .all(kind, value, sinceIso) as { created_at: string }[];
+  return rows.map((r) => r.created_at);
+}

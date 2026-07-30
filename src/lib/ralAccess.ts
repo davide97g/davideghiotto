@@ -30,7 +30,33 @@ export type RalGateError =
   | "auth"
   | "unavailable";
 
+/**
+ * A failed call. `retryAfterMinutes` is only set for `rate_limit`, where the
+ * service tells us how long until the caller gets another attempt.
+ */
+export type RalGateFailure = {
+  ok: false;
+  error: RalGateError;
+  retryAfterMinutes?: number;
+};
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+/** Minutes to wait, from the JSON body or the Retry-After header. */
+function retryAfterMinutes(
+  body: { retryAfterSeconds?: number; retryAfterMinutes?: number } | null,
+  res: Response
+): number | undefined {
+  if (typeof body?.retryAfterMinutes === "number" && body.retryAfterMinutes > 0) {
+    return Math.ceil(body.retryAfterMinutes);
+  }
+  const seconds =
+    typeof body?.retryAfterSeconds === "number"
+      ? body.retryAfterSeconds
+      : Number(res.headers.get("retry-after"));
+  if (!Number.isFinite(seconds) || seconds <= 0) return undefined;
+  return Math.max(1, Math.ceil(seconds / 60));
+}
 
 function apiBase(): string | null {
   const raw = import.meta.env.VITE_RAL_API_URL as string | undefined;
@@ -121,7 +147,7 @@ async function apiFetch(
 
 export type RequestOtpResult =
   | { ok: true; expiresIn: number; devCode?: string }
-  | { ok: false; error: RalGateError };
+  | RalGateFailure;
 
 export async function requestRalOtp(email: string): Promise<RequestOtpResult> {
   const trimmed = email.trim().toLowerCase();
@@ -135,11 +161,25 @@ export async function requestRalOtp(email: string): Promise<RequestOtpResult> {
   if (!res) return { ok: false, error: "unavailable" };
 
   const body = (await res.json().catch(() => null)) as
-    | { ok?: boolean; error?: RalGateError; expiresIn?: number; devCode?: string }
+    | {
+        ok?: boolean;
+        error?: RalGateError;
+        expiresIn?: number;
+        devCode?: string;
+        retryAfterSeconds?: number;
+        retryAfterMinutes?: number;
+      }
     | null;
 
   if (!res.ok || !body?.ok) {
-    return { ok: false, error: body?.error ?? "network" };
+    const error = body?.error ?? (res.status === 429 ? "rate_limit" : "network");
+    return {
+      ok: false,
+      error,
+      ...(error === "rate_limit"
+        ? { retryAfterMinutes: retryAfterMinutes(body, res) }
+        : {}),
+    };
   }
 
   return {
@@ -149,9 +189,7 @@ export async function requestRalOtp(email: string): Promise<RequestOtpResult> {
   };
 }
 
-export type VerifyOtpResult =
-  | { ok: true; access: RalAccess }
-  | { ok: false; error: RalGateError };
+export type VerifyOtpResult = { ok: true; access: RalAccess } | RalGateFailure;
 
 export async function verifyRalOtp(
   email: string,
@@ -171,6 +209,8 @@ export async function verifyRalOtp(
         error?: RalGateError;
         token?: string;
         access?: RalAccess;
+        retryAfterSeconds?: number;
+        retryAfterMinutes?: number;
       }
     | null;
 
@@ -182,7 +222,14 @@ export async function verifyRalOtp(
     !body.access.unlockedAt ||
     !body.access.expiresAt
   ) {
-    return { ok: false, error: body?.error ?? "code" };
+    const error = body?.error ?? (res.status === 429 ? "rate_limit" : "code");
+    return {
+      ok: false,
+      error,
+      ...(error === "rate_limit"
+        ? { retryAfterMinutes: retryAfterMinutes(body, res) }
+        : {}),
+    };
   }
 
   persistAccess(body.access, body.token);

@@ -25,6 +25,9 @@ interface RalGateProps {
 
 type Step = "email" | "code";
 
+/** A gate error plus, for `rate_limit`, how long the caller has to wait. */
+type GateFailure = { error: RalGateError; retryAfterMinutes?: number };
+
 /**
  * Two-step OTP gate: request code → verify. Fail-closed against the ral-gate API.
  */
@@ -35,14 +38,14 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
   const [code, setCode] = useState("");
   const [devCode, setDevCode] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<RalGateError | null>(null);
+  const [failure, setFailure] = useState<GateFailure | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
   const apiReady = isRalApiConfigured();
 
   useEffect(() => {
     if (!open) return;
-    setError(null);
+    setFailure(null);
     const id = window.setTimeout(() => {
       if (step === "email") emailRef.current?.focus();
       else codeRef.current?.focus();
@@ -55,7 +58,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
       setStep("email");
       setCode("");
       setDevCode(null);
-      setError(null);
+      setFailure(null);
       setPending(false);
     }
   }, [open]);
@@ -63,15 +66,16 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
   const requestCode = async (e: FormEvent) => {
     e.preventDefault();
     if (!apiReady) {
-      setError("unavailable");
+      setFailure({ error: "unavailable" });
       return;
     }
     setPending(true);
-    setError(null);
+    setFailure(null);
     const result = await requestRalOtp(email);
     setPending(false);
-    if (!result.ok) {
-      setError(result.error);
+    // `=== false` narrows the union; `!result.ok` does not, with strictNullChecks off.
+    if (result.ok === false) {
+      setFailure({ error: result.error, retryAfterMinutes: result.retryAfterMinutes });
       return;
     }
     setDevCode(result.devCode ?? null);
@@ -81,18 +85,18 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
   const verifyCode = async (e: FormEvent) => {
     e.preventDefault();
     setPending(true);
-    setError(null);
+    setFailure(null);
     const result = await verifyRalOtp(email, code);
     setPending(false);
-    if (!result.ok) {
-      setError(result.error);
+    if (result.ok === false) {
+      setFailure({ error: result.error, retryAfterMinutes: result.retryAfterMinutes });
       return;
     }
     onUnlocked(result.access);
     onOpenChange(false);
   };
 
-  const errorCopy = (err: RalGateError) => {
+  const errorCopy = ({ error: err, retryAfterMinutes }: GateFailure) => {
     const map = ui.ral.gate.errors;
     switch (err) {
       case "invalid":
@@ -102,7 +106,10 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
       case "network":
         return t(map.network);
       case "rate_limit":
-        return t(map.rateLimit);
+        // Quote the real wait when the service reports one, so nobody has to guess.
+        return retryAfterMinutes
+          ? t(map.rateLimitIn).replace("{minutes}", String(retryAfterMinutes))
+          : t(map.rateLimit);
       case "mail":
         return t(map.mail);
       case "code":
@@ -242,7 +249,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                   setStep("email");
                   setCode("");
                   setDevCode(null);
-                  setError(null);
+                  setFailure(null);
                 }}
               >
                 <ArrowLeft size={12} /> {t(ui.ral.gate.back)}
@@ -250,9 +257,9 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
             </form>
           )}
 
-          {error && (
+          {failure && (
             <p className="mt-3 text-sm text-destructive" role="alert">
-              {errorCopy(error)}
+              {errorCopy(failure)}
             </p>
           )}
 

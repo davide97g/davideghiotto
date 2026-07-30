@@ -1,14 +1,14 @@
-import type { FastifyInstance, FastifyRequest } from "fastify";
+import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { config } from "./config.js";
 import { getRalPayload } from "./data.js";
 import {
   bumpOtpAttempts,
   clearOtp,
-  countRecent,
   getOtp,
   getValidUnlock,
   logRequest,
+  recentTimestamps,
   recordUnlock,
   touchUnlock,
   upsertOtp,
@@ -49,6 +49,46 @@ function hoursAgo(h: number): string {
   return new Date(Date.now() - h * 3600_000).toISOString();
 }
 
+const RATE_WINDOW_HOURS = 1;
+
+/** Hits allowed per rolling window, per key. */
+const LIMITS = {
+  requestPerEmail: 3,
+  requestPerIp: 10,
+  verifyPerIp: 30,
+} as const;
+
+/**
+ * Seconds until one slot frees up, given the in-window hit timestamps (oldest
+ * first). The hit that matters is the one at `length - limit`: once it ages out
+ * of the window there is room for a new attempt.
+ *
+ * Rate-limited attempts are logged under a separate kind so they don't count
+ * toward the limit — otherwise someone re-clicking the button would keep pushing
+ * their own retry time further away, and the number we quote would be a lie.
+ */
+function retryAfterSeconds(hits: string[], limit: number): number {
+  const freeing = hits[hits.length - limit];
+  if (!freeing) return RATE_WINDOW_HOURS * 3600;
+  const ms =
+    new Date(freeing).getTime() + RATE_WINDOW_HOURS * 3600_000 - Date.now();
+  return Math.max(1, Math.ceil(ms / 1000));
+}
+
+function rateLimited(reply: FastifyReply, hits: string[], limit: number) {
+  const retryAfter = retryAfterSeconds(hits, limit);
+  return reply
+    .code(429)
+    .header("retry-after", String(retryAfter))
+    .send({
+      ok: false,
+      error: "rate_limit",
+      retryAfterSeconds: retryAfter,
+      // Rounded up, so the client never tells anyone to retry too early.
+      retryAfterMinutes: Math.max(1, Math.ceil(retryAfter / 60)),
+    });
+}
+
 function accessPayload(unlock: {
   email: string;
   unlocked_at: string;
@@ -77,6 +117,19 @@ export async function registerRoutes(app: FastifyInstance) {
 
     const email = normalizeEmail(parsed.data.email);
     const ip = clientIp(req);
+    const since = hoursAgo(RATE_WINDOW_HOURS);
+
+    const emailHits = recentTimestamps("request", "email", email, since);
+    if (emailHits.length >= LIMITS.requestPerEmail) {
+      logRequest("request_blocked", email, ip);
+      return rateLimited(reply, emailHits, LIMITS.requestPerEmail);
+    }
+    const ipHits = recentTimestamps("request", "ip", ip, since);
+    if (ipHits.length >= LIMITS.requestPerIp) {
+      logRequest("request_blocked", email, ip);
+      return rateLimited(reply, ipHits, LIMITS.requestPerIp);
+    }
+
     logRequest("request", email, ip);
 
     if (!isValidEmailFormat(email)) {
@@ -84,13 +137,6 @@ export async function registerRoutes(app: FastifyInstance) {
     }
     if (isDisposableEmail(email)) {
       return reply.code(400).send({ ok: false, error: "disposable" });
-    }
-
-    if (countRecent("request", "email", email, hoursAgo(1)) > 3) {
-      return reply.code(429).send({ ok: false, error: "rate_limit" });
-    }
-    if (countRecent("request", "ip", ip, hoursAgo(1)) > 10) {
-      return reply.code(429).send({ ok: false, error: "rate_limit" });
     }
 
     const mxOk = await hasMxRecords(email);
@@ -127,14 +173,22 @@ export async function registerRoutes(app: FastifyInstance) {
     const email = normalizeEmail(parsed.data.email);
     const code = parsed.data.code.trim();
     const ip = clientIp(req);
+
+    const verifyHits = recentTimestamps(
+      "verify",
+      "ip",
+      ip,
+      hoursAgo(RATE_WINDOW_HOURS)
+    );
+    if (verifyHits.length >= LIMITS.verifyPerIp) {
+      logRequest("verify_blocked", email, ip);
+      return rateLimited(reply, verifyHits, LIMITS.verifyPerIp);
+    }
+
     logRequest("verify", email, ip);
 
     if (!isValidEmailFormat(email) || isDisposableEmail(email)) {
       return reply.code(400).send({ ok: false, error: "invalid" });
-    }
-
-    if (countRecent("verify", "ip", ip, hoursAgo(1)) > 30) {
-      return reply.code(429).send({ ok: false, error: "rate_limit" });
     }
 
     const row = getOtp(email);

@@ -291,6 +291,11 @@ export const ui = {
           en: "Too many attempts. Wait a bit and try again.",
           it: "Troppi tentativi. Aspetta un po' e riprova.",
         },
+        /** `{minutes}` is replaced with the wait the service reports. */
+        rateLimitIn: {
+          en: "Too many attempts. Try again in {minutes} min.",
+          it: "Troppi tentativi. Riprova tra {minutes} min.",
+        },
         mail: {
           en: "Couldn't send the email. Try again shortly.",
           it: "Non riesco a inviare l'email. Riprova tra poco.",
