@@ -12,7 +12,9 @@
     "fetch:youtube": "node scripts/fetch-youtube.mjs",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "ral-gate": "npm --prefix services/ral-gate run dev",
+    "ral-gate:start": "npm --prefix services/ral-gate run start"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

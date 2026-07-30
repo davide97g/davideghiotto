@@ -11,10 +11,17 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
 
 # Locally installed agent skills (see skills.sh) — machine-local, not project source
 .claude/skills/
 skills-lock.json
+
+# ral-gate local database
+services/ral-gate/data/*.sqlite
+services/ral-gate/data/*.sqlite-*
 
 # Editor directories and files
 .vscode/*

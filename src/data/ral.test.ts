@@ -1,11 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  clearRalAccess,
-  getRalAccess,
-  isValidEmail,
-  requestRalAccess,
-} from "@/lib/ralAccess";
-import { currentRal, ralBumps, ralCompanies } from "@/data/ral";
+import { describe, expect, it } from "vitest";
+import { ralBumps, ralCompanies } from "@/data/ral";
+import { isValidEmail } from "@/lib/ralAccess";
 
 describe("ral data", () => {
   it("covers every CV employer in order", () => {
@@ -17,11 +12,12 @@ describe("ral data", () => {
     ]);
   });
 
-  it("keeps bumps chronological and ends on the current figure", () => {
+  it("keeps bumps chronological without shipping amounts in the public bundle", () => {
     const dates = ralBumps.map((b) => b.date);
     expect([...dates].sort()).toEqual(dates);
-    expect(currentRal.amount).toBe(44_000);
-    expect(currentRal.companyId).toBe("bitrock");
+    for (const bump of ralBumps) {
+      expect(bump.amount).toBeUndefined();
+    }
   });
 
   it("assigns each bump to a known company", () => {
@@ -39,24 +35,13 @@ describe("ral data", () => {
   });
 });
 
-describe("ral access gate", () => {
-  beforeEach(() => {
-    localStorage.clear();
-    clearRalAccess();
-    vi.useRealTimers();
-  });
-
-  it("rejects placeholder emails", () => {
-    expect(isValidEmail("test@company.com")).toBe(false);
+describe("ral access helpers", () => {
+  it("rejects obviously broken emails", () => {
     expect(isValidEmail("a@b.c")).toBe(false);
     expect(isValidEmail("not-an-email")).toBe(false);
   });
 
-  it("accepts a plausible work email and persists the unlock", async () => {
-    const result = await requestRalAccess("recruiter@acme.io");
-    expect(result.ok).toBe(true);
-    if (!result.ok) return;
-    expect(result.access.email).toBe("recruiter@acme.io");
-    expect(getRalAccess()?.email).toBe("recruiter@acme.io");
+  it("accepts a plausible work email format", () => {
+    expect(isValidEmail("recruiter@acme.io")).toBe(true);
   });
 });

@@ -1,9 +1,8 @@
 import type { Localized } from "@/data/content";
 
 /**
- * RAL disclosure data — salary bumps keyed to employers from the CV.
- * Amounts stay in this module so the gate can redact them without
- * touching the rest of the portfolio copy.
+ * Public RAL metadata (companies, dates, notes). Exact amounts live only on
+ * the ral-gate service and are merged in after a verified session.
  */
 
 export type RalCompanyId = "reply" | "namirial" | "infodati" | "bitrock";
@@ -39,10 +38,24 @@ export interface RalBump {
   id: string;
   /** ISO date at the start of the month the bump landed. */
   date: string;
-  /** Gross annual RAL in euros. */
-  amount: number;
+  /** Gross annual RAL in euros — only present after a verified unlock. */
+  amount?: number;
   companyId: RalCompanyId;
   note?: Localized;
+}
+
+export interface RalUnlockedData {
+  bumps: Array<{
+    id: string;
+    date: string;
+    amount: number;
+    companyId: RalCompanyId;
+    note: Localized;
+  }>;
+  current: { amount: number; companyId: RalCompanyId; date: string };
+  first: { amount: number; companyId: RalCompanyId; date: string };
+  delta: number;
+  multiplier: number;
 }
 
 /**
@@ -58,7 +71,6 @@ export const ralCompanies: RalCompany[] = [
     color: "#00CC48",
     logo: "/logos/reply.png",
     logoTreatment: "round-white",
-    // CV: Nov 2019–Oct 2021; band opens at the first RAL bump (Sep 2019).
     from: "2019-09",
     to: "2021-10",
     displayFrom: "2019-11",
@@ -72,7 +84,6 @@ export const ralCompanies: RalCompany[] = [
     id: "namirial",
     name: "Namirial",
     mark: "NM",
-    // Monochrome rings — light accent so bands stay readable on the noir canvas.
     color: "#E8E8E8",
     logo: "/logos/namirial.png",
     logoTreatment: "round",
@@ -119,61 +130,53 @@ export const ralCompanies: RalCompany[] = [
   },
 ];
 
-/** Every documented RAL bump, oldest → newest. */
+/** Public bump skeleton — dates + companies only, no amounts. */
 export const ralBumps: RalBump[] = [
   {
     id: "reply-22",
     date: "2019-09-01",
-    amount: 22_000,
     companyId: "reply",
     note: { en: "Entry offer", it: "Offerta d'ingresso" },
   },
   {
     id: "reply-25",
     date: "2020-01-01",
-    amount: 25_000,
     companyId: "reply",
     note: { en: "First bump", it: "Primo aumento" },
   },
   {
     id: "reply-27",
     date: "2020-09-01",
-    amount: 27_000,
     companyId: "reply",
     note: { en: "Year-one review", it: "Review del primo anno" },
   },
   {
     id: "namirial-30",
     date: "2021-10-01",
-    amount: 30_000,
     companyId: "namirial",
     note: { en: "Move to Namirial", it: "Passaggio a Namirial" },
   },
   {
     id: "infodati-35",
     date: "2022-09-01",
-    amount: 35_000,
     companyId: "infodati",
     note: { en: "Move to Infodati", it: "Passaggio a Infodati" },
   },
   {
     id: "bitrock-38",
     date: "2023-03-01",
-    amount: 38_000,
     companyId: "bitrock",
     note: { en: "Join Bitrock", it: "Ingresso in Bitrock" },
   },
   {
     id: "bitrock-41",
     date: "2024-07-01",
-    amount: 41_000,
     companyId: "bitrock",
     note: { en: "Mid-cycle review", it: "Review di metà ciclo" },
   },
   {
     id: "bitrock-44",
     date: "2025-07-01",
-    amount: 44_000,
     companyId: "bitrock",
     note: { en: "Current RAL", it: "RAL attuale" },
   },
@@ -183,15 +186,24 @@ export const companyById = Object.fromEntries(
   ralCompanies.map((c) => [c.id, c])
 ) as Record<RalCompanyId, RalCompany>;
 
-export const currentRal = ralBumps[ralBumps.length - 1];
-
-export const firstRal = ralBumps[0];
-
-/** Absolute growth from first offer to current RAL. */
-export const ralDelta = currentRal.amount - firstRal.amount;
-
-/** Multiplier from first offer (e.g. 2.0×). */
-export const ralMultiplier = currentRal.amount / firstRal.amount;
+/** Merge server amounts onto the public skeleton. */
+export function mergeRalAmounts(
+  skeleton: RalBump[],
+  data: RalUnlockedData
+): RalBump[] {
+  const byId = new Map(data.bumps.map((b) => [b.id, b]));
+  return skeleton.map((bump) => {
+    const remote = byId.get(bump.id);
+    if (!remote) return bump;
+    return {
+      ...bump,
+      amount: remote.amount,
+      note: remote.note ?? bump.note,
+      companyId: remote.companyId,
+      date: remote.date,
+    };
+  });
+}
 
 export function formatRal(amount: number, lang: "en" | "it"): string {
   return new Intl.NumberFormat(lang === "it" ? "it-IT" : "en-US", {

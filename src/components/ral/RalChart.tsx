@@ -4,11 +4,9 @@ import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
 import {
   companyById,
-  currentRal,
   formatRal,
   formatRalMonth,
   formatRalShort,
-  ralBumps,
   ralCompanies,
   type RalBump,
 } from "@/data/ral";
@@ -103,28 +101,58 @@ function LockedScrim({ onReveal }: { onReveal: () => void }) {
 
 interface RalChartProps {
   unlocked: boolean;
+  bumps: RalBump[];
+  currentAmount: number | null;
   onReveal: () => void;
 }
 
-export default function RalChart({ unlocked, onReveal }: RalChartProps) {
+export default function RalChart({
+  unlocked,
+  bumps,
+  currentAmount,
+  onReveal,
+}: RalChartProps) {
   const { lang, t } = useLanguage();
   const scope = useRef<HTMLDivElement>(null);
 
   const data = useMemo<Point[]>(() => {
-    return ralBumps.map((bump) => ({
-      t: new Date(bump.date).getTime(),
-      label: formatRalMonth(bump.date, lang),
-      amount: bump.amount,
-      companyId: bump.companyId,
-      bumpId: bump.id,
-      note: bump.note ? t(bump.note) : undefined,
-    }));
-  }, [lang, t]);
+    return bumps
+      .filter((bump) => typeof bump.amount === "number")
+      .map((bump) => ({
+        t: new Date(bump.date).getTime(),
+        label: formatRalMonth(bump.date, lang),
+        amount: bump.amount as number,
+        companyId: bump.companyId,
+        bumpId: bump.id,
+        note: bump.note ? t(bump.note) : undefined,
+      }));
+  }, [bumps, lang, t]);
 
-  // Extend the series to "now" so the last step doesn't stop mid-band.
+  const axisSeries = useMemo(() => {
+    const points = bumps.map((bump) => ({
+      t: new Date(bump.date).getTime(),
+      amount: 0,
+      bumpId: bump.id,
+      companyId: bump.companyId,
+      label: formatRalMonth(bump.date, lang),
+    }));
+    const last = points[points.length - 1];
+    if (!last) return points;
+    return [
+      ...points,
+      {
+        ...last,
+        t: Date.now(),
+        bumpId: "now",
+        label: formatRalMonth(new Date().toISOString(), lang),
+      },
+    ];
+  }, [bumps, lang]);
+
+  // Salary series only when unlocked — locked chart keeps the time axis + company bands.
   const series = useMemo(() => {
+    if (!unlocked || !data.length) return axisSeries;
     const last = data[data.length - 1];
-    if (!last) return data;
     return [
       ...data,
       {
@@ -135,9 +163,9 @@ export default function RalChart({ unlocked, onReveal }: RalChartProps) {
         note: undefined,
       },
     ];
-  }, [data, lang]);
+  }, [axisSeries, data, lang, unlocked]);
 
-  const yMax = Math.ceil((currentRal.amount * 1.18) / 5000) * 5000;
+  const yMax = Math.ceil(((currentAmount ?? 50_000) * 1.18) / 5000) * 5000;
 
   useGSAP(
     () => {
@@ -241,46 +269,42 @@ export default function RalChart({ unlocked, onReveal }: RalChartProps) {
                 />
               )}
 
-              <Area
-                type="stepAfter"
-                dataKey="amount"
-                stroke="#8CFF2E"
-                strokeWidth={2.5}
-                fill="url(#ralFill)"
-                isAnimationActive={!prefersReducedMotion()}
-                animationDuration={1200}
-                animationEasing="ease-out"
-                activeDot={
-                  unlocked
-                    ? {
-                        r: 5,
-                        fill: "#8CFF2E",
-                        stroke: "#08090A",
-                        strokeWidth: 2,
-                      }
-                    : false
-                }
-                dot={(props) => {
-                  const { cx, cy, payload } = props as {
-                    cx?: number;
-                    cy?: number;
-                    payload?: Point;
-                  };
-                  if (cx == null || cy == null || !payload || payload.bumpId === "now") {
-                    return <g />;
-                  }
-                  const company = companyById[payload.companyId as keyof typeof companyById];
-                  return (
-                    <g>
-                      <circle
-                        cx={cx}
-                        cy={cy}
-                        r={unlocked ? 5 : 4}
-                        fill={company.color}
-                        stroke="#08090A"
-                        strokeWidth={2}
-                      />
-                      {unlocked && (
+              {unlocked && series.length > 0 && (
+                <Area
+                  type="stepAfter"
+                  dataKey="amount"
+                  stroke="#8CFF2E"
+                  strokeWidth={2.5}
+                  fill="url(#ralFill)"
+                  isAnimationActive={!prefersReducedMotion()}
+                  animationDuration={1200}
+                  animationEasing="ease-out"
+                  activeDot={{
+                    r: 5,
+                    fill: "#8CFF2E",
+                    stroke: "#08090A",
+                    strokeWidth: 2,
+                  }}
+                  dot={(props) => {
+                    const { cx, cy, payload } = props as {
+                      cx?: number;
+                      cy?: number;
+                      payload?: Point;
+                    };
+                    if (cx == null || cy == null || !payload || payload.bumpId === "now") {
+                      return <g />;
+                    }
+                    const company = companyById[payload.companyId as keyof typeof companyById];
+                    return (
+                      <g>
+                        <circle
+                          cx={cx}
+                          cy={cy}
+                          r={5}
+                          fill={company.color}
+                          stroke="#08090A"
+                          strokeWidth={2}
+                        />
                         <circle
                           cx={cx}
                           cy={cy}
@@ -289,11 +313,11 @@ export default function RalChart({ unlocked, onReveal }: RalChartProps) {
                           stroke={company.color}
                           strokeOpacity={0.35}
                         />
-                      )}
-                    </g>
-                  );
-                }}
-              />
+                      </g>
+                    );
+                  }}
+                />
+              )}
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -301,14 +325,14 @@ export default function RalChart({ unlocked, onReveal }: RalChartProps) {
         <div className="mt-2 flex items-center justify-between gap-4 border-t border-border/60 pt-3">
           <p className="hud text-muted-foreground">{t(ui.ral.chartAxis)}</p>
           <p className="hud hud-accent">
-            {unlocked
-              ? `${t(ui.ral.currentLabel)} ${formatRal(currentRal.amount, lang)}`
+            {unlocked && currentAmount != null
+              ? `${t(ui.ral.currentLabel)} ${formatRal(currentAmount, lang)}`
               : t(ui.ral.lockedHint)}
           </p>
         </div>
       </div>
 
-      {unlocked && <BumpRail bumps={ralBumps} />}
+      {unlocked && <BumpRail bumps={bumps} />}
     </div>
   );
 }
@@ -318,10 +342,12 @@ function BumpRail({ bumps }: { bumps: RalBump[] }) {
 
   return (
     <ol className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {bumps.map((bump) => {
+      {bumps.map((bump, index) => {
+        if (typeof bump.amount !== "number") return null;
         const company = companyById[bump.companyId];
-        const prev = bumps[bumps.indexOf(bump) - 1];
-        const delta = prev ? bump.amount - prev.amount : null;
+        const prev = bumps[index - 1];
+        const delta =
+          prev && typeof prev.amount === "number" ? bump.amount - prev.amount : null;
         return (
           <li
             key={bump.id}

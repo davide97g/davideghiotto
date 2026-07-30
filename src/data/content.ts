@@ -195,6 +195,14 @@ export const ui = {
       en: "Unlocked for",
       it: "Sbloccato per",
     },
+    expiresIn: {
+      en: "Expires in",
+      it: "Scade tra",
+    },
+    expiredBanner: {
+      en: "Session expired — figures locked again.",
+      it: "Sessione scaduta — cifre di nuovo bloccate.",
+    },
     currentLabel: { en: "Current", it: "Attuale" },
     chartLabel: { en: "Trajectory", it: "Traiettoria" },
     chartTitle: {
@@ -240,23 +248,72 @@ export const ui = {
         en: "Recruiters, founders, curious peers — drop a real address and the chart unlocks. No spam, just a receipt that you showed up.",
         it: "Recruiter, founder, colleghi curiosi — lascia un indirizzo vero e il grafico si sblocca. Niente spam, solo la traccia che ti sei presentato.",
       },
-      badge: { en: "Mock check · live soon", it: "Check mock · live a breve" },
+      badge: { en: "OTP · real email", it: "OTP · email reale" },
+      badgeOffline: {
+        en: "Gate offline · figures locked",
+        it: "Gate offline · cifre bloccate",
+      },
       emailLabel: { en: "Work email", it: "Email di lavoro" },
       placeholder: { en: "you@company.com", it: "tu@azienda.com" },
-      submit: { en: "Unlock RAL", it: "Sblocca RAL" },
-      pending: { en: "Checking", it: "Verifica" },
+      submit: { en: "Send code", it: "Invia codice" },
+      verify: { en: "Verify & unlock", it: "Verifica e sblocca" },
+      pending: { en: "Working", it: "Attendi" },
+      codeTitle: {
+        en: "Enter the code from your inbox.",
+        it: "Inserisci il codice dalla tua inbox.",
+      },
+      codeLead: {
+        en: "We emailed a short one-time code. Disposable inboxes are rejected.",
+        it: "Ti abbiamo mandato un codice monouso. Le inbox usa-e-getta vengono rifiutate.",
+      },
+      codeLabel: { en: "One-time code", it: "Codice monouso" },
+      sentTo: { en: "Sent to", it: "Inviato a" },
+      devCode: { en: "Dev code", it: "Codice di sviluppo" },
+      back: { en: "Use another email", it: "Usa un'altra email" },
       footnote: {
-        en: "Validation is mocked for now — any plausible email works. A real capture service lands later.",
-        it: "La validazione è mockata per ora — funziona qualsiasi email plausibile. Il servizio reale arriva dopo.",
+        en: "Real mailbox required. If the gate service is down, numbers stay hidden.",
+        it: "Serve una mailbox reale. Se il servizio del gate è giù, i numeri restano nascosti.",
       },
       errors: {
         invalid: {
           en: "That doesn't look like a usable email.",
           it: "Non sembra un'email utilizzabile.",
         },
+        disposable: {
+          en: "Temporary / disposable addresses aren't accepted.",
+          it: "Indirizzi temporanei / usa-e-getta non sono accettati.",
+        },
         network: {
-          en: "Couldn't store the unlock — try again.",
-          it: "Non riesco a salvare lo sblocco — riprova.",
+          en: "Something went wrong — try again.",
+          it: "Qualcosa è andato storto — riprova.",
+        },
+        rateLimit: {
+          en: "Too many attempts. Wait a bit and try again.",
+          it: "Troppi tentativi. Aspetta un po' e riprova.",
+        },
+        mail: {
+          en: "Couldn't send the email. Try again shortly.",
+          it: "Non riesco a inviare l'email. Riprova tra poco.",
+        },
+        code: {
+          en: "That code isn't valid.",
+          it: "Quel codice non è valido.",
+        },
+        expired: {
+          en: "That code expired — request a new one.",
+          it: "Codice scaduto — richiedine uno nuovo.",
+        },
+        locked: {
+          en: "Too many wrong codes. Request a new one.",
+          it: "Troppi codici errati. Richiedine uno nuovo.",
+        },
+        auth: {
+          en: "Session expired — reveal again.",
+          it: "Sessione scaduta — rivela di nuovo.",
+        },
+        unavailable: {
+          en: "Unlock service is offline. Figures stay locked.",
+          it: "Il servizio di sblocco è offline. Le cifre restano bloccate.",
         },
       },
     },

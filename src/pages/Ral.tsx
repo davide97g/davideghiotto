@@ -10,36 +10,100 @@ import RevealRalButton from "@/components/ral/RevealRalButton";
 import { useLanguage } from "@/context/LanguageContext";
 import { bio, ui } from "@/data/content";
 import {
-  currentRal,
-  firstRal,
   formatRal,
-  ralDelta,
-  ralMultiplier,
+  mergeRalAmounts,
+  ralBumps,
+  type RalBump,
+  type RalUnlockedData,
 } from "@/data/ral";
-import { getRalAccess, type RalAccess } from "@/lib/ralAccess";
+import {
+  clearRalAccess,
+  formatUnlockCountdown,
+  getRalAccess,
+  loadRalSessionData,
+  unlockSecondsLeft,
+  type RalAccess,
+} from "@/lib/ralAccess";
 import { ScrollTrigger } from "@/lib/gsap";
-import { ArrowLeft, Eye, TrendingUp } from "lucide-react";
+import { ArrowLeft, Eye, Timer, TrendingUp } from "lucide-react";
 import { useLenis } from "lenis/react";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 /**
  * `/ral` — RAL disclosure page.
  *
- * Numbers stay redacted until a valid email unlocks them. The email gate is not
- * shown by default — "Reveal RAL" opens it on demand.
+ * Numbers stay redacted until OTP unlock against ral-gate. If the API is down
+ * or misconfigured, everything remains locked (fail-closed). Unlocks expire
+ * server-side; a local timer clears React state so figures disappear in-place.
  */
 export default function RalPage() {
   const { lang, t } = useLanguage();
   const lenis = useLenis();
   const [access, setAccess] = useState<RalAccess | null>(null);
+  const [data, setData] = useState<RalUnlockedData | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [gateOpen, setGateOpen] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(0);
+  const [justExpired, setJustExpired] = useState(false);
+
+  const lockSession = (reason: "expired" | "auth" = "auth") => {
+    clearRalAccess();
+    setAccess(null);
+    setData(null);
+    setSecondsLeft(0);
+    if (reason === "expired") setJustExpired(true);
+  };
 
   useEffect(() => {
-    setAccess(getRalAccess());
-    setHydrated(true);
+    let cancelled = false;
+    (async () => {
+      const stored = getRalAccess();
+      if (!stored) {
+        if (!cancelled) setHydrated(true);
+        return;
+      }
+      const result = await loadRalSessionData();
+      if (cancelled) return;
+      if (result.ok) {
+        setAccess(result.access);
+        setData(result.data);
+        setSecondsLeft(unlockSecondsLeft(result.access));
+        setJustExpired(false);
+      } else {
+        setAccess(null);
+        setData(null);
+      }
+      setHydrated(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  // Live countdown + hard lock when expiresAt elapses (no full-page reload).
+  useEffect(() => {
+    if (!access?.expiresAt) {
+      setSecondsLeft(0);
+      return;
+    }
+
+    const tick = () => {
+      const left = unlockSecondsLeft(access);
+      setSecondsLeft(left);
+      if (left <= 0) {
+        clearRalAccess();
+        setAccess(null);
+        setData(null);
+        setSecondsLeft(0);
+        setJustExpired(true);
+      }
+    };
+
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, [access]);
 
   useEffect(() => {
     if (lenis) lenis.scrollTo(0, { immediate: true });
@@ -55,8 +119,28 @@ export default function RalPage() {
     };
   }, [t, lang]);
 
-  const unlocked = Boolean(access);
+  const unlocked = Boolean(access && data);
+
+  const bumps: RalBump[] = useMemo(() => {
+    if (!data) return ralBumps;
+    return mergeRalAmounts(ralBumps, data);
+  }, [data]);
+
   const openGate = () => setGateOpen(true);
+
+  const onUnlocked = async (next: RalAccess) => {
+    setAccess(next);
+    setJustExpired(false);
+    setSecondsLeft(unlockSecondsLeft(next));
+    const result = await loadRalSessionData();
+    if (result.ok) {
+      setAccess(result.access);
+      setData(result.data);
+      setSecondsLeft(unlockSecondsLeft(result.access));
+    } else {
+      lockSession("auth");
+    }
+  };
 
   return (
     <div className="grain relative min-h-screen">
@@ -80,7 +164,10 @@ export default function RalPage() {
         </p>
 
         {hydrated && !unlocked && (
-          <div className="mt-8">
+          <div className="mt-8 space-y-3">
+            {justExpired && (
+              <p className="hud text-muted-foreground">{t(ui.ral.expiredBanner)}</p>
+            )}
             <RevealRalButton onClick={openGate} />
           </div>
         )}
@@ -89,8 +176,8 @@ export default function RalPage() {
           <Stat
             label={t(ui.ral.stats.current)}
             value={
-              unlocked ? (
-                formatRal(currentRal.amount, lang)
+              unlocked && data ? (
+                formatRal(data.current.amount, lang)
               ) : (
                 <span className="tracking-[0.18em] text-muted-foreground">€ ·····</span>
               )
@@ -100,8 +187,8 @@ export default function RalPage() {
           <Stat
             label={t(ui.ral.stats.growth)}
             value={
-              unlocked ? (
-                `+${formatRal(ralDelta, lang)}`
+              unlocked && data ? (
+                `+${formatRal(data.delta, lang)}`
               ) : (
                 <span className="tracking-[0.18em] text-muted-foreground">+€ ·····</span>
               )
@@ -110,15 +197,15 @@ export default function RalPage() {
           <Stat
             label={t(ui.ral.stats.multiple)}
             value={
-              unlocked ? (
-                `${ralMultiplier.toFixed(1)}×`
+              unlocked && data ? (
+                `${data.multiplier.toFixed(1)}×`
               ) : (
                 <span className="tracking-[0.18em] text-muted-foreground">·.·×</span>
               )
             }
             hint={
-              unlocked
-                ? `${formatRal(firstRal.amount, lang)} → ${formatRal(currentRal.amount, lang)}`
+              unlocked && data
+                ? `${formatRal(data.first.amount, lang)} → ${formatRal(data.current.amount, lang)}`
                 : t(ui.ral.lockedHint)
             }
           />
@@ -129,6 +216,13 @@ export default function RalPage() {
             <Eye size={14} className="text-primary" />
             <p className="hud text-primary">{t(ui.ral.unlocked)}</p>
             <span className="hud text-muted-foreground">{access.email}</span>
+            <span className="ml-auto inline-flex items-center gap-2 hud text-muted-foreground">
+              <Timer size={12} className="text-primary" />
+              {t(ui.ral.expiresIn)}{" "}
+              <span className="tabular-nums text-primary">
+                {formatUnlockCountdown(secondsLeft)}
+              </span>
+            </span>
           </div>
         )}
 
@@ -144,14 +238,19 @@ export default function RalPage() {
           <p className="mt-4 max-w-2xl text-muted-foreground">{t(ui.ral.chartLead)}</p>
 
           <div className="mt-10">
-            <RalChart unlocked={unlocked} onReveal={openGate} />
+            <RalChart
+              unlocked={unlocked}
+              bumps={bumps}
+              currentAmount={data?.current.amount ?? null}
+              onReveal={openGate}
+            />
           </div>
         </section>
 
-        <RalTimeline unlocked={unlocked} onReveal={openGate} />
+        <RalTimeline unlocked={unlocked} bumps={bumps} onReveal={openGate} />
       </main>
 
-      <RalGate open={gateOpen} onOpenChange={setGateOpen} onUnlocked={setAccess} />
+      <RalGate open={gateOpen} onOpenChange={setGateOpen} onUnlocked={onUnlocked} />
 
       <Footer />
     </div>

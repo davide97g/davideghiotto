@@ -3,14 +3,15 @@ import CompanyLogo from "@/components/ral/CompanyLogo";
 import RevealRalButton from "@/components/ral/RevealRalButton";
 import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
-import { formatRalMonth, ralBumps, ralCompanies } from "@/data/ral";
+import { formatRalMonth, ralCompanies, type RalBump } from "@/data/ral";
 
 interface RalTimelineProps {
   unlocked: boolean;
+  bumps: RalBump[];
   onReveal: () => void;
 }
 
-export default function RalTimeline({ unlocked, onReveal }: RalTimelineProps) {
+export default function RalTimeline({ unlocked, bumps, onReveal }: RalTimelineProps) {
   const { lang, t } = useLanguage();
 
   return (
@@ -33,7 +34,7 @@ export default function RalTimeline({ unlocked, onReveal }: RalTimelineProps) {
         <div className="absolute bottom-0 left-0 top-0 w-px bg-border" aria-hidden />
 
         {ralCompanies.map((company) => {
-          const bumps = ralBumps.filter((b) => b.companyId === company.id);
+          const companyBumps = bumps.filter((b) => b.companyId === company.id);
           const isCurrent = company.to === null;
 
           return (
@@ -79,9 +80,16 @@ export default function RalTimeline({ unlocked, onReveal }: RalTimelineProps) {
               </h3>
 
               <ul className="mt-5 space-y-2">
-                {bumps.map((bump) => {
-                  const prev = ralBumps[ralBumps.indexOf(bump) - 1];
-                  const delta = prev ? bump.amount - prev.amount : null;
+                {companyBumps.map((bump) => {
+                  const index = bumps.indexOf(bump);
+                  const prev = bumps[index - 1];
+                  const delta =
+                    unlocked &&
+                    typeof bump.amount === "number" &&
+                    prev &&
+                    typeof prev.amount === "number"
+                      ? bump.amount - prev.amount
+                      : null;
                   return (
                     <li
                       key={bump.id}
@@ -91,7 +99,7 @@ export default function RalTimeline({ unlocked, onReveal }: RalTimelineProps) {
                         {formatRalMonth(bump.date, lang)}
                       </span>
                       <span className="font-mono text-sm text-foreground">
-                        {unlocked ? (
+                        {unlocked && typeof bump.amount === "number" ? (
                           new Intl.NumberFormat(lang === "it" ? "it-IT" : "en-US", {
                             style: "currency",
                             currency: "EUR",
@@ -103,7 +111,7 @@ export default function RalTimeline({ unlocked, onReveal }: RalTimelineProps) {
                           </span>
                         )}
                       </span>
-                      {unlocked && delta != null && delta > 0 && (
+                      {delta != null && delta > 0 && (
                         <span className="hud hud-accent">
                           +
                           {new Intl.NumberFormat(lang === "it" ? "it-IT" : "en-US", {
