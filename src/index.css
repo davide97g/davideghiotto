@@ -666,9 +666,11 @@
   }
 
   @media (min-width: 1024px) {
+    /* Grows rightward only. A negative inline-start margin would push the shot past
+       the container's left padding and off-screen, since the measure already starts
+       at that edge. */
     .post-body p:has(> img:only-child) {
-      width: calc(100% + 8rem);
-      margin-inline-start: -4rem;
+      width: calc(100% + 12rem);
     }
   }
 
