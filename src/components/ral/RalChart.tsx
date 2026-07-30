@@ -7,8 +7,10 @@ import {
   formatRal,
   formatRalMonth,
   formatRalShort,
+  ralBumps,
   ralCompanies,
   type RalBump,
+  type RalCompanyId,
 } from "@/data/ral";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { useMemo, useRef } from "react";
@@ -32,10 +34,33 @@ interface Point {
   note?: string;
 }
 
+/**
+ * Exclusive salary tenures for chart bands — first bump per company through
+ * the next company's first bump. Avoids the CV Infodati/Namirial overlap that
+ * muddied the mid-chart framing.
+ */
+function salaryBandRanges(now = Date.now()) {
+  const firstBumpAt = new Map<RalCompanyId, number>();
+  for (const bump of ralBumps) {
+    if (!firstBumpAt.has(bump.companyId)) {
+      firstBumpAt.set(bump.companyId, new Date(bump.date).getTime());
+    }
+  }
+
+  return ralCompanies.map((company, index) => {
+    const from =
+      firstBumpAt.get(company.id) ?? new Date(`${company.from}-01`).getTime();
+    const next = ralCompanies[index + 1];
+    const to = next
+      ? (firstBumpAt.get(next.id) ?? new Date(`${next.from}-01`).getTime())
+      : now;
+    return { company, from, to };
+  });
+}
+
 function CompanyBands({
   xAxisMap,
   yAxisMap,
-  offset,
 }: {
   // Recharts Customized injects axis maps; keep them loose.
   xAxisMap?: Record<string, { scale: (v: number) => number }>;
@@ -44,41 +69,113 @@ function CompanyBands({
 }) {
   const xAxis = xAxisMap && Object.values(xAxisMap)[0];
   const yAxis = yAxisMap && Object.values(yAxisMap)[0];
-  if (!xAxis || !yAxis || !offset) return null;
+  if (!xAxis || !yAxis) return null;
 
   const [, yMax] = yAxis.domain;
   const top = yAxis.scale(yMax);
   const bottom = yAxis.scale(0);
   const height = Math.max(0, bottom - top);
-
-  const now = Date.now();
+  const bands = salaryBandRanges();
 
   return (
     <g className="ral-bands" pointerEvents="none">
-      {ralCompanies.map((company) => {
-        const from = new Date(`${company.from}-01`).getTime();
-        const to = company.to ? new Date(`${company.to}-01`).getTime() : now;
+      <defs>
+        {bands.map(({ company }) => (
+          <linearGradient
+            key={`grad-${company.id}`}
+            id={`ral-band-${company.id}`}
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="0"
+          >
+            <stop offset="0%" stopColor={company.color} stopOpacity={0.32} />
+            <stop offset="40%" stopColor={company.color} stopOpacity={0.16} />
+            <stop offset="100%" stopColor={company.color} stopOpacity={0.07} />
+          </linearGradient>
+        ))}
+        {/* Namirial reads as black & white: pale wash + fine white hatch. */}
+        <pattern
+          id="ral-namirial-hatch"
+          width="7"
+          height="7"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(28)"
+        >
+          <line
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="7"
+            stroke="#FFFFFF"
+            strokeWidth="1.25"
+            strokeOpacity="0.16"
+          />
+        </pattern>
+      </defs>
+
+      {bands.map(({ company, from, to }) => {
         const x1 = xAxis.scale(from);
         const x2 = xAxis.scale(to);
         const width = Math.max(0, x2 - x1);
         if (width < 1) return null;
+
+        const isNamirial = company.id === "namirial";
+        const edge = isNamirial ? "#FFFFFF" : company.color;
+
         return (
           <g key={company.id}>
+            {isNamirial && (
+              <rect
+                x={x1}
+                y={top}
+                width={width}
+                height={height}
+                fill="#111111"
+                opacity={0.55}
+              />
+            )}
             <rect
               x={x1}
               y={top}
               width={width}
               height={height}
-              fill={company.color}
-              opacity={0.08}
+              fill={`url(#ral-band-${company.id})`}
+            />
+            {isNamirial && (
+              <rect
+                x={x1}
+                y={top}
+                width={width}
+                height={height}
+                fill="url(#ral-namirial-hatch)"
+              />
+            )}
+            {/* Top brand rail — reads company colour even when the wash is soft. */}
+            <rect
+              x={x1}
+              y={top}
+              width={width}
+              height={3}
+              fill={edge}
+              opacity={0.9}
+            />
+            {/* Soft edge bloom, then a crisp 3px divider at each company start. */}
+            <rect
+              x={x1}
+              y={top}
+              width={10}
+              height={height}
+              fill={edge}
+              opacity={0.22}
             />
             <rect
               x={x1}
               y={top}
-              width={2}
+              width={3}
               height={height}
-              fill={company.color}
-              opacity={0.55}
+              fill={edge}
+              opacity={1}
             />
           </g>
         );
