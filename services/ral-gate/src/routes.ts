@@ -43,7 +43,18 @@ function header(req: FastifyRequest, name: string): string | null {
   return typeof value === "string" && value.length ? value : null;
 }
 
+/**
+ * The visitor, not the proxy in front of them.
+ *
+ * Behind the Cloudflare proxy, Traefik appends the Cloudflare edge to
+ * X-Forwarded-For, so its first hop is an edge address shared by everyone in
+ * that datacentre — keying the per-IP limit on it would put unrelated visitors
+ * in one 10/hour budget. CF-Connecting-IP is the real client and is set by
+ * Cloudflare itself, so it wins when present.
+ */
 function clientIp(req: FastifyRequest): string {
+  const cloudflare = header(req, "cf-connecting-ip") ?? header(req, "true-client-ip");
+  if (cloudflare) return cloudflare.trim();
   const forwarded = header(req, "x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0]!.trim();
   return req.ip;
