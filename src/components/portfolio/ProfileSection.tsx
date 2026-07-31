@@ -2,6 +2,7 @@ import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
 import { useLanguage } from "@/context/LanguageContext";
 import { bio, principles, summary, ui } from "@/data/content";
+import { trackEvent, trackOutbound } from "@/lib/analytics";
 import { Github, Linkedin, Mail, MapPin, Youtube } from "lucide-react";
 import { channel } from "@/data/youtube";
 
@@ -46,6 +47,7 @@ export default function ProfileSection() {
             <a
               href={`mailto:${bio.email}`}
               className="contact-link flex items-center gap-4 p-5 hover:text-primary"
+              onClick={() => trackEvent("contact_click", { channel: "email" })}
             >
               <Mail size={16} className="text-primary" />
               <span className="font-mono text-sm">{bio.email}</span>
@@ -57,6 +59,13 @@ export default function ProfileSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="contact-link flex items-center gap-4 p-5 hover:text-primary"
+              onClick={() => {
+                trackEvent("contact_click", { channel: "linkedin" });
+                trackOutbound(
+                  "profile_linkedin",
+                  `https://www.linkedin.com/in/${bio.linkedin}`
+                );
+              }}
             >
               <Linkedin size={16} className="text-primary" />
               <span className="font-mono text-sm">/{bio.linkedin}</span>
@@ -68,6 +77,10 @@ export default function ProfileSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="contact-link flex items-center gap-4 p-5 hover:text-primary"
+              onClick={() => {
+                trackEvent("contact_click", { channel: "github" });
+                trackOutbound("profile_github", `https://github.com/${bio.github}`);
+              }}
             >
               <Github size={16} className="text-primary" />
               <span className="font-mono text-sm">/{bio.github}</span>
@@ -79,6 +92,10 @@ export default function ProfileSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="contact-link flex items-center gap-4 p-5 hover:text-primary"
+              onClick={() => {
+                trackEvent("contact_click", { channel: "youtube" });
+                trackOutbound("profile_youtube", channel.url);
+              }}
             >
               <Youtube size={16} className="text-primary" />
               <span className="font-mono text-sm">{channel.handle}</span>

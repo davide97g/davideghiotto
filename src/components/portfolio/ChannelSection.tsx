@@ -3,6 +3,7 @@ import SplitReveal from "@/components/motion/SplitReveal";
 import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
 import { channel, thumbnailUrl, videos, watchUrl } from "@/data/youtube";
+import { trackEvent, trackOutbound } from "@/lib/analytics";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { ArrowUpRight, Youtube } from "lucide-react";
 import { useRef } from "react";
@@ -80,6 +81,10 @@ export default function ChannelSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary self-start"
+              onClick={() => {
+                trackEvent("youtube_click", { video_id: "subscribe" });
+                trackOutbound("youtube_subscribe", channel.url);
+              }}
             >
               <Youtube size={15} /> {t(ui.channel.cta)}
             </a>
@@ -132,6 +137,10 @@ export default function ChannelSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="panel panel-interactive panel-ticks card-scan group flex h-full flex-col"
+                onClick={() => {
+                  trackEvent("youtube_click", { video_id: video.id });
+                  trackOutbound(`youtube_video_${video.id}`, watchUrl(video.id));
+                }}
               >
                 <div className="relative aspect-video overflow-hidden border-b border-border">
                   <img

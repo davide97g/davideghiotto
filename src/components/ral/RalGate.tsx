@@ -1,5 +1,6 @@
 import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
+import { trackEvent } from "@/lib/analytics";
 import {
   isRalApiConfigured,
   requestRalOtp,
@@ -67,15 +68,18 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
     e.preventDefault();
     if (!apiReady) {
       setFailure({ error: "unavailable" });
+      trackEvent("ral_unlock_fail", { step: "request" });
       return;
     }
     setPending(true);
     setFailure(null);
+    trackEvent("ral_unlock_request", { step: "email" });
     const result = await requestRalOtp(email);
     setPending(false);
     // `=== false` narrows the union; `!result.ok` does not, with strictNullChecks off.
     if (result.ok === false) {
       setFailure({ error: result.error, retryAfterMinutes: result.retryAfterMinutes });
+      trackEvent("ral_unlock_fail", { step: "request" });
       return;
     }
     setDevCode(result.devCode ?? null);
@@ -90,8 +94,10 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
     setPending(false);
     if (result.ok === false) {
       setFailure({ error: result.error, retryAfterMinutes: result.retryAfterMinutes });
+      trackEvent("ral_unlock_fail", { step: "verify" });
       return;
     }
+    trackEvent("ral_unlock_success", { step: "verify" });
     onUnlocked(result.access);
     onOpenChange(false);
   };

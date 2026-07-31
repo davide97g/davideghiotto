@@ -3,6 +3,7 @@ import SplitReveal from "@/components/motion/SplitReveal";
 import FeaturedProject from "@/components/portfolio/FeaturedProject";
 import { useLanguage } from "@/context/LanguageContext";
 import { projects, ui } from "@/data/content";
+import { trackOutbound } from "@/lib/analytics";
 import { ArrowUpRight, Github, Linkedin } from "lucide-react";
 
 export default function WorkSection() {
@@ -56,12 +57,15 @@ export default function WorkSection() {
                 </div>
 
                 {/* Screenshot stands in for the live site when it is gated. */}
-                {project.shot && (
+                {project.shot && project.link && (
                   <a
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="panel panel-interactive card-scan mt-8 block overflow-hidden"
+                    onClick={() =>
+                      trackOutbound(`project_shot_${project.title}`, project.link!)
+                    }
                   >
                     <span className="hud flex items-center gap-3 border-b border-border px-4 py-3">
                       <span className="h-1.5 w-1.5 shrink-0 bg-primary" aria-hidden />
@@ -98,6 +102,9 @@ export default function WorkSection() {
                       rel="noopener noreferrer"
                       aria-label={`${project.title} — LinkedIn`}
                       className="text-muted-foreground transition-colors hover:text-primary"
+                      onClick={() =>
+                        trackOutbound(`project_linkedin_${project.title}`, project.linkedin!)
+                      }
                     >
                       <Linkedin size={18} />
                     </a>
@@ -111,6 +118,9 @@ export default function WorkSection() {
                         project.link.includes("github") ? "GitHub" : "Live site"
                       }`}
                       className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
+                      onClick={() =>
+                        trackOutbound(`project_link_${project.title}`, project.link!)
+                      }
                     >
                       {project.link.includes("github") ? (
                         <Github size={18} />

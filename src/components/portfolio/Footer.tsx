@@ -1,8 +1,12 @@
+import { useConsent } from "@/context/ConsentContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { bio, ui } from "@/data/content";
+import { trackOutbound } from "@/lib/analytics";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   const { t } = useLanguage();
+  const { openPreferences } = useConsent();
   const year = new Date().getFullYear();
 
   return (
@@ -16,10 +20,26 @@ export default function Footer() {
             href={bio.workshop}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackOutbound("workshop", bio.workshop)}
             className="hud link-wipe hud-accent self-start"
           >
             {t(ui.footer.workshop)} ↗ dacoder.it
           </a>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
+            <Link to="/privacy" className="hud link-wipe">
+              {t(ui.footer.privacy)}
+            </Link>
+            <Link to="/cookies" className="hud link-wipe">
+              {t(ui.footer.cookies)}
+            </Link>
+            <button
+              type="button"
+              onClick={openPreferences}
+              className="hud link-wipe text-left"
+            >
+              {t(ui.footer.manageCookies)}
+            </button>
+          </div>
         </div>
         <p className="hud">{t(ui.footer.built)}</p>
       </div>

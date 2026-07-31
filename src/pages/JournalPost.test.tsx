@@ -1,3 +1,4 @@
+import { ConsentProvider } from "@/context/ConsentContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { findPost, journalPosts } from "@/data/journal";
 import JournalPost from "@/pages/JournalPost";
@@ -10,9 +11,11 @@ const renderPost = (slug: string, lang: "en" | "it") =>
   render(
     <MemoryRouter initialEntries={[`/journal/${slug}?lang=${lang}`]}>
       <LanguageProvider>
-        <Routes>
-          <Route path="/journal/:slug" element={<JournalPost />} />
-        </Routes>
+        <ConsentProvider>
+          <Routes>
+            <Route path="/journal/:slug" element={<JournalPost />} />
+          </Routes>
+        </ConsentProvider>
       </LanguageProvider>
     </MemoryRouter>
   );

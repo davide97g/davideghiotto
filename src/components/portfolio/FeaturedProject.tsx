@@ -2,6 +2,7 @@ import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
 import { useLanguage } from "@/context/LanguageContext";
 import { featuredProject, ui } from "@/data/content";
+import { trackOutbound } from "@/lib/analytics";
 import { ArrowUpRight, Github } from "lucide-react";
 import type { CSSProperties } from "react";
 
@@ -58,6 +59,7 @@ export default function FeaturedProject() {
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary"
+              onClick={() => trackOutbound("sharp_site", p.site)}
             >
               {t(ui.work.visit)} <ArrowUpRight size={14} />
             </a>
@@ -66,6 +68,7 @@ export default function FeaturedProject() {
               target="_blank"
               rel="noopener noreferrer"
               className="btn-ghost"
+              onClick={() => trackOutbound("sharp_repo", p.repo)}
             >
               <Github size={14} /> {t(ui.work.source)}
             </a>

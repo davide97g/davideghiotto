@@ -22,6 +22,24 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://davideghiotto.it/ral" />
   </url>
   <url>
+    <loc>https://davideghiotto.it/privacy</loc>
+    <lastmod>2026-07-31</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://davideghiotto.it/privacy?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://davideghiotto.it/privacy?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://davideghiotto.it/privacy" />
+  </url>
+  <url>
+    <loc>https://davideghiotto.it/cookies</loc>
+    <lastmod>2026-07-31</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://davideghiotto.it/cookies?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://davideghiotto.it/cookies?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://davideghiotto.it/cookies" />
+  </url>
+  <url>
     <loc>https://davideghiotto.it/journal/ral-in-chiaro</loc>
     <lastmod>2026-07-30</lastmod>
     <changefreq>monthly</changefreq>

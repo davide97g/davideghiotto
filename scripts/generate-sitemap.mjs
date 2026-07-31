@@ -63,6 +63,18 @@ const urls = [
     changefreq: "monthly",
     priority: "0.7",
   }),
+  entry({
+    path: "/privacy",
+    lastmod: "2026-07-31",
+    changefreq: "yearly",
+    priority: "0.3",
+  }),
+  entry({
+    path: "/cookies",
+    lastmod: "2026-07-31",
+    changefreq: "yearly",
+    priority: "0.3",
+  }),
   ...posts.map((post) =>
     entry({
       path: `/journal/${post.slug}`,
@@ -72,6 +84,7 @@ const urls = [
     })
   ),
 ];
+
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset
@@ -83,4 +96,6 @@ ${urls.join("\n")}
 `;
 
 writeFileSync(resolve(root, "public/sitemap.xml"), xml);
-console.log(`sitemap: wrote ${urls.length} urls (1 landing + 1 ral + ${posts.length} notes)`);
+console.log(
+  `sitemap: wrote ${urls.length} urls (1 landing + 1 ral + 1 privacy + 1 cookies + ${posts.length} notes)`
+);

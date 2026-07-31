@@ -1,5 +1,6 @@
 import { LangId, useLanguage } from "@/context/LanguageContext";
 import { bio, ui } from "@/data/content";
+import { trackEvent } from "@/lib/analytics";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useLenis } from "lenis/react";
 import { useRef, useState } from "react";
@@ -63,6 +64,7 @@ export default function Nav() {
 
   const goTo = (id: string) => {
     setOpen(false);
+    trackEvent("nav_click", { target: id });
     if (!onHome) {
       navigate(`/#${id}`);
       return;
@@ -71,6 +73,12 @@ export default function Nav() {
     if (!target) return;
     if (lenis) lenis.scrollTo(target, { offset: -40 });
     else target.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const changeLang = (id: LangId) => {
+    if (id === lang) return;
+    setLang(id);
+    trackEvent("language_change", { lang: id });
   };
 
   return (
@@ -101,7 +109,10 @@ export default function Nav() {
           ))}
           <Link
             to="/ral"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              trackEvent("nav_click", { target: "ral" });
+            }}
             className="hud link-wipe text-primary transition-colors hover:text-foreground"
           >
             {t(ui.ral.cta)}
@@ -117,7 +128,7 @@ export default function Nav() {
             {LANGS.map((id) => (
               <button
                 key={id}
-                onClick={() => setLang(id)}
+                onClick={() => changeLang(id)}
                 aria-pressed={lang === id}
                 className={`hud px-2.5 py-1.5 transition-colors ${
                   lang === id
@@ -157,7 +168,10 @@ export default function Nav() {
           ))}
           <Link
             to="/ral"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              trackEvent("nav_click", { target: "ral" });
+            }}
             className="mobile-nav-item hud block w-full py-3 text-left text-primary"
           >
             {t(ui.ral.cta)}

@@ -4,6 +4,7 @@ import JournalPortrait from "@/components/portfolio/JournalPortrait";
 import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
 import { journalPlatforms, journalPosts, type JournalPlatformId } from "@/data/journal";
+import { trackEvent, trackOutbound } from "@/lib/analytics";
 import { ArrowUpRight, Github, Linkedin, Terminal, Youtube } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -78,6 +79,7 @@ export default function JournalSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-primary mt-8"
+                    onClick={() => trackOutbound("journal_empty_linkedin", linkedin.url)}
                   >
                     {t(ui.journal.readOn)} {linkedin.name} <ArrowUpRight size={14} />
                   </a>
@@ -92,7 +94,11 @@ export default function JournalSection() {
               >
                 {journalPosts.map((post) => (
                   <li key={post.slug} className="journal-entry micro-row border-b border-border">
-                    <Link to={`/journal/${post.slug}`} className="group block py-7">
+                    <Link
+                      to={`/journal/${post.slug}`}
+                      className="group block py-7"
+                      onClick={() => trackEvent("journal_open", { slug: post.slug })}
+                    >
                       <span className="hud">
                         <time dateTime={post.date}>{formatDate(post.date)}</time>
                       </span>
@@ -145,6 +151,9 @@ export default function JournalSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-center gap-4 p-5"
+                      onClick={() =>
+                        trackOutbound(`journal_platform_${platform.id}`, platform.url)
+                      }
                     >
                       <Icon size={16} className="shrink-0 text-primary" />
                       <div className="min-w-0 flex-1">

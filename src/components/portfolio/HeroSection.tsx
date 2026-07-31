@@ -3,6 +3,7 @@ import HeroPortrait from "@/components/portfolio/HeroPortrait";
 import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
 import { channel } from "@/data/youtube";
+import { trackEvent, trackOutbound } from "@/lib/analytics";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useLenis } from "lenis/react";
 import { ArrowDown, Play, Sparkles } from "lucide-react";
@@ -114,7 +115,11 @@ export default function HeroSection() {
           />
 
           <div className="hero-fade flex flex-wrap gap-3">
-            <a href="#work" className="btn-primary">
+            <a
+              href="#work"
+              className="btn-primary"
+              onClick={() => trackEvent("cta_click", { cta_id: "work" })}
+            >
               {t(ui.hero.ctaPrimary)} <ArrowDown size={14} />
             </a>
             <a
@@ -122,10 +127,18 @@ export default function HeroSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="btn-ghost"
+              onClick={() => {
+                trackEvent("cta_click", { cta_id: "youtube" });
+                trackOutbound("hero_youtube", channel.url);
+              }}
             >
               <Play size={13} /> {t(ui.hero.ctaSecondary)}
             </a>
-            <Link to="/ral" className="btn-ral group">
+            <Link
+              to="/ral"
+              className="btn-ral group"
+              onClick={() => trackEvent("cta_click", { cta_id: "ral" })}
+            >
               <span className="btn-ral-glow" aria-hidden />
               <Sparkles size={13} className="relative text-primary" />
               <span className="relative flex flex-col items-start gap-0.5 text-left">
