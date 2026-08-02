@@ -11,8 +11,23 @@ import { HoloButton } from "@/components/ui/holo-button";
 /**
  * Inside this block `--primary` is swapped for sharp's own violet, so every
  * accent utility picks up the project's brand instead of the site lime.
+ *
+ * A complete colour, not the `247 100% 71%` channel triple this used to be:
+ * since the move to Tailwind v4 the token is consumed as `var(--primary)`
+ * directly rather than wrapped in `hsl()`, so a bare triple is an invalid
+ * value. It fails silently — `bg-primary` computes to nothing and the button
+ * renders near-black text on the near-black card.
+ *
+ * `--glow-primary` has to come along. It is a whole box-shadow string with the
+ * accent baked in, so leaving it alone lit this card's hover states in site
+ * lime while everything else in them was violet.
  */
-const sharpBrand = { "--primary": "247 100% 71%" } as CSSProperties;
+const sharpBrand = {
+  "--primary": "oklch(0.623 0.211 284)",
+  "--ring": "oklch(0.623 0.211 284)",
+  "--glow-primary":
+    "0 0 0 1px oklch(0.623 0.211 284 / 0.5), 0 12px 40px -12px oklch(0.623 0.211 284 / 0.6)",
+} as CSSProperties;
 
 export default function FeaturedProject() {
   const { t } = useLanguage();
