@@ -7,6 +7,7 @@ import { trackEvent, trackOutbound } from "@/lib/analytics";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { ArrowUpRight, Youtube } from "lucide-react";
 import { useRef } from "react";
+import { HoloButton } from "@/components/ui/holo-button";
 
 const FEATURED = videos.slice(0, 8);
 
@@ -61,7 +62,7 @@ export default function ChannelSection() {
     <section id="channel" className="relative">
       <div className="section-container section-spacing pb-0">
         <Reveal className="section-marker" stagger={0.06}>
-          <span className="hud hud-accent">01</span>
+          <span className="hud text-primary">01</span>
           <span className="hud">{t(ui.channel.label)}</span>
         </Reveal>
 
@@ -76,18 +77,24 @@ export default function ChannelSection() {
             <p className="max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">
               {t(ui.channel.lead)}
             </p>
-            <a
-              href={channel.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary self-start"
-              onClick={() => {
-                trackEvent("youtube_click", { video_id: "subscribe" });
-                trackOutbound("youtube_subscribe", channel.url);
-              }}
+            <HoloButton
+              asChild
+              variant="primary"
+              size="lg"
+              className="btn-hud text-xs font-medium self-start"
             >
-              <Youtube size={15} /> {t(ui.channel.cta)}
-            </a>
+              <a
+                href={channel.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  trackEvent("youtube_click", { video_id: "subscribe" });
+                  trackOutbound("youtube_subscribe", channel.url);
+                }}
+              >
+                <Youtube size={15} /> {t(ui.channel.cta)}
+              </a>
+            </HoloButton>
           </Reveal>
         </div>
 
@@ -120,7 +127,7 @@ export default function ChannelSection() {
       <div ref={pin} className="section-spacing overflow-hidden">
         <div className="section-container mb-8 flex items-baseline justify-between gap-4">
           <span className="hud">{t(ui.channel.latest)}</span>
-          <span className="hud hud-accent">{channel.handle}</span>
+          <span className="hud text-primary">{channel.handle}</span>
         </div>
 
         <ul

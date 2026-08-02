@@ -17,7 +17,7 @@ export default function RalTimeline({ unlocked, bumps, onReveal }: RalTimelinePr
   return (
     <section className="mt-24">
       <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud hud-accent">02</span>
+        <span className="hud text-primary">02</span>
         <span className="hud">{t(ui.ral.timeline.label)}</span>
       </Reveal>
 
@@ -69,7 +69,7 @@ export default function RalTimeline({ unlocked, bumps, onReveal }: RalTimelinePr
                     : t(ui.ral.timeline.present)}
                 </span>
                 {isCurrent && (
-                  <span className="hud hud-accent border border-primary/40 px-2 py-0.5">
+                  <span className="hud text-primary border border-primary/40 px-2 py-0.5">
                     {t(ui.path.current)}
                   </span>
                 )}
@@ -112,7 +112,7 @@ export default function RalTimeline({ unlocked, bumps, onReveal }: RalTimelinePr
                         )}
                       </span>
                       {delta != null && delta > 0 && (
-                        <span className="hud hud-accent">
+                        <span className="hud text-primary">
                           +
                           {new Intl.NumberFormat(lang === "it" ? "it-IT" : "en-US", {
                             style: "currency",

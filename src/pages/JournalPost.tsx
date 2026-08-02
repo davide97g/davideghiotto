@@ -20,6 +20,8 @@ import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import { Link, useParams } from "react-router-dom";
 import remarkGfm from "remark-gfm";
+import { HoloBadge } from "@/components/ui/holo-badge";
+import { HoloButton } from "@/components/ui/holo-button";
 
 const linkedin = journalPlatforms.find((p) => p.id === "linkedin") ?? journalPlatforms[0];
 
@@ -74,11 +76,18 @@ export default function JournalPost() {
         <ShaderBackdrop />
         <Nav />
         <main className="section-container flex min-h-screen flex-col justify-center py-40">
-          <span className="hud hud-accent">404</span>
+          <span className="hud text-primary">404</span>
           <h1 className="display-lg mt-6">{t(ui.journal.label)}</h1>
-          <Link to="/#journal" className="btn-ghost mt-10 self-start">
-            <ArrowLeft size={14} /> {t(ui.journal.back)}
-          </Link>
+          <HoloButton
+            asChild
+            variant="outline"
+            size="lg"
+            className="btn-hud text-xs font-medium btn-hud-ghost mt-10 self-start"
+          >
+            <Link to="/#journal">
+              <ArrowLeft size={14} /> {t(ui.journal.back)}
+            </Link>
+          </HoloButton>
         </main>
         <Footer />
       </div>
@@ -106,7 +115,7 @@ export default function JournalPost() {
         <article className="mt-10">
           <header className="border-b border-border pb-10">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <span className="hud hud-accent">◢</span>
+              <span className="hud text-primary">◢</span>
               <span className="hud">
                 <time dateTime={post.date}>{date}</time>
               </span>
@@ -131,9 +140,9 @@ export default function JournalPost() {
 
             <Reveal className="mt-8 flex flex-wrap items-center gap-3" y={14} start="top 92%">
               {post.tags.map((tag) => (
-                <span key={tag} className="tag">
+                <HoloBadge key={tag} variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground">
                   {tag}
-                </span>
+                </HoloBadge>
               ))}
             </Reveal>
           </header>
@@ -187,23 +196,27 @@ export default function JournalPost() {
           <h2 className="hud">{t(ui.journal.alsoOn)}</h2>
           <div className="mt-6 flex flex-wrap gap-3">
             {post.crossPost ? (
-              <a
-                href={post.crossPost.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-              >
-                {t(ui.journal.readOn)} {post.crossPost.platform} <ArrowUpRight size={14} />
-              </a>
+              <HoloButton asChild variant="primary" size="lg" className="btn-hud text-xs font-medium">
+                <a
+                  href={post.crossPost.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t(ui.journal.readOn)} {post.crossPost.platform}{" "}
+                  <ArrowUpRight size={14} />
+                </a>
+              </HoloButton>
             ) : (
-              <a
-                href={linkedin.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost"
+              <HoloButton
+                asChild
+                variant="outline"
+                size="lg"
+                className="btn-hud text-xs font-medium btn-hud-ghost"
               >
-                {linkedin.name} <ArrowUpRight size={14} />
-              </a>
+                <a href={linkedin.url} target="_blank" rel="noopener noreferrer">
+                  {linkedin.name} <ArrowUpRight size={14} />
+                </a>
+              </HoloButton>
             )}
           </div>
 

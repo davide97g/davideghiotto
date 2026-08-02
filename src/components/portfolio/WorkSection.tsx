@@ -5,6 +5,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { projects, ui } from "@/data/content";
 import { trackOutbound } from "@/lib/analytics";
 import { ArrowUpRight, Github, Linkedin } from "lucide-react";
+import { HoloBadge } from "@/components/ui/holo-badge";
 
 export default function WorkSection() {
   const { t } = useLanguage();
@@ -12,7 +13,7 @@ export default function WorkSection() {
   return (
     <section id="work" className="section-container section-spacing">
       <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud hud-accent">02</span>
+        <span className="hud text-primary">02</span>
         <span className="hud">{t(ui.work.label)}</span>
       </Reveal>
 
@@ -50,9 +51,9 @@ export default function WorkSection() {
                 </p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
-                    <span key={tag} className="tag">
+                    <HoloBadge key={tag} variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground">
                       {tag}
-                    </span>
+                    </HoloBadge>
                   ))}
                 </div>
 
@@ -91,7 +92,9 @@ export default function WorkSection() {
                 <div className="flex flex-col items-start gap-3 md:items-end">
                   <span className="hud whitespace-nowrap">{project.year}</span>
                   {project.badge && (
-                    <span className="tag whitespace-nowrap">{t(project.badge)}</span>
+                    <HoloBadge variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground whitespace-nowrap">
+                      {t(project.badge)}
+                    </HoloBadge>
                   )}
                 </div>
                 <div className="flex items-center gap-4">

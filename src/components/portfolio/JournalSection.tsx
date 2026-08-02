@@ -8,6 +8,9 @@ import { trackEvent, trackOutbound } from "@/lib/analytics";
 import { ArrowUpRight, Github, Linkedin, Terminal, Youtube } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { EmptyPond } from "@/components/ui/empty-pond";
+import { HoloBadge } from "@/components/ui/holo-badge";
+import { HoloButton } from "@/components/ui/holo-button";
 
 const PLATFORM_ICON: Record<JournalPlatformId, LucideIcon> = {
   linkedin: Linkedin,
@@ -45,7 +48,7 @@ export default function JournalSection() {
 
       <div className="section-container relative">
         <Reveal className="section-marker" stagger={0.06}>
-          <span className="hud hud-accent">◢</span>
+          <span className="hud text-primary">◢</span>
           <span className="hud">{t(ui.journal.label)}</span>
         </Reveal>
 
@@ -70,20 +73,40 @@ export default function JournalSection() {
 
             {journalPosts.length === 0 ? (
               <Reveal>
-                <div className="border border-dashed border-border p-8">
-                  <p className="max-w-md text-sm leading-relaxed text-muted-foreground md:text-base">
-                    {t(ui.journal.empty)}
-                  </p>
-                  <a
-                    href={linkedin.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-primary mt-8"
-                    onClick={() => trackOutbound("journal_empty_linkedin", linkedin.url)}
-                  >
-                    {t(ui.journal.readOn)} {linkedin.name} <ArrowUpRight size={14} />
-                  </a>
-                </div>
+                {/* EmptyPond ships a duck at rest as its artwork. There is no
+                    mascot on this site, so `art` carries the same ◢ the band
+                    uses instead of a section number — the frame, the ripples
+                    and the copy hierarchy are the parts worth keeping. */}
+                <EmptyPond
+                  className="cut-line items-start p-8 text-left"
+                  art={
+                    <span className="hud text-3xl text-primary" aria-hidden>
+                      ◢
+                    </span>
+                  }
+                  title={t(ui.journal.latest)}
+                  hint={t(ui.journal.empty)}
+                  action={
+                    <HoloButton
+                      asChild
+                      variant="primary"
+                      size="lg"
+                      className="btn-hud text-xs font-medium mt-2"
+                    >
+                      <a
+                        href={linkedin.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() =>
+                          trackOutbound("journal_empty_linkedin", linkedin.url)
+                        }
+                      >
+                        {t(ui.journal.readOn)} {linkedin.name}{" "}
+                        <ArrowUpRight size={14} />
+                      </a>
+                    </HoloButton>
+                  }
+                />
               </Reveal>
             ) : (
               <Reveal
@@ -112,9 +135,9 @@ export default function JournalSection() {
 
                       <div className="mt-5 flex flex-wrap items-center gap-3">
                         {post.tags.map((tag) => (
-                          <span key={tag} className="tag">
+                          <HoloBadge key={tag} variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground">
                             {tag}
-                          </span>
+                          </HoloBadge>
                         ))}
                         <span className="hud ml-auto flex items-center gap-2 transition-colors group-hover:text-primary">
                           {t(ui.journal.read)}

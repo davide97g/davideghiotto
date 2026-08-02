@@ -8,13 +8,16 @@ import {
   type RalAccess,
   type RalGateError,
 } from "@/lib/ralAccess";
+import { GlowInput } from "@/components/ui/glow-input";
+import { HoloBadge } from "@/components/ui/holo-badge";
+import { HoloButton } from "@/components/ui/holo-button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  StickerDialog,
+  StickerDialogContent,
+  StickerDialogDescription,
+  StickerDialogHeader,
+  StickerDialogTitle,
+} from "@/components/ui/sticker-dialog";
 import { ArrowLeft, Loader2, Lock, Mail, ShieldCheck, Unlock } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
@@ -136,32 +139,35 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg border-border bg-surface p-0 sm:rounded-sm">
+    <StickerDialog open={open} onOpenChange={onOpenChange}>
+      <StickerDialogContent className="max-w-lg gap-0 bg-surface p-0">
         <div className="relative overflow-hidden p-6 md:p-8">
           <div
             className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full opacity-30"
             style={{
               background:
-                "radial-gradient(circle, hsl(var(--primary) / 0.45), transparent 70%)",
+                "radial-gradient(circle, color-mix(in oklab, var(--primary) 45%, transparent), transparent 70%)",
             }}
             aria-hidden
           />
 
-          <DialogHeader className="relative space-y-3 text-left">
-            <p className="hud hud-accent inline-flex items-center gap-2">
+          <StickerDialogHeader className="relative gap-3 text-left">
+            <p className="hud text-primary inline-flex items-center gap-2">
               <Lock size={12} /> {t(ui.ral.gate.eyebrow)}
             </p>
-            <DialogTitle className="font-display text-2xl font-bold tracking-tight md:text-3xl">
+            <StickerDialogTitle className="text-2xl md:text-3xl">
               {step === "email" ? t(ui.ral.gate.title) : t(ui.ral.gate.codeTitle)}
-            </DialogTitle>
-            <DialogDescription className="max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
+            </StickerDialogTitle>
+            <StickerDialogDescription className="max-w-xl md:text-base">
               {step === "email" ? t(ui.ral.gate.lead) : t(ui.ral.gate.codeLead)}
-            </DialogDescription>
-            <span className="hud w-fit border border-primary/40 bg-primary/5 px-2.5 py-1 text-primary">
+            </StickerDialogDescription>
+            <HoloBadge
+              variant="outline"
+              className="hud rounded-none border-primary/40 bg-primary/5 px-2.5 py-1 text-primary"
+            >
               {apiReady ? t(ui.ral.gate.badge) : t(ui.ral.gate.badgeOffline)}
-            </span>
-          </DialogHeader>
+            </HoloBadge>
+          </StickerDialogHeader>
 
           {!apiReady && (
             <p className="relative mt-6 text-sm text-destructive" role="alert">
@@ -182,7 +188,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                   size={14}
                   className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
-                <input
+                <GlowInput
                   ref={emailRef}
                   id="ral-email"
                   type="email"
@@ -192,13 +198,15 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t(ui.ral.gate.placeholder)}
-                  className="h-12 w-full border border-border bg-background/80 pl-9 pr-3 font-mono text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-primary disabled:opacity-50"
+                  className="h-12 border-border bg-background/80 pr-3 pl-9 font-mono placeholder:text-muted-foreground/70"
                 />
               </div>
-              <button
+              <HoloButton
                 type="submit"
+                variant="primary"
+                size="lg"
                 disabled={pending || !apiReady}
-                className="btn-primary disabled:opacity-60"
+                className="btn-hud text-xs font-medium disabled:opacity-60"
               >
                 {pending ? (
                   <>
@@ -209,7 +217,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                     <Unlock size={14} /> {t(ui.ral.gate.submit)}
                   </>
                 )}
-              </button>
+              </HoloButton>
             </form>
           ) : (
             <form onSubmit={verifyCode} className="relative mt-8 space-y-4">
@@ -225,7 +233,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                 <label className="sr-only" htmlFor="ral-code">
                   {t(ui.ral.gate.codeLabel)}
                 </label>
-                <input
+                <GlowInput
                   ref={codeRef}
                   id="ral-code"
                   inputMode="numeric"
@@ -234,9 +242,15 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                   value={code}
                   onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 8))}
                   placeholder="••••••"
-                  className="h-12 flex-1 border border-border bg-background/80 px-3 text-center font-mono text-lg tracking-[0.4em] text-foreground outline-none focus:border-primary"
+                  className="h-12 flex-1 border-border bg-background/80 px-3 text-center font-mono text-lg tracking-[0.4em]"
                 />
-                <button type="submit" disabled={pending} className="btn-primary disabled:opacity-60">
+                <HoloButton
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  disabled={pending}
+                  className="btn-hud text-xs font-medium disabled:opacity-60"
+                >
                   {pending ? (
                     <>
                       <Loader2 size={14} className="animate-spin" /> {t(ui.ral.gate.pending)}
@@ -246,7 +260,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                       <ShieldCheck size={14} /> {t(ui.ral.gate.verify)}
                     </>
                   )}
-                </button>
+                </HoloButton>
               </div>
               <button
                 type="button"
@@ -271,7 +285,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
 
           <p className="mt-5 hud text-muted-foreground">{t(ui.ral.gate.footnote)}</p>
         </div>
-      </DialogContent>
-    </Dialog>
+      </StickerDialogContent>
+    </StickerDialog>
   );
 }

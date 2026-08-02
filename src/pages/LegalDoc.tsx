@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import { Link } from "react-router-dom";
 import remarkGfm from "remark-gfm";
+import { HoloButton } from "@/components/ui/holo-button";
 
 type LegalDocProps = {
   id: LegalDocId;
@@ -60,10 +61,17 @@ export default function LegalDoc({ id }: LegalDocProps) {
 
       <main className="section-container py-28 md:py-36">
         <Reveal>
-          <Link to="/" className="btn-ghost inline-flex">
-            <ArrowLeft size={14} /> {t(ui.legal.back)}
-          </Link>
-          <span className="hud hud-accent mt-10 block">
+          <HoloButton
+            asChild
+            variant="outline"
+            size="lg"
+            className="btn-hud text-xs font-medium btn-hud-ghost"
+          >
+            <Link to="/">
+              <ArrowLeft size={14} /> {t(ui.legal.back)}
+            </Link>
+          </HoloButton>
+          <span className="hud text-primary mt-10 block">
             {t(ui.legal.updated)} · {updated}
           </span>
           <h1 className="display-lg mt-4 max-w-3xl">{t(meta.title)}</h1>

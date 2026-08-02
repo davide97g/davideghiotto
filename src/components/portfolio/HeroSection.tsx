@@ -9,6 +9,7 @@ import { useLenis } from "lenis/react";
 import { ArrowDown, Play, Sparkles } from "lucide-react";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { HoloButton } from "@/components/ui/holo-button";
 
 export default function HeroSection() {
   const { t } = useLanguage();
@@ -115,25 +116,32 @@ export default function HeroSection() {
           />
 
           <div className="hero-fade flex flex-wrap gap-3">
-            <a
-              href="#work"
-              className="btn-primary"
-              onClick={() => trackEvent("cta_click", { cta_id: "work" })}
+            <HoloButton asChild variant="primary" size="lg" className="btn-hud text-xs font-medium">
+              <a
+                href="#work"
+                onClick={() => trackEvent("cta_click", { cta_id: "work" })}
+              >
+                {t(ui.hero.ctaPrimary)} <ArrowDown size={14} />
+              </a>
+            </HoloButton>
+            <HoloButton
+              asChild
+              variant="outline"
+              size="lg"
+              className="btn-hud text-xs font-medium btn-hud-ghost"
             >
-              {t(ui.hero.ctaPrimary)} <ArrowDown size={14} />
-            </a>
-            <a
-              href={channel.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost"
-              onClick={() => {
-                trackEvent("cta_click", { cta_id: "youtube" });
-                trackOutbound("hero_youtube", channel.url);
-              }}
-            >
-              <Play size={13} /> {t(ui.hero.ctaSecondary)}
-            </a>
+              <a
+                href={channel.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  trackEvent("cta_click", { cta_id: "youtube" });
+                  trackOutbound("hero_youtube", channel.url);
+                }}
+              >
+                <Play size={13} /> {t(ui.hero.ctaSecondary)}
+              </a>
+            </HoloButton>
             <Link
               to="/ral"
               className="btn-ral group"
@@ -163,7 +171,7 @@ export default function HeroSection() {
           }}
           className="hero-fade flex items-center gap-3 text-left"
         >
-          <span className="hud hud-accent animate-blink">▌</span>
+          <span className="hud text-primary animate-blink">▌</span>
           <span className="hud">{t(ui.hero.scrollCue)}</span>
         </button>
       </div>

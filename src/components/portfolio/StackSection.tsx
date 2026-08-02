@@ -9,7 +9,7 @@ export default function StackSection() {
   return (
     <section id="stack" className="section-container section-spacing">
       <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud hud-accent">03</span>
+        <span className="hud text-primary">03</span>
         <span className="hud">{t(ui.stack.label)}</span>
       </Reveal>
 

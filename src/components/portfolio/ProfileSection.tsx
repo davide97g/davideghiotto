@@ -12,7 +12,7 @@ export default function ProfileSection() {
   return (
     <section id="profile" className="section-container section-spacing">
       <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud hud-accent">05</span>
+        <span className="hud text-primary">05</span>
         <span className="hud">{t(ui.profile.label)}</span>
       </Reveal>
 

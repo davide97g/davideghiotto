@@ -308,7 +308,7 @@ export default function RalChart({
               <Customized component={CompanyBands as never} />
 
               <CartesianGrid
-                stroke="hsl(var(--border))"
+                stroke="var(--border)"
                 strokeOpacity={0.55}
                 vertical={false}
               />
@@ -320,8 +320,8 @@ export default function RalChart({
                 tickFormatter={(v: number) =>
                   formatRalMonth(new Date(v).toISOString(), lang)
                 }
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11, fontFamily: "JetBrains Mono" }}
-                axisLine={{ stroke: "hsl(var(--border))" }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "JetBrains Mono" }}
+                axisLine={{ stroke: "var(--border)" }}
                 tickLine={false}
                 minTickGap={48}
               />
@@ -331,7 +331,7 @@ export default function RalChart({
                 tickFormatter={(v: number) =>
                   unlocked ? formatRalShort(v) : "···"
                 }
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11, fontFamily: "JetBrains Mono" }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "JetBrains Mono" }}
                 axisLine={false}
                 tickLine={false}
                 width={48}
@@ -339,7 +339,7 @@ export default function RalChart({
 
               {unlocked && (
                 <Tooltip
-                  cursor={{ stroke: "hsl(var(--primary))", strokeOpacity: 0.35 }}
+                  cursor={{ stroke: "var(--primary)", strokeOpacity: 0.35 }}
                   content={({ active, payload }) => {
                     if (!active || !payload?.length) return null;
                     const point = payload[0]?.payload as Point | undefined;
@@ -421,7 +421,7 @@ export default function RalChart({
 
         <div className="mt-2 flex items-center justify-between gap-4 border-t border-border/60 pt-3">
           <p className="hud text-muted-foreground">{t(ui.ral.chartAxis)}</p>
-          <p className="hud hud-accent">
+          <p className="hud text-primary">
             {unlocked && currentAmount != null
               ? `${t(ui.ral.currentLabel)} ${formatRal(currentAmount, lang)}`
               : t(ui.ral.lockedHint)}
@@ -470,7 +470,7 @@ function BumpRail({ bumps }: { bumps: RalBump[] }) {
               <p className="mt-2 text-xs text-muted-foreground">{t(bump.note)}</p>
             )}
             {delta != null && delta > 0 && (
-              <p className="mt-2 hud hud-accent">+{formatRalShort(delta)}</p>
+              <p className="mt-2 hud text-primary">+{formatRalShort(delta)}</p>
             )}
           </li>
         );

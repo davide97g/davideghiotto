@@ -21,7 +21,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackOutbound("workshop", bio.workshop)}
-            className="hud link-wipe hud-accent self-start"
+            className="hud link-wipe text-primary self-start"
           >
             {t(ui.footer.workshop)} ↗ dacoder.it
           </a>

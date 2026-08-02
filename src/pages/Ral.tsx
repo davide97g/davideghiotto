@@ -29,6 +29,7 @@ import { ArrowLeft, Eye, Timer, TrendingUp } from "lucide-react";
 import { useLenis } from "lenis/react";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { HoloButton } from "@/components/ui/holo-button";
 
 /**
  * `/ral` — RAL disclosure page.
@@ -164,12 +165,19 @@ export default function RalPage() {
       <Nav />
 
       <main className="section-container relative z-10 pb-24 pt-28 md:pt-32">
-        <Link to="/" className="btn-ghost">
-          <ArrowLeft size={14} /> {t(ui.ral.back)}
-        </Link>
+        <HoloButton
+          asChild
+          variant="outline"
+          size="lg"
+          className="btn-hud text-xs font-medium btn-hud-ghost"
+        >
+          <Link to="/">
+            <ArrowLeft size={14} /> {t(ui.ral.back)}
+          </Link>
+        </HoloButton>
 
         <Reveal className="section-marker mt-12" stagger={0.06}>
-          <span className="hud hud-accent">RAL</span>
+          <span className="hud text-primary">RAL</span>
           <span className="hud">{t(ui.ral.label)}</span>
         </Reveal>
 
@@ -274,7 +282,7 @@ export default function RalPage() {
 
         <section className="mt-20">
           <Reveal className="section-marker" stagger={0.06}>
-            <span className="hud hud-accent">01</span>
+            <span className="hud text-primary">01</span>
             <span className="hud">{t(ui.ral.chartLabel)}</span>
           </Reveal>
           <h2 className="mt-8 flex items-center gap-3 font-display text-3xl font-bold tracking-tight md:text-4xl">

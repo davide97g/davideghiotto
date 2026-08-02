@@ -44,7 +44,7 @@ export default function PathSection() {
   return (
     <section ref={scope} id="path" className="section-container section-spacing">
       <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud hud-accent">04</span>
+        <span className="hud text-primary">04</span>
         <span className="hud">{t(ui.path.label)}</span>
       </Reveal>
 
@@ -67,7 +67,7 @@ export default function PathSection() {
               <div className="flex flex-wrap items-baseline gap-3">
                 <span className="hud">{job.period}</span>
                 {i === 0 && (
-                  <span className="hud hud-accent border border-primary/40 px-2 py-0.5">
+                  <span className="hud text-primary border border-primary/40 px-2 py-0.5">
                     {t(ui.path.current)}
                   </span>
                 )}

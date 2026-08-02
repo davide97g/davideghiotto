@@ -5,6 +5,8 @@ import { featuredProject, ui } from "@/data/content";
 import { trackOutbound } from "@/lib/analytics";
 import { ArrowUpRight, Github } from "lucide-react";
 import type { CSSProperties } from "react";
+import { HoloBadge } from "@/components/ui/holo-badge";
+import { HoloButton } from "@/components/ui/holo-button";
 
 /**
  * Inside this block `--primary` is swapped for sharp's own violet, so every
@@ -35,7 +37,7 @@ export default function FeaturedProject() {
             {p.name}
           </h3>
         </div>
-        <span className="hud hud-accent ml-auto border border-primary/40 px-2.5 py-1">
+        <span className="hud text-primary ml-auto border border-primary/40 px-2.5 py-1">
           {t(ui.work.featuredLabel)}
         </span>
       </Reveal>
@@ -54,24 +56,31 @@ export default function FeaturedProject() {
           </Reveal>
 
           <Reveal className="mt-8 flex flex-wrap items-center gap-3">
-            <a
-              href={p.site}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary"
-              onClick={() => trackOutbound("sharp_site", p.site)}
+            <HoloButton asChild variant="primary" size="lg" className="btn-hud text-xs font-medium">
+              <a
+                href={p.site}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackOutbound("sharp_site", p.site)}
+              >
+                {t(ui.work.visit)} <ArrowUpRight size={14} />
+              </a>
+            </HoloButton>
+            <HoloButton
+              asChild
+              variant="outline"
+              size="lg"
+              className="btn-hud text-xs font-medium btn-hud-ghost"
             >
-              {t(ui.work.visit)} <ArrowUpRight size={14} />
-            </a>
-            <a
-              href={p.repo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost"
-              onClick={() => trackOutbound("sharp_repo", p.repo)}
-            >
-              <Github size={14} /> {t(ui.work.source)}
-            </a>
+              <a
+                href={p.repo}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackOutbound("sharp_repo", p.repo)}
+              >
+                <Github size={14} /> {t(ui.work.source)}
+              </a>
+            </HoloButton>
           </Reveal>
 
           <Reveal
@@ -115,9 +124,9 @@ export default function FeaturedProject() {
             <h5 className="hud mb-5">{t(ui.work.stackLabel)}</h5>
             <div className="flex flex-wrap gap-2 border-t border-border pt-5">
               {p.stack.map((item) => (
-                <span key={item} className="tag">
+                <HoloBadge key={item} variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground">
                   {item}
-                </span>
+                </HoloBadge>
               ))}
             </div>
           </Reveal>

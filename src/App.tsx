@@ -1,9 +1,7 @@
 import AnalyticsRouteListener from "@/components/AnalyticsRouteListener";
 import CookieBanner from "@/components/CookieBanner";
 import SmoothScroll from "@/components/SmoothScroll";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { QuackToastProvider } from "@/components/ui/quack-toast";
 import { ConsentProvider } from "@/context/ConsentContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import PageTransition from "@/components/motion/PageTransition";
@@ -26,9 +24,10 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+    {/* One toast host, from @duck/quack-toast. This used to be two — shadcn's
+        Radix toaster and Sonner, both mounted, neither used — which is 3 npm
+        packages and two portals for zero toasts on screen. */}
+    <QuackToastProvider>
       <BrowserRouter>
         <LanguageProvider>
           <ConsentProvider>
@@ -51,7 +50,7 @@ const App = () => (
           </ConsentProvider>
         </LanguageProvider>
       </BrowserRouter>
-    </TooltipProvider>
+    </QuackToastProvider>
   </QueryClientProvider>
 );
 

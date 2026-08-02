@@ -11,6 +11,12 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# bun.lockb is the only lockfile. A stray `npm install` writes one of these and
+# the two then disagree about resolutions.
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
 .env
 .env.*
 !.env.example

@@ -41,7 +41,7 @@ export default function ScrollRail() {
           style={{ transform: "scaleY(0)" }}
         />
       </div>
-      <span ref={readout} className="hud hud-accent">
+      <span ref={readout} className="hud text-primary">
         000
       </span>
     </div>

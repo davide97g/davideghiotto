@@ -1,14 +1,17 @@
 import { useConsent } from "@/context/ConsentContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
+import { DuckSwitch } from "@/components/ui/duck-switch";
+import { HoloButton } from "@/components/ui/holo-button";
+import { StickerCard } from "@/components/ui/sticker-card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
+  StickerDialog,
+  StickerDialogContent,
+  StickerDialogDescription,
+  StickerDialogFooter,
+  StickerDialogHeader,
+  StickerDialogTitle,
+} from "@/components/ui/sticker-dialog";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -48,7 +51,7 @@ export default function CookieBanner() {
         >
           <div className="section-container flex flex-col gap-5 py-5 md:flex-row md:items-end md:justify-between md:gap-8 md:py-6">
             <div className="min-w-0 max-w-2xl">
-              <p id="cookie-banner-title" className="hud hud-accent">
+              <p id="cookie-banner-title" className="hud text-primary">
                 {t(ui.cookies.bannerTitle)}
               </p>
               <p
@@ -66,79 +69,108 @@ export default function CookieBanner() {
               </p>
             </div>
 
+            {/* Reject and Accept carry equal weight on purpose — an outline
+                and a filled button of the same size, not a grey link beside a
+                lime CTA. Consent that is easier to give than to refuse is not
+                consent. */}
             <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-              <button type="button" onClick={rejectAll} className="btn-ghost justify-center">
+              <HoloButton
+                variant="outline"
+                size="lg"
+                className="btn-hud btn-hud-ghost justify-center text-xs font-medium"
+                onClick={rejectAll}
+              >
                 {t(ui.cookies.rejectAll)}
-              </button>
-              <button
-                type="button"
+              </HoloButton>
+              <HoloButton
+                variant="outline"
+                size="lg"
+                className="btn-hud btn-hud-ghost justify-center text-xs font-medium"
                 onClick={openPreferences}
-                className="btn-ghost justify-center"
               >
                 {t(ui.cookies.customize)}
-              </button>
-              <button type="button" onClick={acceptAll} className="btn-primary justify-center">
+              </HoloButton>
+              <HoloButton
+                variant="primary"
+                size="lg"
+                className="btn-hud justify-center text-xs font-medium"
+                onClick={acceptAll}
+              >
                 {t(ui.cookies.acceptAll)}
-              </button>
+              </HoloButton>
             </div>
           </div>
         </div>
       )}
 
-      <Dialog
+      <StickerDialog
         open={preferencesOpen}
         onOpenChange={(open) => (open ? openPreferences() : closePreferences())}
       >
-        <DialogContent className="max-w-md border-border bg-background sm:rounded-none">
-          <DialogHeader>
-            <DialogTitle className="font-display text-xl tracking-tight">
+        <StickerDialogContent className="max-w-md bg-background">
+          <StickerDialogHeader>
+            <StickerDialogTitle className="text-xl">
               {t(ui.cookies.prefsTitle)}
-            </DialogTitle>
-            <DialogDescription className="text-sm leading-relaxed text-muted-foreground">
+            </StickerDialogTitle>
+            <StickerDialogDescription>
               {t(ui.cookies.prefsLead)}
-            </DialogDescription>
-          </DialogHeader>
+            </StickerDialogDescription>
+          </StickerDialogHeader>
 
-          <div className="mt-2 space-y-4">
-            <div className="panel flex items-start justify-between gap-4 p-4">
+          <div className="space-y-4">
+            <StickerCard className="flex-row items-start justify-between gap-4 p-4">
               <div className="min-w-0">
                 <p className="hud">{t(ui.cookies.necessaryLabel)}</p>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {t(ui.cookies.necessaryDesc)}
                 </p>
               </div>
-              <Switch checked disabled aria-label={t(ui.cookies.necessaryLabel)} />
-            </div>
+              {/* Locked on: strictly necessary cookies are not a choice, and a
+                  switch the user can move but that does nothing is worse than
+                  one that is visibly fixed. */}
+              <DuckSwitch
+                checked
+                readOnly
+                disabled
+                aria-label={t(ui.cookies.necessaryLabel)}
+              />
+            </StickerCard>
 
-            <div className="panel flex items-start justify-between gap-4 p-4">
+            <StickerCard className="flex-row items-start justify-between gap-4 p-4">
               <div className="min-w-0">
                 <p className="hud">{t(ui.cookies.analyticsLabel)}</p>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {t(ui.cookies.analyticsDesc)}
                 </p>
               </div>
-              <Switch
+              <DuckSwitch
                 checked={draftAnalytics}
-                onCheckedChange={setDraftAnalytics}
+                onChange={(event) => setDraftAnalytics(event.target.checked)}
                 aria-label={t(ui.cookies.analyticsLabel)}
               />
-            </div>
+            </StickerCard>
           </div>
 
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
-            <button type="button" onClick={closePreferences} className="btn-ghost justify-center">
+          <StickerDialogFooter>
+            <HoloButton
+              variant="outline"
+              size="lg"
+              className="btn-hud btn-hud-ghost justify-center text-xs font-medium"
+              onClick={closePreferences}
+            >
               {t(ui.cookies.cancel)}
-            </button>
-            <button
-              type="button"
+            </HoloButton>
+            <HoloButton
+              variant="primary"
+              size="lg"
+              className="btn-hud justify-center text-xs font-medium"
               onClick={() => savePreferences(draftAnalytics)}
-              className="btn-primary justify-center"
             >
               {t(ui.cookies.save)}
-            </button>
-          </div>
-        </DialogContent>
-      </Dialog>
+            </HoloButton>
+          </StickerDialogFooter>
+        </StickerDialogContent>
+      </StickerDialog>
     </>
   );
 }

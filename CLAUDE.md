@@ -4,29 +4,61 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Package manager is bun (see `bun.lockb`), but `npm`/`pnpm` work the same with `package.json` scripts.
+Package manager is **bun**, and `bun.lockb` is the only lockfile — install with `bun install`, not
+`npm install`, which would drop a competing `package-lock.json` beside it. The `bun run <script>`
+and `npm run <script>` forms are interchangeable for the scripts below; only installs differ.
 
-- `npm run dev` — Vite dev server on port `8080` (host `::`, HMR overlay disabled in `vite.config.ts`).
-- `npm run build` — production build to `dist/`.
-- `npm run build:dev` — build with `mode=development` (keeps the `lovable-tagger` plugin enabled).
-- `npm run lint` — ESLint over the whole repo (flat config in `eslint.config.js`; `dist` ignored, `@typescript-eslint/no-unused-vars` is off).
-- `npm run test` — Vitest single run (jsdom env, setup at `src/test/setup.ts`).
-- `npm run test:watch` — Vitest watch mode.
-- Run one test file: `npx vitest run src/path/to/file.test.ts` (or `... -t "case name"` to filter by test name).
-- `npm run fetch:youtube` — regenerates the `videos` array in `src/data/youtube.ts` from the channel RSS feed.
-- `npm run sitemap` — regenerates `public/sitemap.xml` from `src/data/journal.ts` (`scripts/generate-sitemap.mjs`). `build` and `build:dev` run it first, so the committed file only goes stale if a note is added without building; `src/data/sitemap.test.ts` catches that.
-- `npm run preview` — preview the production build.
+Note `bun install` blocks `@swc/core`'s postinstall as untrusted. That is fine — the platform binary
+arrives as an optional dependency and the build works without it.
+
+- `bun run dev` — Vite dev server on port `8080` (host `::`, HMR overlay disabled in `vite.config.ts`).
+- `bun run build` — production build to `dist/`.
+- `bun run build:dev` — build with `mode=development` (keeps the `lovable-tagger` plugin enabled).
+- `bun run lint` — ESLint over the whole repo (flat config in `eslint.config.js`; `dist` ignored, `@typescript-eslint/no-unused-vars` is off).
+- `bun run test` — Vitest single run (jsdom env, setup at `src/test/setup.ts`).
+- `bun run test:watch` — Vitest watch mode.
+- Run one test file: `bunx vitest run src/path/to/file.test.ts` (or `... -t "case name"` to filter by test name).
+- `bun run fetch:youtube` — regenerates the `videos` array in `src/data/youtube.ts` from the channel RSS feed.
+- `bun run sitemap` — regenerates `public/sitemap.xml` from `src/data/journal.ts` (`scripts/generate-sitemap.mjs`). `build` and `build:dev` run it first, so the committed file only goes stale if a note is added without building; `src/data/sitemap.test.ts` catches that.
+- `bun run preview` — preview the production build.
 
 `@` resolves to `src/` (configured in both `vite.config.ts` and `vitest.config.ts`).
 
 ## Architecture
 
-Single-page personal portfolio (Vite + React 18 + TypeScript + Tailwind + shadcn-ui) with one fixed
+Single-page personal portfolio (Vite + React 18 + TypeScript + Tailwind v4 + duck/ui) with one fixed
 visual identity — **terminal noir**: near-black canvas, off-white type, a single lime accent
 (`#8CFF2E`), and tiny wide-tracked uppercase mono labels used as HUD chrome. There is no theme
 switcher and no per-company deck; earlier versions had both and they were removed deliberately.
 
-Two systems carry most of the design intent: **the scroll choreography** and **the bilingual copy layer**.
+Three systems carry most of the design intent: **the design system**, **the scroll choreography**
+and **the bilingual copy layer**.
+
+### Design system (duck/ui + @duck/theme-noir)
+
+- UI primitives come from **duck/ui**, the registry at `duckui.davideghiotto.it` (source lives at
+  `~/personal/dacoder/projects/duck-ui`). `components.json` registers it as `@duck`, so
+  `npx shadcn@latest add @duck/<name>` copies a component into `src/components/ui/`. They are
+  ordinary owned files after that — edit them freely, but prefer fixing the registry and
+  reinstalling, so other consumers get the fix too.
+- The palette is **`@duck/theme-noir`**, a second theme in that registry carrying this site's
+  identity. Installing it is what makes every duck component read as terminal noir instead of duck:
+  `--radius: 0.125rem`, `--sticker-border: 1px`, `--holo` flattened to a lime gradient, glow
+  narrowed, `--ease-squash` de-bounced. **No duck component is restyled per call site** — if one
+  looks wrong, the fix belongs in the theme or the registry, not in a `className`.
+- In use: `HoloButton`, `HoloBadge`, `HudLabel` (+ the `.hud` utility), `StickerCard`,
+  `StickerDialog`, `DuckSwitch`, `GlowInput`, `QuackToastProvider`, `EmptyPond`. Replacing the
+  shadcn/Radix layer with these took the runtime dependency count from 47 to 17.
+- Three things duck cannot express through tokens yet, so they stay as local classes layered onto a
+  duck component: `.btn-hud` (mono uppercase button labels), `.btn-hud-ghost` (outline hover fill)
+  and `.tag` (square mono badge). Each is commented with why. **Size, weight and radius overrides
+  must travel in the `className` string, not in those classes** — they collide with Tailwind
+  utilities the component's variants already set, and the utilities layer wins; putting them in the
+  className lets `cn()`'s tailwind-merge drop the component's pair instead.
+- Every open gap is written up in `duck-ui/docs/feature-requests/portfolio-site-gaps.md`. Read it
+  before working around something here — it is probably already known.
+
+Two systems carry the rest: **the scroll choreography** and **the bilingual copy layer**.
 
 ### Scroll choreography (GSAP + Lenis)
 
@@ -115,9 +147,9 @@ Two systems carry most of the design intent: **the scroll choreography** and **t
   `document.title`, resets Lenis scroll on slug change, and falls back to an in-page 404 for an
   unknown slug.
 - `.post-body` in `src/index.css` is the only prose scale on the site (68ch measure, lime-ruled
-  blockquotes, mono uppercase table headers, tables scrolling inside their own `overflow-x`).
-  `@tailwindcss/typography` is a dependency but is deliberately **not** registered as a plugin —
-  the notes are the only prose here, so the scale is hand-rolled to match the HUD chrome.
+  blockquotes, mono uppercase table headers, tables scrolling inside their own `overflow-x`). It is
+  hand-rolled to match the HUD chrome: `@tailwindcss/typography` never fit and has been removed, and
+  duck/ui has no prose component yet — it is the top request in the gaps doc.
 - Adding a note: two markdown files (`.en.md` and `.it.md`) plus one `journalPosts` entry.
   `src/data/journal.test.ts` fails if a language file is missing or thin, if a `[TK` marker survives,
   or if any `@ HH:MM:SS](…&t=Ns)` deep link disagrees with its label — the notes quote the streams by
@@ -136,26 +168,45 @@ Two systems carry most of the design intent: **the scroll choreography** and **t
   motion allowed; mobile and reduced-motion get a plain swipeable overflow list. YouTube thumbnails
   use `hqdefault` scaled `1.35` inside an `aspect-video` box to crop the 4:3 letterboxing.
 
-### Design system
+### Stylesheet
 
-- `src/index.css` defines all tokens on `:root` (no `[data-theme]` blocks) plus the component layer:
-  `.hud`, `.section-marker`, `.display-xl` / `.display-lg`, `.line-mask`, `.panel` (+
-  `.panel-interactive`, `.panel-ticks`), `.tag`, `.btn-primary`, `.btn-ghost`, `.link-wipe`,
-  `.marquee-strip` / `.marquee-track` / `.marquee-invert`, and the `.grain` overlay utility.
-  Prefer these classes over ad-hoc utility stacks so the chrome stays consistent.
+- **Tailwind v4, no config file.** There is no `tailwind.config.ts` and no `postcss.config.js`;
+  `@tailwindcss/vite` runs as a Vite plugin and `src/index.css` is the single source of truth.
+  Colours, fonts, radius scale, easings and animations are declared in `:root` and `@theme inline`
+  at the top of that file.
+- **Tokens hold complete `oklch()` colours, not HSL channels.** Duck components pass `var(--card)`
+  and `var(--border)` straight into gradients and box-shadows, which a bare `213 10% 7%` cannot
+  satisfy. In markup use Tailwind's `/opacity` modifier (`bg-primary/55`); in hand-written CSS use
+  `color-mix(in oklab, var(--primary) 55%, transparent)`. Never reintroduce `hsl(var(--x))`.
+- The radius scale is **multiplicative** (`calc(var(--radius) * 1.833)`), matching the duck registry.
+  Stock shadcn adds fixed pixel offsets, which would leave every `rounded-2xl` at 12px on a theme
+  whose `--radius` is `0.125rem`.
+- Remaining hand-rolled chrome in the component layer: `.section-marker`, `.display-xl` /
+  `.display-lg`, `.line-mask`, `.panel` (+ `.panel-interactive`, `.panel-ticks`, `.card-scan`),
+  `.link-wipe`, `.micro-row`, `.marquee-strip` / `.marquee-track` / `.marquee-invert`, `.btn-ral`,
+  `.post-body`, and the `.grain` overlay. `.hud` now comes from `@duck/hud-label`. Prefer these
+  classes over ad-hoc utility stacks so the chrome stays consistent.
+- **Defaults meant to be overridable go in `:where()`.** `:where(.hud)` and `:where(.tag)` carry
+  their colour at zero specificity so `class="hud text-primary"` actually works. A plain
+  `.hud { color }` sits in the utilities layer and outranks Tailwind's own `text-*`, which fails
+  silently — it cost this site every lime section index once already.
+- **No apostrophes in CSS comments.** Tailwind v4's parser treats `'` as a string delimiter even
+  inside a comment; a stray one swallows the rules that follow and surfaces only as
+  `Unterminated string` in a Vite stack trace.
 - `src/components/ShaderBackdrop.tsx` is the fixed WebGL backdrop (OGL): flow-noise haze, a
   receding grid and a scanline shimmer, with scroll velocity smearing the grid. Note `uResolution`
   must be the drawing-buffer size, not the CSS size — `gl_FragCoord` is in device pixels, so using
   CSS pixels shrinks the field to `1/dpr` of the canvas. It renders a single static frame under
   reduced motion and returns early (falling back to the CSS background) if WebGL is unavailable.
-- `src/components/ui/*` is shadcn-ui (config in `components.json`) — treat as vendored. Fonts are
-  Space Grotesk (display), Inter (body) and JetBrains Mono (chrome), loaded in `index.html`.
+- `src/components/ui/*` is the installed duck/ui set (config in `components.json`) — owned code, but
+  see the design-system section before editing. Fonts are Space Grotesk (display), Inter (body) and
+  JetBrains Mono (chrome), loaded in `index.html`.
 
 ### Routes
 
-`src/App.tsx` wraps everything in `QueryClientProvider` → `TooltipProvider` → `BrowserRouter` →
-`LanguageProvider` → `SmoothScroll`. Only two routes: `/` (`pages/Index.tsx`) and `*`
-(`pages/NotFound.tsx`).
+`src/App.tsx` wraps everything in `QueryClientProvider` → `QuackToastProvider` → `BrowserRouter` →
+`LanguageProvider` → `SmoothScroll`. Routes: `/` (`pages/Index.tsx`), `/journal/:slug`, `/ral`,
+`/privacy`, `/cookies`, and `*` (`pages/NotFound.tsx`).
 
 ### Deployment
 
