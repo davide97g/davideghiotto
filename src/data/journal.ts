@@ -38,6 +38,20 @@ export interface JournalPlatform {
 /** Newest first — this is the order the journal band renders. */
 export const journalPosts: JournalPost[] = [
   {
+    slug: "stop-reading-code",
+    date: "2026-08-01",
+    title: {
+      en: "Stop reading code",
+      it: "Smetti di leggere codice",
+    },
+    excerpt: {
+      en: "When an agent changes ten thousand lines, line-by-line review becomes the bottleneck. Review behavior, requirements and evidence instead — with tests, static analysis and targeted human checks.",
+      it: "Quando un agente cambia diecimila righe, la review riga per riga diventa il collo di bottiglia. Controlla comportamento, requisiti ed evidenze: test, analisi statica e verifiche umane mirate.",
+    },
+    tags: ["AI-assisted development", "Code review", "Testing"],
+    video: "tfHkM5Bk5e0",
+  },
+  {
     slug: "ral-in-chiaro",
     date: "2026-07-30",
     title: {

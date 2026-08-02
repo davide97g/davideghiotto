@@ -16,8 +16,8 @@ export const channel = {
   id: "UCp-6Cv5ksm2mY-xLJqvLVKw",
   handle: "@davideghi",
   url: "https://www.youtube.com/channel/UCp-6Cv5ksm2mY-xLJqvLVKw",
-  subscribers: 181,
-  videoCount: 34,
+  subscribers: 180,
+  videoCount: 37,
 };
 
 export const thumbnailUrl = (id: string, quality: "hq" | "maxres" = "hq") =>
@@ -27,6 +27,21 @@ export const watchUrl = (id: string) => `https://www.youtube.com/watch?v=${id}`;
 
 /** Latest videos, newest first. */
 export const videos: Video[] = [
+  {
+    "id": "tfHkM5Bk5e0",
+    "title": "stop reading code",
+    "publishedAt": "2026-08-01"
+  },
+  {
+    "id": "_dAk4Ww2RuY",
+    "title": "Ho Ricreato Pokémon Go per un Evento Aziendale con AI generativa!",
+    "publishedAt": "2026-07-30"
+  },
+  {
+    "id": "nbWt8rLpLak",
+    "title": "Project Fortitudex: Team building 2.0",
+    "publishedAt": "2026-07-28"
+  },
   {
     "id": "pMzN-o7wNlQ",
     "title": "Claude Opus 5: Il Profeta x Il Clone",
@@ -86,20 +101,5 @@ export const videos: Video[] = [
     "id": "-XmrA0TF__U",
     "title": "Come pubblicare la tua web app FREE + FAST + EASY",
     "publishedAt": "2026-07-01"
-  },
-  {
-    "id": "_tx5HibNMW4",
-    "title": "Fable 5 Ritorna! Ah si, c'è anche Sonnet 5... #claudecode #fable5 #anthropic",
-    "publishedAt": "2026-07-01"
-  },
-  {
-    "id": "ubpckz1sTLY",
-    "title": "Claude Code Live: Stripe + Dominio per il mio Saas!",
-    "publishedAt": "2026-07-01"
-  },
-  {
-    "id": "WbqnLcVT3cE",
-    "title": "Sviluppo e Pubblico GRATIS una webapp (Saas) da zero usando Claude Code!",
-    "publishedAt": "2026-06-28"
   }
 ];
