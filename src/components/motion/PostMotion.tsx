@@ -21,7 +21,7 @@ export default function PostMotion({ children, contentKey }: Props) {
       if (!root) return;
 
       const targets = gsap.utils.toArray<HTMLElement>(
-        ".post-body h2, .post-body h3, .post-body blockquote, .post-body table, .post-body hr",
+        ".duck-prose h2, .duck-prose h3, .duck-prose blockquote, .duck-prose table, .duck-prose hr",
         root
       );
       if (!targets.length) return;

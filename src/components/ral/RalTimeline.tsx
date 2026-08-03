@@ -4,6 +4,7 @@ import RevealRalButton from "@/components/ral/RevealRalButton";
 import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
 import { formatRalMonth, ralCompanies, type RalBump } from "@/data/ral";
+import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
 
 interface RalTimelineProps {
   unlocked: boolean;
@@ -15,10 +16,13 @@ export default function RalTimeline({ unlocked, bumps, onReveal }: RalTimelinePr
   const { lang, t } = useLanguage();
 
   return (
-    <section className="mt-24">
-      <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud text-primary">02</span>
-        <span className="hud">{t(ui.ral.timeline.label)}</span>
+    <section className="group/section mt-24">
+      {/* Reveal has to stay the outer element: it needs a ref, and it
+          staggers the parts of the marker rather than the marker itself. */}
+      <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
+        <DuckSectionMarker index="02" className="border-b border-border pb-6">
+          {t(ui.ral.timeline.label)}
+        </DuckSectionMarker>
       </Reveal>
 
       <h2 className="display-lg mt-10">{t(ui.ral.timeline.title)}</h2>

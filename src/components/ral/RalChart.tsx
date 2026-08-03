@@ -24,6 +24,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { StickerCard } from "@/components/ui/sticker-card";
 
 interface Point {
   t: number;
@@ -291,8 +292,7 @@ export default function RalChart({
         ))}
       </div>
 
-      <div className="panel relative overflow-hidden p-3 md:p-5">
-        <div className="panel-ticks" aria-hidden />
+      <StickerCard glass ticks className="relative gap-0 overflow-hidden p-3 md:p-5">
         {!unlocked && <LockedScrim onReveal={onReveal} />}
 
         <div className={`h-[320px] w-full md:h-[420px] ${unlocked ? "" : "select-none"}`}>
@@ -427,7 +427,7 @@ export default function RalChart({
               : t(ui.ral.lockedHint)}
           </p>
         </div>
-      </div>
+      </StickerCard>
 
       {unlocked && <BumpRail bumps={bumps} />}
     </div>
@@ -446,11 +446,13 @@ function BumpRail({ bumps }: { bumps: RalBump[] }) {
         const delta =
           prev && typeof prev.amount === "number" ? bump.amount - prev.amount : null;
         return (
-          <li
+          <StickerCard
+            asChild
+            glass
             key={bump.id}
-            className="panel panel-interactive relative overflow-hidden p-4"
-            style={{ ["--bump-color" as string]: company.color }}
+            className="panel-interactive relative gap-0 overflow-hidden p-4"
           >
+          <li style={{ ["--bump-color" as string]: company.color }}>
             <span
               className="absolute inset-y-0 left-0 w-0.5"
               style={{ background: company.color }}
@@ -473,6 +475,7 @@ function BumpRail({ bumps }: { bumps: RalBump[] }) {
               <p className="mt-2 hud text-primary">+{formatRalShort(delta)}</p>
             )}
           </li>
+          </StickerCard>
         );
       })}
     </ol>

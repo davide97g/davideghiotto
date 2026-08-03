@@ -4,10 +4,21 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * HoloButton — the signature CTA.
+ *
+ * Label typography is deliberately absent from these classes. Family, weight,
+ * tracking, case and size come from --font-button / --weight-button /
+ * --tracking-button / --case-button / --text-button*, which the theme reads in a
+ * zero-specificity rule. A `text-sm font-semibold` here would be a utility, and
+ * a theme whose CTA is mono uppercase 12px could not undo it from CSS — it would
+ * need a class on every call site, and the font-size half could not be undone at
+ * all. Any single call site still overrides all of it with a plain utility.
+ */
 const holoButtonVariants = cva(
   [
     "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg",
-    "text-sm font-semibold cursor-pointer select-none",
+    "cursor-pointer select-none",
     "transition-[background-color,box-shadow,transform,border-color] duration-300 ease-[var(--ease-duck)]",
     "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
@@ -27,8 +38,8 @@ const holoButtonVariants = cva(
       },
       size: {
         default: "h-10 px-5 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-12 rounded-xl px-8 text-base",
+        sm: "h-8 rounded-md px-3",
+        lg: "h-12 rounded-xl px-8",
         icon: "size-10",
       },
     },
@@ -44,8 +55,8 @@ export interface HoloButtonProps
 
 function HoloButton({
   className,
-  variant,
-  size,
+  variant = "holo",
+  size = "default",
   asChild = false,
   ...props
 }: HoloButtonProps) {
@@ -53,6 +64,12 @@ function HoloButton({
   return (
     <Comp
       data-slot="holo-button"
+      // The variant is the only thing a stylesheet cannot infer from the DOM,
+      // and it is the thing themes most want to hook: "outline buttons get a
+      // faint fill on hover" is one rule here and a class on every call site
+      // without it. data-size carries the typography step for the same reason.
+      data-variant={variant}
+      data-size={size}
       className={cn(holoButtonVariants({ variant, size }), className)}
       {...props}
     />

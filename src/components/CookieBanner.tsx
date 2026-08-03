@@ -77,7 +77,7 @@ export default function CookieBanner() {
               <HoloButton
                 variant="outline"
                 size="lg"
-                className="btn-hud btn-hud-ghost justify-center text-xs font-medium"
+                className="justify-center"
                 onClick={rejectAll}
               >
                 {t(ui.cookies.rejectAll)}
@@ -85,7 +85,7 @@ export default function CookieBanner() {
               <HoloButton
                 variant="outline"
                 size="lg"
-                className="btn-hud btn-hud-ghost justify-center text-xs font-medium"
+                className="justify-center"
                 onClick={openPreferences}
               >
                 {t(ui.cookies.customize)}
@@ -93,7 +93,7 @@ export default function CookieBanner() {
               <HoloButton
                 variant="primary"
                 size="lg"
-                className="btn-hud justify-center text-xs font-medium"
+                className="justify-center"
                 onClick={acceptAll}
               >
                 {t(ui.cookies.acceptAll)}
@@ -155,7 +155,7 @@ export default function CookieBanner() {
             <HoloButton
               variant="outline"
               size="lg"
-              className="btn-hud btn-hud-ghost justify-center text-xs font-medium"
+              className="justify-center"
               onClick={closePreferences}
             >
               {t(ui.cookies.cancel)}
@@ -163,7 +163,7 @@ export default function CookieBanner() {
             <HoloButton
               variant="primary"
               size="lg"
-              className="btn-hud justify-center text-xs font-medium"
+              className="justify-center"
               onClick={() => savePreferences(draftAnalytics)}
             >
               {t(ui.cookies.save)}

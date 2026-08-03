@@ -32,7 +32,8 @@ export default function Index() {
   }, [lang]);
 
   return (
-    <div className="grain relative min-h-screen">
+    <div className="relative min-h-screen">
+      <div className="grain" aria-hidden />
       <ShaderBackdrop />
       <Nav />
       <ScrollRail />

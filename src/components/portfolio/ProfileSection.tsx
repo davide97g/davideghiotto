@@ -5,15 +5,20 @@ import { bio, principles, summary, ui } from "@/data/content";
 import { trackEvent, trackOutbound } from "@/lib/analytics";
 import { Github, Linkedin, Mail, MapPin, Youtube } from "lucide-react";
 import { channel } from "@/data/youtube";
+import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
+import { StickerCard } from "@/components/ui/sticker-card";
 
 export default function ProfileSection() {
   const { t } = useLanguage();
 
   return (
-    <section id="profile" className="section-container section-spacing">
-      <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud text-primary">05</span>
-        <span className="hud">{t(ui.profile.label)}</span>
+    <section id="profile" className="group/section section-container section-spacing">
+      {/* Reveal has to stay the outer element: it needs a ref, and it
+          staggers the parts of the marker rather than the marker itself. */}
+      <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
+        <DuckSectionMarker index="05" className="border-b border-border pb-6">
+          {t(ui.profile.label)}
+        </DuckSectionMarker>
       </Reveal>
 
       <SplitReveal as="h2" text={t(ui.profile.title)} className="display-lg mt-12" />
@@ -38,7 +43,10 @@ export default function ProfileSection() {
           </Reveal>
         </div>
 
-        <Reveal as="ul" selector=".contact-row" stagger={0.08} className="panel divide-y divide-border">
+        {/* The surface wraps rather than merges: Reveal needs to be the <ul>
+            that owns the rows, and it cannot forward a ref to StickerCard. */}
+        <StickerCard glass className="gap-0 p-0">
+        <Reveal as="ul" selector=".contact-row" stagger={0.08} className="divide-y divide-border">
           <li className="contact-row flex items-center gap-4 p-5">
             <MapPin size={16} className="text-primary" />
             <span className="font-mono text-sm text-muted-foreground">{t(bio.location)}</span>
@@ -102,6 +110,7 @@ export default function ProfileSection() {
             </a>
           </li>
         </Reveal>
+        </StickerCard>
       </div>
     </section>
   );

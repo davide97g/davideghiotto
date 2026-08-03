@@ -70,9 +70,9 @@ export interface HudLabelProps
 
 function HudLabel({
   className,
-  tone,
-  size,
-  tracking,
+  tone = "muted",
+  size = "default",
+  tracking = "default",
   dot = false,
   children,
   ...props
@@ -80,6 +80,8 @@ function HudLabel({
   return (
     <span
       data-slot="hud-label"
+      data-variant={tone}
+      data-size={size}
       className={cn(
         hudLabelVariants({ tone, size, tracking }),
         dot && "inline-flex items-center gap-2",

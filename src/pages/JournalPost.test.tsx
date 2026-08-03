@@ -34,11 +34,11 @@ describe("journal post page", () => {
     // The body arrives from a lazy chunk, so wait for the markdown to land. GFM
     // tables and blockquotes are the two constructs the notes lean on.
     await waitFor(() => expect(screen.getAllByRole("table").length).toBeGreaterThan(1));
-    expect(document.querySelectorAll(".post-body blockquote").length).toBeGreaterThan(0);
+    expect(document.querySelectorAll(".duck-prose blockquote").length).toBeGreaterThan(0);
 
     // Quoted moments must survive as real links into the source video.
     const deepLinks = Array.from(
-      document.querySelectorAll<HTMLAnchorElement>('.post-body a[href*="youtube.com/watch"]')
+      document.querySelectorAll<HTMLAnchorElement>('.duck-prose a[href*="youtube.com/watch"]')
     );
     expect(deepLinks.length).toBeGreaterThan(3);
     expect(deepLinks.every((a) => /&t=\d+s$/.test(a.href))).toBe(true);
@@ -50,7 +50,7 @@ describe("journal post page", () => {
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(en.title.en);
     await waitFor(() =>
-      expect(document.querySelector(".post-body")?.textContent ?? "").toContain(
+      expect(document.querySelector(".duck-prose")?.textContent ?? "").toContain(
         "Managed services"
       )
     );
@@ -73,7 +73,7 @@ describe("journal post page", () => {
     renderPost(detached.slug, "it");
 
     await waitFor(() =>
-      expect(document.querySelector(".post-body")?.textContent ?? "").not.toBe("")
+      expect(document.querySelector(".duck-prose")?.textContent ?? "").not.toBe("")
     );
     expect(document.querySelector('a[href*="youtube.com/watch"]')).toBeNull();
   });

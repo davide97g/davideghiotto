@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Slot, Slottable } from "@radix-ui/react-slot";
 
 import { cn } from "@/lib/utils";
 import { useHoloPointer } from "@/hooks/use-holo-pointer";
@@ -8,41 +9,87 @@ import { useHoloPointer } from "@/hooks/use-holo-pointer";
 /**
  * StickerCard — the die-cut sticker: thick border, generous radius, soft glow.
  *
- *   holo   iridescent ring instead of the solid border
- *   tilt   the card leans toward the pointer
- *   peel   a corner lifts off the backing on hover
+ *   holo     iridescent ring instead of the solid border
+ *   tilt     the card leans toward the pointer
+ *   peel     a corner lifts off the backing on hover
+ *   ticks    corner brackets that fade in on hover
+ *   glass    translucent surface over whatever is behind it
+ *   asChild  render as the child element, for a whole-card link
  */
 function StickerCard({
   className,
   holo = false,
   tilt = false,
   peel = false,
+  ticks = false,
+  glass = false,
+  asChild = false,
   children,
   ...props
 }: React.ComponentProps<"div"> & {
   holo?: boolean;
   tilt?: boolean;
   peel?: boolean;
+  ticks?: boolean;
+  glass?: boolean;
+  asChild?: boolean;
 }) {
   const ref = useHoloPointer<HTMLDivElement>({ tilt: 5, disabled: !tilt });
+  // A whole-card link is the commonest surface on a content site, and without
+  // this the only way to express it was to keep a hand-rolled .panel class.
+  // StickerMediaCard already had it; these two are the same idea.
+  const Comp = asChild ? Slot : "div";
 
   return (
-    <div
+    <Comp
       ref={ref}
       data-slot="sticker-card"
+      data-variant={holo ? "holo" : "solid"}
       className={cn(
-        "group/sticker relative flex flex-col gap-4 rounded-2xl bg-card p-6 text-card-foreground",
+        "group/sticker relative flex flex-col gap-4 rounded-2xl p-6 text-card-foreground",
         "transition-[box-shadow,border-color] duration-300 ease-[var(--ease-duck)]",
+        // The fill and the edge are one declaration on a holo card — a
+        // padding-box gradient — so the translucent case has to restate it
+        // rather than layer a background colour under it.
         holo
-          ? "holo-border hover:duck-glow"
-          : "sticker border-border hover:border-primary/50 hover:duck-glow-primary",
+          ? glass
+            ? "holo-border [background:linear-gradient(var(--glass),var(--glass))_padding-box,var(--holo)_border-box] hover:duck-glow"
+            : "holo-border bg-card hover:duck-glow"
+          : cn(
+              "sticker border-border hover:border-primary/50 hover:duck-glow-primary",
+              glass ? "bg-[var(--glass)]" : "bg-card"
+            ),
+        glass && "backdrop-blur-[var(--glass-blur,12px)]",
         tilt && "tilt data-[holo=active]:tilt-live",
         peel && "overflow-hidden",
         className
       )}
       {...props}
     >
-      {children}
+      {/* Slot appends whatever follows the Slottable to the cloned child, so
+          the decorations land inside the consumer's <a> rather than beside it
+          — and Slot counts children with React.Children.only, so a bare
+          {children} plus one conditional span throws even when the span
+          renders nothing. */}
+      {asChild ? <Slottable>{children}</Slottable> : children}
+      {ticks && (
+        // Four 8px brackets in the accent colour. They cost nothing and they
+        // are the difference between a rectangle and an instrument.
+        <span
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-0 rounded-[inherit] opacity-0",
+            "transition-opacity duration-300 ease-[var(--ease-duck)]",
+            "group-hover/sticker:opacity-100",
+            "[&>span]:absolute [&>span]:size-2 [&>span]:border-primary"
+          )}
+        >
+          <span className="top-0 left-0 border-t-2 border-l-2" />
+          <span className="top-0 right-0 border-t-2 border-r-2" />
+          <span className="bottom-0 left-0 border-b-2 border-l-2" />
+          <span className="right-0 bottom-0 border-r-2 border-b-2" />
+        </span>
+      )}
       {peel && (
         <span
           aria-hidden
@@ -56,7 +103,7 @@ function StickerCard({
           )}
         />
       )}
-    </div>
+    </Comp>
   );
 }
 

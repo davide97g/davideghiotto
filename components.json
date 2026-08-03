@@ -19,6 +19,6 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    "@duck": "http://localhost:4321/r/{name}.json"
+    "@duck": "https://duckui.davideghiotto.it/r/{name}.json"
   }
 }

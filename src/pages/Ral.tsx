@@ -30,6 +30,8 @@ import { useLenis } from "lenis/react";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { HoloButton } from "@/components/ui/holo-button";
+import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
+import { StickerCard } from "@/components/ui/sticker-card";
 
 /**
  * `/ral` — RAL disclosure page.
@@ -160,7 +162,8 @@ export default function RalPage() {
   };
 
   return (
-    <div className="grain relative min-h-screen">
+    <div className="relative min-h-screen">
+      <div className="grain" aria-hidden />
       <ShaderBackdrop />
       <Nav />
 
@@ -169,16 +172,18 @@ export default function RalPage() {
           asChild
           variant="outline"
           size="lg"
-          className="btn-hud text-xs font-medium btn-hud-ghost"
         >
           <Link to="/">
             <ArrowLeft size={14} /> {t(ui.ral.back)}
           </Link>
         </HoloButton>
 
-        <Reveal className="section-marker mt-12" stagger={0.06}>
-          <span className="hud text-primary">RAL</span>
-          <span className="hud">{t(ui.ral.label)}</span>
+        {/* Reveal has to stay the outer element: it needs a ref, and it
+            staggers the parts of the marker rather than the marker itself. */}
+        <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06} className="mt-12">
+          <DuckSectionMarker index="RAL" className="border-b border-border pb-6">
+            {t(ui.ral.label)}
+          </DuckSectionMarker>
         </Reveal>
 
         <SplitReveal as="h1" text={t(ui.ral.title)} className="display-lg mt-10" />
@@ -280,10 +285,13 @@ export default function RalPage() {
           </div>
         )}
 
-        <section className="mt-20">
-          <Reveal className="section-marker" stagger={0.06}>
-            <span className="hud text-primary">01</span>
-            <span className="hud">{t(ui.ral.chartLabel)}</span>
+        <section className="group/section mt-20">
+          {/* Reveal has to stay the outer element: it needs a ref, and it
+              staggers the parts of the marker rather than the marker itself. */}
+          <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
+            <DuckSectionMarker index="01" className="border-b border-border pb-6">
+              {t(ui.ral.chartLabel)}
+            </DuckSectionMarker>
           </Reveal>
           <h2 className="mt-8 flex items-center gap-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
             <TrendingUp size={28} className="text-primary" />
@@ -323,7 +331,7 @@ function Stat({
   accent?: boolean;
 }) {
   return (
-    <div className="panel p-5">
+    <StickerCard glass className="gap-0 p-5">
       <p className="hud text-muted-foreground">{label}</p>
       <p
         className={`mt-3 font-display text-3xl font-bold tracking-tight ${
@@ -333,6 +341,6 @@ function Stat({
         {value}
       </p>
       {hint && <p className="mt-2 text-xs text-muted-foreground">{hint}</p>}
-    </div>
+    </StickerCard>
   );
 }

@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 import { EmptyPond } from "@/components/ui/empty-pond";
 import { HoloBadge } from "@/components/ui/holo-badge";
 import { HoloButton } from "@/components/ui/holo-button";
+import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
+import { StickerCard } from "@/components/ui/sticker-card";
 
 const PLATFORM_ICON: Record<JournalPlatformId, LucideIcon> = {
   linkedin: Linkedin,
@@ -38,7 +40,7 @@ export default function JournalSection() {
   return (
     <section
       id="journal"
-      className="relative overflow-hidden border-y border-border bg-surface/45 py-[clamp(4.5rem,9vw,8rem)]"
+      className="group/section relative overflow-hidden border-y border-border bg-surface/45 py-[clamp(4.5rem,9vw,8rem)]"
     >
       {/* Faint lime wash, top-left, so the band separates from the page. */}
       <div
@@ -47,9 +49,12 @@ export default function JournalSection() {
       />
 
       <div className="section-container relative">
-        <Reveal className="section-marker" stagger={0.06}>
-          <span className="hud text-primary">◢</span>
-          <span className="hud">{t(ui.journal.label)}</span>
+        {/* Reveal has to stay the outer element: it needs a ref, and it
+            staggers the parts of the marker rather than the marker itself. */}
+        <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
+          <DuckSectionMarker index="◢" className="border-b border-border pb-6">
+            {t(ui.journal.label)}
+          </DuckSectionMarker>
         </Reveal>
 
         <div className="mt-12 grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-end lg:gap-16">
@@ -91,7 +96,7 @@ export default function JournalSection() {
                       asChild
                       variant="primary"
                       size="lg"
-                      className="btn-hud text-xs font-medium mt-2"
+                      className="mt-2"
                     >
                       <a
                         href={linkedin.url}
@@ -135,7 +140,7 @@ export default function JournalSection() {
 
                       <div className="mt-5 flex flex-wrap items-center gap-3">
                         {post.tags.map((tag) => (
-                          <HoloBadge key={tag} variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground">
+                          <HoloBadge key={tag} variant="outline" shape="tag" className="text-muted-foreground">
                             {tag}
                           </HoloBadge>
                         ))}
@@ -159,11 +164,13 @@ export default function JournalSection() {
               <h3 className="hud mb-6">{t(ui.journal.platforms)}</h3>
             </Reveal>
 
+            {/* Wrapped, not merged — Reveal owns the <ul> and takes no ref. */}
+            <StickerCard glass className="gap-0 p-0">
             <Reveal
               as="ul"
               selector=".journal-platform"
               stagger={0.08}
-              className="panel divide-y divide-border"
+              className="divide-y divide-border"
             >
               {journalPlatforms.map((platform) => {
                 const Icon = PLATFORM_ICON[platform.id];
@@ -201,6 +208,7 @@ export default function JournalSection() {
                 );
               })}
             </Reveal>
+            </StickerCard>
           </div>
         </div>
       </div>

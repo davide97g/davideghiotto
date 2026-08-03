@@ -7,6 +7,7 @@ import { ArrowUpRight, Github } from "lucide-react";
 import type { CSSProperties } from "react";
 import { HoloBadge } from "@/components/ui/holo-badge";
 import { HoloButton } from "@/components/ui/holo-button";
+import { StickerCard } from "@/components/ui/sticker-card";
 
 /**
  * Inside this block `--primary` is swapped for sharp's own violet, so every
@@ -34,10 +35,8 @@ export default function FeaturedProject() {
   const p = featuredProject;
 
   return (
-    <article
-      style={sharpBrand}
-      className="panel panel-ticks relative overflow-hidden p-7 md:p-12"
-    >
+    <StickerCard asChild glass ticks className="relative gap-0 overflow-hidden p-7 md:p-12">
+      <article style={sharpBrand}>
       {/* Brand wash, matching the landing page's violet/cyan glow. */}
       <div
         aria-hidden
@@ -71,7 +70,7 @@ export default function FeaturedProject() {
           </Reveal>
 
           <Reveal className="mt-8 flex flex-wrap items-center gap-3">
-            <HoloButton asChild variant="primary" size="lg" className="btn-hud text-xs font-medium">
+            <HoloButton asChild variant="primary" size="lg">
               <a
                 href={p.site}
                 target="_blank"
@@ -85,7 +84,6 @@ export default function FeaturedProject() {
               asChild
               variant="outline"
               size="lg"
-              className="btn-hud text-xs font-medium btn-hud-ghost"
             >
               <a
                 href={p.repo}
@@ -139,7 +137,7 @@ export default function FeaturedProject() {
             <h5 className="hud mb-5">{t(ui.work.stackLabel)}</h5>
             <div className="flex flex-wrap gap-2 border-t border-border pt-5">
               {p.stack.map((item) => (
-                <HoloBadge key={item} variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground">
+                <HoloBadge key={item} variant="outline" shape="tag" className="text-muted-foreground">
                   {item}
                 </HoloBadge>
               ))}
@@ -147,6 +145,7 @@ export default function FeaturedProject() {
           </Reveal>
         </div>
       </div>
-    </article>
+      </article>
+    </StickerCard>
   );
 }

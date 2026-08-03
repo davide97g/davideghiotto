@@ -10,12 +10,13 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="grain relative flex min-h-screen items-center justify-center bg-background px-6">
+    <div className="relative flex min-h-screen items-center justify-center bg-background px-6">
+      <div className="grain" aria-hidden />
       <div className="not-found-enter max-w-md text-center">
         <span className="hud text-primary">Signal lost</span>
         <h1 className="display-xl mt-5">404</h1>
         <p className="mt-6 text-xl text-muted-foreground">Oops! Page not found</p>
-        <HoloButton asChild variant="primary" size="lg" className="btn-hud text-xs font-medium mt-9">
+        <HoloButton asChild variant="primary" size="lg" className="mt-9">
           <a href="/">Return to Home</a>
         </HoloButton>
       </div>

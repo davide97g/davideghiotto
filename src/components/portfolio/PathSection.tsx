@@ -4,6 +4,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { experiences, ui } from "@/data/content";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useRef } from "react";
+import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
 
 export default function PathSection() {
   const { t } = useLanguage();
@@ -42,10 +43,13 @@ export default function PathSection() {
   );
 
   return (
-    <section ref={scope} id="path" className="section-container section-spacing">
-      <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud text-primary">04</span>
-        <span className="hud">{t(ui.path.label)}</span>
+    <section ref={scope} id="path" className="group/section section-container section-spacing">
+      {/* Reveal has to stay the outer element: it needs a ref, and it
+          staggers the parts of the marker rather than the marker itself. */}
+      <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
+        <DuckSectionMarker index="04" className="border-b border-border pb-6">
+          {t(ui.path.label)}
+        </DuckSectionMarker>
       </Reveal>
 
       <SplitReveal as="h2" text={t(ui.path.title)} className="display-lg mt-12" />

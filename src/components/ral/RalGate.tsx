@@ -206,7 +206,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                 variant="primary"
                 size="lg"
                 disabled={pending || !apiReady}
-                className="btn-hud text-xs font-medium disabled:opacity-60"
+                className="disabled:opacity-60"
               >
                 {pending ? (
                   <>
@@ -249,7 +249,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                   variant="primary"
                   size="lg"
                   disabled={pending}
-                  className="btn-hud text-xs font-medium disabled:opacity-60"
+                  className="disabled:opacity-60"
                 >
                   {pending ? (
                     <>

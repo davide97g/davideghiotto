@@ -55,7 +55,8 @@ export default function LegalDoc({ id }: LegalDocProps) {
   }).format(new Date(meta.updated));
 
   return (
-    <div className="grain relative min-h-screen">
+    <div className="relative min-h-screen">
+      <div className="grain" aria-hidden />
       <ShaderBackdrop />
       <Nav />
 
@@ -65,7 +66,6 @@ export default function LegalDoc({ id }: LegalDocProps) {
             asChild
             variant="outline"
             size="lg"
-            className="btn-hud text-xs font-medium btn-hud-ghost"
           >
             <Link to="/">
               <ArrowLeft size={14} /> {t(ui.legal.back)}
@@ -77,7 +77,9 @@ export default function LegalDoc({ id }: LegalDocProps) {
           <h1 className="display-lg mt-4 max-w-3xl">{t(meta.title)}</h1>
         </Reveal>
 
-        <Reveal className="post-body mt-14 max-w-[68ch]">
+        {/* The prose class rather than <DuckProse>, because Reveal has to be the
+            element that staggers these children and it cannot forward a ref. */}
+        <Reveal className="duck-prose mt-14 max-w-[68ch]">
           {body ? (
             <Markdown remarkPlugins={[remarkGfm]}>{body}</Markdown>
           ) : (

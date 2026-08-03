@@ -47,16 +47,26 @@ and **the bilingual copy layer**.
   narrowed, `--ease-squash` de-bounced. **No duck component is restyled per call site** — if one
   looks wrong, the fix belongs in the theme or the registry, not in a `className`.
 - In use: `HoloButton`, `HoloBadge`, `HudLabel` (+ the `.hud` utility), `StickerCard`,
-  `StickerDialog`, `DuckSwitch`, `GlowInput`, `QuackToastProvider`, `EmptyPond`. Replacing the
-  shadcn/Radix layer with these took the runtime dependency count from 47 to 17.
-- Three things duck cannot express through tokens yet, so they stay as local classes layered onto a
-  duck component: `.btn-hud` (mono uppercase button labels), `.btn-hud-ghost` (outline hover fill)
-  and `.tag` (square mono badge). Each is commented with why. **Size, weight and radius overrides
-  must travel in the `className` string, not in those classes** — they collide with Tailwind
-  utilities the component's variants already set, and the utilities layer wins; putting them in the
-  className lets `cn()`'s tailwind-merge drop the component's pair instead.
-- Every open gap is written up in `duck-ui/docs/feature-requests/portfolio-site-gaps.md`. Read it
-  before working around something here — it is probably already known.
+  `StickerDialog`, `DuckSwitch`, `GlowInput`, `QuackToastProvider`, `EmptyPond`, `DuckProse`,
+  `DuckSectionMarker`, `DuckListRow`. Replacing the shadcn/Radix layer with these took the runtime
+  dependency count from 47 to 17.
+- **CTA and tag typography are tokens, not classes.** `--font-button` / `--weight-button` /
+  `--tracking-button` / `--case-button` / `--text-button*` and the five `--*-badge` equivalents are
+  declared once in the theme block at the top of `src/index.css`, and `@duck/theme` reads them in a
+  zero-specificity base rule. The old `.btn-hud`, `.btn-hud-ghost` and `.tag` classes — and the
+  `text-xs font-medium` that had to ride beside each of them — are gone. A `<HoloBadge shape="tag">`
+  is square; `shape="pill"` is the status pill.
+- **Every duck component emits `data-variant` / `data-size`**, so a theme rule can say "outline
+  buttons get a faint fill on hover" once instead of marking the call sites. Two site rules do
+  exactly that, for `[data-variant="outline"]` buttons and `[data-shape="tag"]` badges.
+- **Site overrides live in one `@layer utilities` block at the bottom of `src/index.css`**, not
+  beside the rule they override. A duck component sets its fill, its edge and its hover as Tailwind
+  utilities, and the utilities layer beats the components layer at every state — a `background` in
+  `@layer components` never reaches the element. Anything overriding a duck component goes in that
+  block, as a plain class or attribute selector so it also outranks the theme's own `:where()`.
+- Every gap this site found is written up in
+  `duck-ui/docs/feature-requests/portfolio-site-gaps.md`, now closed — read it before working
+  around something here. What is still hand-rolled and why is in the stylesheet section below.
 
 Two systems carry the rest: **the scroll choreography** and **the bilingual copy layer**.
 
@@ -127,6 +137,12 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   `JournalSection` (detached) → `StackSection` (03) → `PathSection` (04) → `ProfileSection` (05) →
   `Footer`, with `Marquee` strips between. Section numbering is hardcoded in each component;
   renumber if you reorder.
+- Every section opens with a **`DuckSectionMarker`** — dot, index, label, dissolving rule — wrapped
+  in a `Reveal` that staggers the marker's parts via
+  `selector="[data-slot='duck-section-marker'] > *"`, because Reveal has to own the ref. Two things
+  the component does not draw ride in its `className`: `border-b border-border pb-6`. The dot scales
+  on section hover, which is why **every section carries `group/section`** — drop that class and the
+  marker simply goes static.
 - `JournalSection` is the detached band: full-bleed on `bg-surface/45` between top and bottom rules,
   and deliberately **unnumbered** (its marker is a `◢` instead of an index) so the numbered sections
   still read 01 → 05. It lists `journalPosts` from `src/data/journal.ts` — each row linking to
@@ -143,13 +159,18 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   and `readingMinutes` takes the loaded body, not a slug.
 - `src/pages/JournalPost.tsx` is the `/journal/:slug` route, lazy-imported in `App.tsx` so
   react-markdown (~160 KB) stays out of the landing chunk. It renders the body with
-  `react-markdown` + `remark-gfm` (the notes lean on GFM tables) inside `.post-body`, sets
+  `react-markdown` + `remark-gfm` (the notes lean on GFM tables) inside `DuckProse`, sets
   `document.title`, resets Lenis scroll on slug change, and falls back to an in-page 404 for an
   unknown slug.
-- `.post-body` in `src/index.css` is the only prose scale on the site (68ch measure, lime-ruled
-  blockquotes, mono uppercase table headers, tables scrolling inside their own `overflow-x`). It is
-  hand-rolled to match the HUD chrome: `@tailwindcss/typography` never fit and has been removed, and
-  duck/ui has no prose component yet — it is the top request in the gaps doc.
+- Long-form copy is **`@duck/duck-prose`** — the 68ch measure, the scale, the spacing, the headings,
+  the rules and the captions all come from it. What noir keeps is a short `.duck-prose` block in the
+  site override layer: muted body with bright headings and emphasis, a foreground link with a lime
+  underline instead of lime text, square lime bullets, a drawn rather than filled code chip, fully
+  ruled tables on a raised header, and the `lg`-and-up image breakout. `@tailwindcss/typography`
+  never fit and stays removed.
+- **`.duck-prose table` sets `display: block; overflow-x: auto` and must keep doing so.** The duck
+  rule puts the scroll on a `.duck-prose-scroll` wrapper, and markdown emits a bare `<table>` with
+  nothing to hang that class on — without the override a wide table widens the whole page.
 - Adding a note: two markdown files (`.en.md` and `.it.md`) plus one `journalPosts` entry.
   `src/data/journal.test.ts` fails if a language file is missing or thin, if a `[TK` marker survives,
   or if any `@ HH:MM:SS](…&t=Ns)` deep link disagrees with its label — the notes quote the streams by
@@ -159,7 +180,7 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   shipped — only `src/content/journal/` is.
 - `projects` entries may carry a `badge` (rendered under the year, e.g. "Private repo") and a `shot`
   (`{ avif, fallback, alt }`) — a cropped screenshot standing in for a live site that is
-  password-gated or private, rendered as a `panel` preview inside the row. Screenshots are cropped
+  password-gated or private, rendered as a `StickerCard` preview inside the row. Screenshots are cropped
   free of browser chrome with `ffmpeg -vf "crop=W:H:0:137,scale=1400:-2"` and encoded to
   `public/shot-*.avif` with a `.jpg` fallback.
 - The nav switches to the burger menu below `lg` (not `md`): six labels plus the name and language
@@ -181,15 +202,23 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
 - The radius scale is **multiplicative** (`calc(var(--radius) * 1.833)`), matching the duck registry.
   Stock shadcn adds fixed pixel offsets, which would leave every `rounded-2xl` at 12px on a theme
   whose `--radius` is `0.125rem`.
-- Remaining hand-rolled chrome in the component layer: `.section-marker`, `.display-xl` /
-  `.display-lg`, `.line-mask`, `.panel` (+ `.panel-interactive`, `.panel-ticks`, `.card-scan`),
-  `.link-wipe`, `.micro-row`, `.marquee-strip` / `.marquee-track` / `.marquee-invert`, `.btn-ral`,
-  `.post-body`, and the `.grain` overlay. `.hud` now comes from `@duck/hud-label`. Prefer these
-  classes over ad-hoc utility stacks so the chrome stays consistent.
-- **Defaults meant to be overridable go in `:where()`.** `:where(.hud)` and `:where(.tag)` carry
-  their colour at zero specificity so `class="hud text-primary"` actually works. A plain
-  `.hud { color }` sits in the utilities layer and outranks Tailwind's own `text-*`, which fails
-  silently — it cost this site every lime section index once already.
+- What the theme now ships that used to be local: `.hud` (`@duck/hud-label`), `.display-xl` /
+  `.display-lg` / `.display-md`, `.grain`, `.sheen` and `.balance`. The **grain is an element**, not
+  a `::before` on a wrapper — every page renders a bare `<div className="grain" aria-hidden />`
+  inside its root, and putting `grain` back on the wrapper would make that wrapper the fixed
+  full-screen overlay.
+- Remaining hand-rolled chrome in the component layer: `.line-mask`, `.link-wipe`, `.micro-row`,
+  `.marquee-strip` / `.marquee-track` / `.marquee-invert`, `.btn-ral`, `.contact-link`,
+  `.stack-group`, `.lang-switch` and the nav classes. Prefer these over ad-hoc utility stacks so the
+  chrome stays consistent. `.micro-row` survives because `@duck/duck-list-row` builds its own body
+  from index / title / description / meta / trailing, which the project row (a three-column grid
+  holding a screenshot) and the journal and platform rows (tags, logos) cannot fit — the plain
+  title-and-description list at the bottom of a post does use the component.
+- **Defaults meant to be overridable go in `:where()`.** `:where(.hud)` carries its colour at zero
+  specificity so `class="hud text-primary"` actually works. A plain `.hud { color }` sits in the
+  utilities layer and outranks Tailwind's own `text-*`, which fails silently — it cost this site
+  every lime section index once already. The site overrides at the bottom of the file are the
+  deliberate inverse: they are plain classes precisely so they outrank the theme's `:where()`.
 - **No apostrophes in CSS comments.** Tailwind v4's parser treats `'` as a string delimiter even
   inside a comment; a stray one swallows the rules that follow and surfaces only as
   `Unterminated string` in a Vite stack trace.

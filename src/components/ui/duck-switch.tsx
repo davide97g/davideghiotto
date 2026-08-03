@@ -80,6 +80,7 @@ function DuckSwitch({
   return (
     <label
       data-slot="duck-switch"
+      data-size={size}
       className={cn(
         "inline-flex cursor-pointer items-center gap-3 text-sm select-none",
         "has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50",

@@ -2,15 +2,19 @@ import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
 import { useLanguage } from "@/context/LanguageContext";
 import { stackGroups, ui } from "@/data/content";
+import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
 
 export default function StackSection() {
   const { t } = useLanguage();
 
   return (
-    <section id="stack" className="section-container section-spacing">
-      <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud text-primary">03</span>
-        <span className="hud">{t(ui.stack.label)}</span>
+    <section id="stack" className="group/section section-container section-spacing">
+      {/* Reveal has to stay the outer element: it needs a ref, and it
+          staggers the parts of the marker rather than the marker itself. */}
+      <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
+        <DuckSectionMarker index="03" className="border-b border-border pb-6">
+          {t(ui.stack.label)}
+        </DuckSectionMarker>
       </Reveal>
 
       <div className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-end">

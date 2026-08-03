@@ -116,7 +116,7 @@ export default function HeroSection() {
           />
 
           <div className="hero-fade flex flex-wrap gap-3">
-            <HoloButton asChild variant="primary" size="lg" className="btn-hud text-xs font-medium">
+            <HoloButton asChild variant="primary" size="lg">
               <a
                 href="#work"
                 onClick={() => trackEvent("cta_click", { cta_id: "work" })}
@@ -128,7 +128,6 @@ export default function HeroSection() {
               asChild
               variant="outline"
               size="lg"
-              className="btn-hud text-xs font-medium btn-hud-ghost"
             >
               <a
                 href={channel.url}

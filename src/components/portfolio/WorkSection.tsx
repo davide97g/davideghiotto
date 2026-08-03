@@ -6,15 +6,20 @@ import { projects, ui } from "@/data/content";
 import { trackOutbound } from "@/lib/analytics";
 import { ArrowUpRight, Github, Linkedin } from "lucide-react";
 import { HoloBadge } from "@/components/ui/holo-badge";
+import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
+import { StickerCard } from "@/components/ui/sticker-card";
 
 export default function WorkSection() {
   const { t } = useLanguage();
 
   return (
-    <section id="work" className="section-container section-spacing">
-      <Reveal className="section-marker" stagger={0.06}>
-        <span className="hud text-primary">02</span>
-        <span className="hud">{t(ui.work.label)}</span>
+    <section id="work" className="group/section section-container section-spacing">
+      {/* Reveal has to stay the outer element: it needs a ref, and it
+          staggers the parts of the marker rather than the marker itself. */}
+      <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
+        <DuckSectionMarker index="02" className="border-b border-border pb-6">
+          {t(ui.work.label)}
+        </DuckSectionMarker>
       </Reveal>
 
       <div className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-end">
@@ -30,8 +35,12 @@ export default function WorkSection() {
         <FeaturedProject />
       </div>
 
-      <Reveal className="mt-24 section-marker" stagger={0.06}>
-        <span className="hud">{t(ui.work.others)}</span>
+      {/* Reveal has to stay the outer element: it needs a ref, and it
+          staggers the parts of the marker rather than the marker itself. */}
+      <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06} className="mt-24">
+        <DuckSectionMarker className="border-b border-border pb-6">
+          {t(ui.work.others)}
+        </DuckSectionMarker>
       </Reveal>
 
       <Reveal as="ol" selector=".work-row" stagger={0.12} className="border-t border-border">
@@ -51,7 +60,7 @@ export default function WorkSection() {
                 </p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
-                    <HoloBadge key={tag} variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground">
+                    <HoloBadge key={tag} variant="outline" shape="tag" className="text-muted-foreground">
                       {tag}
                     </HoloBadge>
                   ))}
@@ -59,11 +68,15 @@ export default function WorkSection() {
 
                 {/* Screenshot stands in for the live site when it is gated. */}
                 {project.shot && project.link && (
+                  <StickerCard
+                    asChild
+                    glass
+                    className="panel-interactive sheen mt-8 block gap-0 overflow-hidden p-0"
+                  >
                   <a
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="panel panel-interactive card-scan mt-8 block overflow-hidden"
                     onClick={() =>
                       trackOutbound(`project_shot_${project.title}`, project.link!)
                     }
@@ -85,6 +98,7 @@ export default function WorkSection() {
                       />
                     </picture>
                   </a>
+                  </StickerCard>
                 )}
               </div>
 
@@ -92,7 +106,7 @@ export default function WorkSection() {
                 <div className="flex flex-col items-start gap-3 md:items-end">
                   <span className="hud whitespace-nowrap">{project.year}</span>
                   {project.badge && (
-                    <HoloBadge variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground whitespace-nowrap">
+                    <HoloBadge variant="outline" shape="tag" className="text-muted-foreground whitespace-nowrap">
                       {t(project.badge)}
                     </HoloBadge>
                   )}

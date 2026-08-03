@@ -20,8 +20,11 @@ import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import { Link, useParams } from "react-router-dom";
 import remarkGfm from "remark-gfm";
+import { DuckListRow } from "@/components/ui/duck-list-row";
+import { DuckProse } from "@/components/ui/duck-prose";
 import { HoloBadge } from "@/components/ui/holo-badge";
 import { HoloButton } from "@/components/ui/holo-button";
+import { StickerCard } from "@/components/ui/sticker-card";
 
 const linkedin = journalPlatforms.find((p) => p.id === "linkedin") ?? journalPlatforms[0];
 
@@ -29,7 +32,7 @@ const linkedin = journalPlatforms.find((p) => p.id === "linkedin") ?? journalPla
  * A single journal note at `/journal/:slug`.
  *
  * The body is the raw markdown from `src/content/journal/<slug>.<lang>.md`, rendered
- * with react-markdown + GFM (the notes lean on tables) inside `.post-body`, which
+ * with react-markdown + GFM (the notes lean on tables) inside DuckProse, which
  * carries the typographic scale for long-form copy — the rest of the site has no
  * prose styles because nothing else on it is prose.
  */
@@ -72,7 +75,8 @@ export default function JournalPost() {
 
   if (!post) {
     return (
-      <div className="grain relative min-h-screen">
+      <div className="relative min-h-screen">
+        <div className="grain" aria-hidden />
         <ShaderBackdrop />
         <Nav />
         <main className="section-container flex min-h-screen flex-col justify-center py-40">
@@ -82,7 +86,7 @@ export default function JournalPost() {
             asChild
             variant="outline"
             size="lg"
-            className="btn-hud text-xs font-medium btn-hud-ghost mt-10 self-start"
+            className="mt-10 self-start"
           >
             <Link to="/#journal">
               <ArrowLeft size={14} /> {t(ui.journal.back)}
@@ -103,7 +107,8 @@ export default function JournalPost() {
   const others = journalPosts.filter((p) => p.slug !== post.slug).slice(0, 2);
 
   return (
-    <div className="grain relative min-h-screen">
+    <div className="relative min-h-screen">
+      <div className="grain" aria-hidden />
       <ShaderBackdrop />
       <Nav />
 
@@ -140,7 +145,7 @@ export default function JournalPost() {
 
             <Reveal className="mt-8 flex flex-wrap items-center gap-3" y={14} start="top 92%">
               {post.tags.map((tag) => (
-                <HoloBadge key={tag} variant="outline" className="tag rounded-none text-[11px] font-normal text-muted-foreground">
+                <HoloBadge key={tag} variant="outline" shape="tag" className="text-muted-foreground">
                   {tag}
                 </HoloBadge>
               ))}
@@ -151,11 +156,15 @@ export default function JournalPost() {
               Notes written outside a stream carry no video and skip this card. */}
           {post.video && (
           <Reveal className="mt-12" y={20} start="top 88%">
+          <StickerCard
+            asChild
+            glass
+            className="panel-interactive sheen group flex flex-col gap-5 p-5 sm:flex-row sm:items-center"
+          >
           <a
             href={watchUrl(post.video)}
             target="_blank"
             rel="noopener noreferrer"
-            className="panel panel-interactive card-scan group flex flex-col gap-5 p-5 sm:flex-row sm:items-center"
           >
             <img
               src={thumbnailUrl(post.video)}
@@ -178,17 +187,18 @@ export default function JournalPost() {
               className="ml-auto hidden shrink-0 text-muted-foreground transition-all duration-500 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary sm:block"
             />
           </a>
+          </StickerCard>
           </Reveal>
           )}
 
           <PostMotion contentKey={`${post.slug}:${lang}:${body.length}`}>
-          <div className="post-body mt-16">
+          <DuckProse as="section" className="mt-16">
             {body ? (
               <Markdown remarkPlugins={[remarkGfm]}>{body}</Markdown>
             ) : (
               <p className="hud">···</p>
             )}
-          </div>
+          </DuckProse>
           </PostMotion>
         </article>
 
@@ -196,7 +206,7 @@ export default function JournalPost() {
           <h2 className="hud">{t(ui.journal.alsoOn)}</h2>
           <div className="mt-6 flex flex-wrap gap-3">
             {post.crossPost ? (
-              <HoloButton asChild variant="primary" size="lg" className="btn-hud text-xs font-medium">
+              <HoloButton asChild variant="primary" size="lg">
                 <a
                   href={post.crossPost.url}
                   target="_blank"
@@ -211,7 +221,6 @@ export default function JournalPost() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="btn-hud text-xs font-medium btn-hud-ghost"
               >
                 <a href={linkedin.url} target="_blank" rel="noopener noreferrer">
                   {linkedin.name} <ArrowUpRight size={14} />
@@ -223,15 +232,15 @@ export default function JournalPost() {
           <h2 className="hud mt-16">{t(ui.journal.latest)}</h2>
           <ul className="mt-6 border-t border-border">
             {others.map((other) => (
-              <li key={other.slug} className="border-b border-border">
-                <Link to={`/journal/${other.slug}`} className="micro-row group block py-6">
-                  <h3 className="font-display text-lg font-bold tracking-tight transition-colors group-hover:text-primary md:text-xl">
-                    {t(other.title)}
-                  </h3>
-                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                    {t(other.excerpt)}
-                  </p>
-                </Link>
+              <li key={other.slug}>
+                <DuckListRow
+                  asChild
+                  title={t(other.title)}
+                  description={t(other.excerpt)}
+                  trailing={<ArrowUpRight size={16} />}
+                >
+                  <Link to={`/journal/${other.slug}`} />
+                </DuckListRow>
               </li>
             ))}
           </ul>

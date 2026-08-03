@@ -8,6 +8,8 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { ArrowUpRight, Youtube } from "lucide-react";
 import { useRef } from "react";
 import { HoloButton } from "@/components/ui/holo-button";
+import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
+import { StickerCard } from "@/components/ui/sticker-card";
 
 const FEATURED = videos.slice(0, 8);
 
@@ -59,11 +61,14 @@ export default function ChannelSection() {
   );
 
   return (
-    <section id="channel" className="relative">
+    <section id="channel" className="group/section relative">
       <div className="section-container section-spacing pb-0">
-        <Reveal className="section-marker" stagger={0.06}>
-          <span className="hud text-primary">01</span>
-          <span className="hud">{t(ui.channel.label)}</span>
+        {/* Reveal has to stay the outer element: it needs a ref, and it
+            staggers the parts of the marker rather than the marker itself. */}
+        <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
+          <DuckSectionMarker index="01" className="border-b border-border pb-6">
+            {t(ui.channel.label)}
+          </DuckSectionMarker>
         </Reveal>
 
         <div className="mt-12 grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-end">
@@ -81,7 +86,7 @@ export default function ChannelSection() {
               asChild
               variant="primary"
               size="lg"
-              className="btn-hud text-xs font-medium self-start"
+              className="self-start"
             >
               <a
                 href={channel.url}
@@ -139,11 +144,16 @@ export default function ChannelSection() {
               key={video.id}
               className="w-[78vw] shrink-0 snap-start sm:w-[54vw] lg:w-[26vw]"
             >
+              <StickerCard
+                asChild
+                glass
+                ticks
+                className="panel-interactive sheen group flex h-full flex-col gap-0 p-0"
+              >
               <a
                 href={watchUrl(video.id)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="panel panel-interactive panel-ticks card-scan group flex h-full flex-col"
                 onClick={() => {
                   trackEvent("youtube_click", { video_id: video.id });
                   trackOutbound(`youtube_video_${video.id}`, watchUrl(video.id));
@@ -173,6 +183,7 @@ export default function ChannelSection() {
                   </div>
                 </div>
               </a>
+              </StickerCard>
             </li>
           ))}
         </ul>
