@@ -48,6 +48,8 @@ export const bio = {
   linkedin: "davide-ghiotto",
   github: "davide97g",
   workshop: "https://dacoder.it",
+  /** The design system this site wears — credited in the footer. */
+  duckUi: "https://duckui.davideghiotto.it/",
 };
 
 export type SocialId = "linkedin" | "github" | "youtube" | "site";
@@ -210,6 +212,7 @@ export const ui = {
     privacy: { en: "Privacy", it: "Privacy" },
     cookies: { en: "Cookies", it: "Cookie" },
     manageCookies: { en: "Manage cookies", it: "Gestisci i cookie" },
+    duckUi: { en: "Made with", it: "Realizzato con" },
   },
   cookies: {
     bannerTitle: { en: "Cookies on this site", it: "Cookie su questo sito" },

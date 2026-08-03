@@ -1,6 +1,7 @@
 import { useConsent } from "@/context/ConsentContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { bio, ui } from "@/data/content";
+import { HoloBadge } from "@/components/ui/holo-badge";
 import { trackOutbound } from "@/lib/analytics";
 import { Link } from "react-router-dom";
 
@@ -41,7 +42,18 @@ export default function Footer() {
             </button>
           </div>
         </div>
-        <p className="hud">{t(ui.footer.built)}</p>
+        <div className="flex flex-col gap-3 md:items-end">
+          <p className="hud">{t(ui.footer.built)}</p>
+          <a
+            href={bio.duckUi}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackOutbound("duck-ui", bio.duckUi)}
+            className="self-start md:self-end"
+          >
+            <HoloBadge>{t(ui.footer.duckUi)} duck/ui ↗</HoloBadge>
+          </a>
+        </div>
       </div>
     </footer>
   );
