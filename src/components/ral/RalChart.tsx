@@ -300,8 +300,8 @@ export default function RalChart({
             <ComposedChart data={series} margin={{ top: 16, right: 12, left: 4, bottom: 8 }}>
               <defs>
                 <linearGradient id="ralFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#8CFF2E" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#8CFF2E" stopOpacity={0} />
+                  <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
 
@@ -370,7 +370,7 @@ export default function RalChart({
                 <Area
                   type="stepAfter"
                   dataKey="amount"
-                  stroke="#8CFF2E"
+                  stroke="var(--primary)"
                   strokeWidth={2.5}
                   fill="url(#ralFill)"
                   isAnimationActive={!prefersReducedMotion()}
@@ -378,8 +378,8 @@ export default function RalChart({
                   animationEasing="ease-out"
                   activeDot={{
                     r: 5,
-                    fill: "#8CFF2E",
-                    stroke: "#08090A",
+                    fill: "var(--primary)",
+                    stroke: "var(--background)",
                     strokeWidth: 2,
                   }}
                   dot={(props) => {
@@ -399,7 +399,7 @@ export default function RalChart({
                           cy={cy}
                           r={5}
                           fill={company.color}
-                          stroke="#08090A"
+                          stroke="var(--background)"
                           strokeWidth={2}
                         />
                         <circle

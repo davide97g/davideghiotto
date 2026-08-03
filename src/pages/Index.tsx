@@ -10,6 +10,7 @@ import StackSection from "@/components/portfolio/StackSection";
 import WorkSection from "@/components/portfolio/WorkSection";
 import ScrollRail from "@/components/ScrollRail";
 import ShaderBackdrop from "@/components/ShaderBackdrop";
+import { SocialRail } from "@/components/SocialLinks";
 import { useLanguage } from "@/context/LanguageContext";
 import { marqueeTerms } from "@/data/content";
 import { ScrollTrigger } from "@/lib/gsap";
@@ -36,6 +37,8 @@ export default function Index() {
       <div className="grain" aria-hidden />
       <ShaderBackdrop />
       <Nav />
+      {/* The two gutter rails: links on the left, scroll position on the right. */}
+      <SocialRail />
       <ScrollRail />
 
       <main>

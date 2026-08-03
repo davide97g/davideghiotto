@@ -1,4 +1,5 @@
 import type { LangId } from "@/context/LanguageContext";
+import { channel } from "@/data/youtube";
 
 /** A string (or any value) that exists in both site languages. */
 export type Localized<T = string> = Record<LangId, T>;
@@ -48,6 +49,50 @@ export const bio = {
   github: "davide97g",
   workshop: "https://dacoder.it",
 };
+
+export type SocialId = "linkedin" | "github" | "youtube" | "site";
+
+export interface Social {
+  id: SocialId;
+  name: string;
+  /** Mono short form shown beside the name — `/in/davide-ghiotto`, `@davideghi`. */
+  handle: string;
+  url: string;
+}
+
+/**
+ * The four places worth following, in the order every rail renders them.
+ *
+ * Single source of truth for the links: the left rail, the nav drawer, the hero
+ * row and `journalPlatforms` in `src/data/journal.ts` all read this list, so a
+ * changed handle only has to be changed here.
+ */
+export const socials: Social[] = [
+  {
+    id: "linkedin",
+    name: "LinkedIn",
+    handle: `/in/${bio.linkedin}`,
+    url: `https://www.linkedin.com/in/${bio.linkedin}`,
+  },
+  {
+    id: "youtube",
+    name: "YouTube",
+    handle: channel.handle,
+    url: channel.url,
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    handle: `/${bio.github}`,
+    url: `https://github.com/${bio.github}`,
+  },
+  {
+    id: "site",
+    name: "dacoder.it",
+    handle: "/workshop",
+    url: bio.workshop,
+  },
+];
 
 /** Every piece of chrome and copy the layout needs, in both languages. */
 export const ui = {
@@ -203,6 +248,10 @@ export const ui = {
   },
   lang: {
     label: { en: "Language", it: "Lingua" },
+  },
+  social: {
+    /** Vertical label on the left rail, and the accessible name of every set. */
+    label: { en: "Elsewhere", it: "Altrove" },
   },
   ral: {
     label: { en: "Compensation", it: "Compenso" },

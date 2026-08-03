@@ -96,9 +96,16 @@ type Props = {
   accent?: [number, number, number];
 };
 
+/**
+ * The two theme colours this shader needs, as sRGB 0-1 rather than tokens: a
+ * uniform takes numbers, and reading --background / --primary back out of the
+ * cascade per frame to convert them would cost a getComputedStyle every tick.
+ * They are duck's --background (oklch(0.145 0.006 285)) and --primary
+ * (oklch(0.85 0.17 115)) converted once — move the tokens and move these.
+ */
 export default function ShaderBackdrop({
-  base = [0.031, 0.035, 0.039],
-  accent = [0.55, 1.0, 0.18],
+  base = [0.038, 0.038, 0.049],
+  accent = [0.796, 0.855, 0.258],
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 

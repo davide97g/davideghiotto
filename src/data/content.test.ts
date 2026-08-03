@@ -4,6 +4,7 @@ import {
   featuredProject,
   principles,
   projects,
+  socials,
   stackGroups,
   summary,
   ui,
@@ -75,6 +76,23 @@ describe("featured project", () => {
   it("is not duplicated in the secondary project list", () => {
     const titles = projects.map((p) => p.title.toLowerCase());
     expect(titles).not.toContain(featuredProject.name.toLowerCase());
+  });
+});
+
+describe("socials", () => {
+  it("gives every entry an absolute link and a handle to show", () => {
+    expect(socials.length).toBeGreaterThan(0);
+
+    for (const social of socials) {
+      expect(social.url, social.id).toMatch(/^https:\/\//);
+      expect(social.handle.trim(), social.id).not.toBe("");
+      expect(social.name.trim(), social.id).not.toBe("");
+    }
+  });
+
+  it("lists each platform once", () => {
+    const ids = socials.map((social) => social.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });
 

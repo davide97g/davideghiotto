@@ -1,5 +1,4 @@
-import { bio, type Localized } from "@/data/content";
-import { channel } from "@/data/youtube";
+import { socials, type Localized, type SocialId } from "@/data/content";
 
 /**
  * Journal posts.
@@ -25,7 +24,8 @@ export interface JournalPost {
   crossPost?: { platform: JournalPlatformId; url: string };
 }
 
-export type JournalPlatformId = "linkedin" | "youtube" | "github" | "site";
+/** The platforms are the site's socials — one link set, two presentations. */
+export type JournalPlatformId = SocialId;
 
 export interface JournalPlatform {
   id: JournalPlatformId;
@@ -163,46 +163,28 @@ export const findPost = (slug?: string): JournalPost | undefined =>
 export const readingMinutes = (body: string): number =>
   Math.max(1, Math.round(body.split(/\s+/).length / 200));
 
-/** Where the notes also get published, and what each channel carries. */
-export const journalPlatforms: JournalPlatform[] = [
-  {
-    id: "linkedin",
-    name: "LinkedIn",
-    handle: `/in/${bio.linkedin}`,
-    url: `https://www.linkedin.com/in/${bio.linkedin}`,
-    focus: {
-      en: "Long-form notes on agents, architecture and team practice",
-      it: "Note lunghe su agenti, architettura e pratica di team",
-    },
+/** What each channel carries. The names, handles and URLs come from `socials`. */
+const PLATFORM_FOCUS: Record<JournalPlatformId, Localized> = {
+  linkedin: {
+    en: "Long-form notes on agents, architecture and team practice",
+    it: "Note lunghe su agenti, architettura e pratica di team",
   },
-  {
-    id: "youtube",
-    name: "YouTube",
-    handle: channel.handle,
-    url: channel.url,
-    focus: {
-      en: "The same thinking, live and unedited",
-      it: "Gli stessi ragionamenti, in diretta e senza tagli",
-    },
+  youtube: {
+    en: "The same thinking, live and unedited",
+    it: "Gli stessi ragionamenti, in diretta e senza tagli",
   },
-  {
-    id: "github",
-    name: "GitHub",
-    handle: `/${bio.github}`,
-    url: `https://github.com/${bio.github}`,
-    focus: {
-      en: "Commits, prototypes and the code behind each note",
-      it: "Commit, prototipi e il codice dietro ogni nota",
-    },
+  github: {
+    en: "Commits, prototypes and the code behind each note",
+    it: "Commit, prototipi e il codice dietro ogni nota",
   },
-  {
-    id: "site",
-    name: "dacoder.it",
-    handle: "/workshop",
-    url: bio.workshop,
-    focus: {
-      en: "Open-source workshop and long-running experiments",
-      it: "Laboratorio open-source ed esperimenti a lungo termine",
-    },
+  site: {
+    en: "Open-source workshop and long-running experiments",
+    it: "Laboratorio open-source ed esperimenti a lungo termine",
   },
-];
+};
+
+/** Where the notes also get published — the shared link set plus the copy above. */
+export const journalPlatforms: JournalPlatform[] = socials.map((social) => ({
+  ...social,
+  focus: PLATFORM_FOCUS[social.id],
+}));

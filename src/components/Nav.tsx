@@ -1,3 +1,4 @@
+import { SocialRow } from "@/components/SocialLinks";
 import { LangId, useLanguage } from "@/context/LanguageContext";
 import { bio, ui } from "@/data/content";
 import { trackEvent } from "@/lib/analytics";
@@ -176,6 +177,12 @@ export default function Nav() {
           >
             {t(ui.ral.cta)}
           </Link>
+
+          {/* The drawer is where a phone looks for "where else can I find you",
+              so the links get names here rather than the hero row glyphs. */}
+          <div className="mobile-nav-item mt-3 border-t border-border/60 pt-4">
+            <SocialRow labels source="menu" />
+          </div>
         </nav>
       )}
     </header>

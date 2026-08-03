@@ -10,6 +10,7 @@ import { ArrowDown, Play, Sparkles } from "lucide-react";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { HoloButton } from "@/components/ui/holo-button";
+import { SocialRow } from "@/components/SocialLinks";
 
 export default function HeroSection() {
   const { t } = useLanguage();
@@ -161,7 +162,7 @@ export default function HeroSection() {
 
       {/* w-full matters: section-container's auto inline margins would otherwise
           centre this flex item inside the column-flex section. */}
-      <div className="section-container relative z-10 mt-14 w-full lg:mt-8">
+      <div className="section-container relative z-10 mt-14 flex w-full flex-wrap items-center justify-between gap-6 lg:mt-8">
         <button
           onClick={() => {
             const target = document.getElementById("channel");
@@ -173,6 +174,10 @@ export default function HeroSection() {
           <span className="hud text-primary animate-blink">▌</span>
           <span className="hud">{t(ui.hero.scrollCue)}</span>
         </button>
+
+        {/* Hidden once the viewport is wide enough for the left rail to carry the
+            same links — two copies on one screen would be one too many. */}
+        <SocialRow source="hero" className="hero-fade min-[1440px]:hidden" />
       </div>
     </section>
   );

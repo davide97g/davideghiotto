@@ -7,11 +7,21 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ═══════════════════════════════════════════════════════════════
-   TERMINAL NOIR — single design system.
-   Near-black canvas, off-white type, one lime accent, HUD chrome.
+   duck/ui, stock.
 
-   The palette is @duck/theme-noir, installed from the duck/ui registry, so
-   every duck component adopts this identity without a per-call-site override.
+   The palette, the radius scale, the die-cut edge, the holo gradient and the
+   control typography are the duck/ui dark defaults, verbatim from the registry
+   theme — no theme-noir layer on top. The site used to ship @duck/theme-noir
+   here: lime at oklch chroma 0.25, a 0.125rem radius, a 1px edge and mono
+   uppercase control type. That whole identity is gone; duck lime sits at chroma
+   0.17, the holo is a real violet-to-green spectrum, and a card is a 3px sticker
+   with a 0.75rem corner.
+
+   Nothing sets .dark, so the dark values live in :root. The .dark block at the
+   bottom of the file carries the same values, because the shadcn CLI rewrites it
+   on every `shadcn add` and an undeclared `dark:` in an installed component is a
+   build error.
+
    Colours are complete oklch values, not HSL channels: duck components pass
    var(--card), var(--border) and friends straight into gradients and shadows,
    which a bare "213 10% 7%" cannot satisfy. Alpha comes from the Tailwind
@@ -19,44 +29,66 @@
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  --background: oklch(0.144 0.003 264); /* #08090A */
-  --foreground: oklch(0.963 0.003 68); /* #F4F2F0 */
-  --card: oklch(0.18 0.005 253); /* #0F1113 */
-  --card-foreground: oklch(0.963 0.003 68);
-  --popover: oklch(0.213 0.007 253); /* #16191C */
-  --popover-foreground: oklch(0.963 0.003 68);
-  --primary: oklch(0.897 0.25 135); /* #8CFF2E lime */
-  --primary-foreground: oklch(0.144 0.003 264);
-  --secondary: oklch(0.235 0.008 253);
-  --secondary-foreground: oklch(0.863 0.008 68);
-  --muted: oklch(0.224 0.007 253);
-  --muted-foreground: oklch(0.703 0.011 68);
-  --accent: oklch(0.897 0.25 135);
-  --accent-foreground: oklch(0.144 0.003 264);
-  --destructive: oklch(0.641 0.218 29);
-  --destructive-foreground: oklch(0.963 0.003 68);
-  --border: oklch(0.277 0.008 253);
-  --input: oklch(0.277 0.008 253);
-  --ring: oklch(0.897 0.25 135);
-  --radius: 0.125rem;
+  --background: oklch(0.145 0.006 285); /* #0A0A0D */
+  --foreground: oklch(0.965 0.004 285); /* #F3F3F6 */
+  --card: oklch(0.185 0.007 285); /* #121216 */
+  --card-foreground: oklch(0.965 0.004 285);
+  --popover: oklch(0.175 0.007 285);
+  --popover-foreground: oklch(0.965 0.004 285);
+  --primary: oklch(0.85 0.17 115); /* #CBDA42 duck lime */
+  --primary-foreground: oklch(0.24 0.07 115);
+  --secondary: oklch(0.235 0.008 285);
+  --secondary-foreground: oklch(0.965 0.004 285);
+  --muted: oklch(0.225 0.008 285);
+  --muted-foreground: oklch(0.68 0.012 285);
+  /* A teal surface, not a second lime. Noir aliased --accent to --primary, so
+     anything reaching for bg-accent came out lime; under duck it is the quiet
+     raised tint it was designed to be. */
+  --accent: oklch(0.26 0.03 200);
+  --accent-foreground: oklch(0.9 0.05 200);
+  --destructive: oklch(0.65 0.2 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.275 0.009 285);
+  --input: oklch(0.275 0.009 285);
+  --ring: oklch(0.85 0.17 115);
+  --radius: 0.75rem;
 
-  /* The two extra surface steps noir has and the shadcn contract does not.
-     Aliases, not new colours: the panel language needs a translucent mid-tone
-     between the canvas and a raised state, and the duck card/popover are already
-     exactly those two values. */
-  --surface: oklch(0.18 0.005 253);
-  --surface-raised: oklch(0.213 0.007 253);
+  /* The third surface step duck names but the shadcn contract does not. Spelled
+     out rather than var(--card): a custom property is substituted where it is
+     declared, so an alias here would hand the same value to every scoped theme. */
+  --surface: oklch(0.185 0.007 285);
+  --surface-raised: oklch(0.225 0.008 285);
 
-  /* ---- duck/ui extras, noir values ---- */
-  --holo: linear-gradient(135deg, oklch(0.897 0.25 135), oklch(0.897 0.25 135 / 0.3));
-  --foil: linear-gradient(135deg, oklch(0.897 0.25 135 / 0.16), transparent 62%);
-  --glow: 0 0 28px oklch(0.897 0.25 135 / 0.16);
-  --glow-primary: 0 0 0 1px oklch(0.897 0.25 135 / 0.5), 0 12px 40px -12px oklch(0.897 0.25 135 / 0.6);
-  --sticker-border: 1px;
-  --vinyl: oklch(0.963 0.003 68);
-  --sheet: oklch(0.18 0.005 253);
-  --sheet-line: oklch(0.277 0.008 253);
-  --cut: oklch(0.337 0.01 253);
+  /* ---- duck/ui extras ---- */
+
+  /* The signature gradient. Linear form, for borders and text. */
+  --holo: linear-gradient(
+    135deg,
+    oklch(0.72 0.2 305),
+    oklch(0.76 0.15 250),
+    oklch(0.8 0.14 195),
+    oklch(0.85 0.17 150)
+  );
+
+  /* Full-spectrum foil. Conic form, for surfaces that track the pointer. */
+  --foil: conic-gradient(
+    from 200deg at 50% 50%,
+    oklch(0.79 0.19 20),
+    oklch(0.85 0.16 72),
+    oklch(0.88 0.18 118),
+    oklch(0.84 0.14 172),
+    oklch(0.78 0.16 236),
+    oklch(0.74 0.21 304),
+    oklch(0.79 0.19 20)
+  );
+
+  --glow: 0 0 32px oklch(0.78 0.15 195 / 0.25);
+  --glow-primary: 0 0 32px oklch(0.85 0.17 115 / 0.35);
+  --sticker-border: 3px;
+  --vinyl: oklch(1 0 0);
+  --sheet: oklch(0.175 0.006 285);
+  --sheet-line: oklch(0.225 0.008 285);
+  --cut: oklch(0.34 0.01 285);
 
   /* Pointer position, 0-100. Written by useHoloPointer. */
   --fx: 50;
@@ -64,34 +96,45 @@
   --rx: 0deg;
   --ry: 0deg;
 
-  --font-display: "Space Grotesk", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* duck's own stack: Geist for text, Bricolage Grotesque for display, Geist
+     Mono for chrome. Bricolage is a variable face with optical-size and width
+     axes, which is why the display sizes below are set in one place — it reflows
+     differently from Space Grotesk at every step. */
+  --font-display: "Bricolage Grotesque", Geist, system-ui, sans-serif;
+  --font-body: Geist, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
 
   --section-spacing: clamp(6rem, 12vw, 11rem);
   --content-max-width: 82rem;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --chart-1: oklch(0.897 0.25 135);
+  --chart-1: oklch(0.72 0.2 305);
   --chart-2: oklch(0.75 0.14 220);
-  --chart-3: oklch(0.703 0.011 68);
-  --chart-4: oklch(0.641 0.218 29);
-  --chart-5: oklch(0.863 0.008 68);
-  --sheen: oklch(0.897 0.25 135 / 0.14);
-  --glass: oklch(0.18 0.005 253 / 0.72);
+  --chart-3: oklch(0.78 0.14 160);
+  --chart-4: oklch(0.85 0.17 115);
+  --chart-5: oklch(0.7 0.19 350);
+  /* A white sweep for .sheen. Noir swept in the accent; on a duck surface white
+     is the highlight and the accent is not. */
+  --sheen: oklch(1 0 0 / 0.16);
+  --glass: oklch(0.185 0.007 285 / 0.72);
   --glass-blur: 12px;
-  --font-button: var(--font-mono);
-  --weight-button: 500;
-  --tracking-button: 0.16em;
-  --case-button: uppercase;
-  --text-button-sm: 0.6875rem;
-  --text-button: 0.75rem;
-  --text-button-lg: 0.75rem;
-  --font-badge: var(--font-mono);
-  --weight-badge: 400;
-  --tracking-badge: 0.12em;
-  --case-badge: uppercase;
-  --text-badge: 0.6875rem;
+
+  /* ---- control typography ----
+     duck defaults: the label vocabulary of a button or a badge is sentence-case
+     sans at three sizes. Noir made all of it mono uppercase tracked to 0.16em,
+     which is what made every CTA on the site read as terminal chrome. */
+  --font-button: var(--font-sans);
+  --weight-button: 600;
+  --tracking-button: normal;
+  --case-button: none;
+  --text-button-sm: 0.75rem;
+  --text-button: 0.875rem;
+  --text-button-lg: 1rem;
+  --font-badge: var(--font-sans);
+  --weight-badge: 600;
+  --tracking-badge: normal;
+  --case-badge: none;
+  --text-badge: 0.75rem;
 }
 
 @theme inline {
@@ -121,9 +164,9 @@
   --color-cut: var(--cut);
   --color-vinyl: var(--vinyl);
 
-  /* Ratios rather than pixel offsets, matching the duck registry: at
-     --radius: 0.125rem the whole scale has to collapse, and the stock shadcn
-     "calc(var(--radius) + 10px)" would leave every rounded-2xl at 12px. */
+  /* Ratios rather than pixel offsets, matching the duck registry. The scale has
+     to track --radius proportionally: stock shadcn adds fixed pixel offsets, so
+     a theme that moves --radius at all lands on corners it never chose. */
   --radius-sm: calc(var(--radius) * 0.667);
   --radius-md: calc(var(--radius) * 0.833);
   --radius-lg: var(--radius);
@@ -139,15 +182,15 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  --font-sans: Inter, system-ui, sans-serif;
-  --font-body: Inter, system-ui, sans-serif;
-  --font-display: "Space Grotesk", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: Geist, system-ui, sans-serif;
+  --font-body: Geist, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", Geist, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
 
-  /* The duck easing names, pointed at the noir curves — nothing in terminal noir
-     overshoots, so ease-squash loses its bounce rather than keeping it. */
+  /* duck's own curves. ease-squash overshoots on purpose — a control that lands
+     with a bounce is the sticker language, and noir used to flatten it. */
   --ease-duck: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-squash: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-squash: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   --animate-blink: blink 1.1s steps(1) infinite;
 
@@ -509,11 +552,14 @@
       transparent
     );
     color: var(--foreground);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    /* The same label vocabulary every duck control reads, rather than a second
+       hardcoded one — this chip sits beside two HoloButtons and used to be the
+       only mono uppercase thing in the row. */
+    font-family: var(--font-button);
+    font-size: var(--text-button);
+    font-weight: var(--weight-button);
+    letter-spacing: var(--tracking-button);
+    text-transform: var(--case-button);
     border-radius: var(--radius);
     overflow: hidden;
     transition:
@@ -656,6 +702,9 @@
   .mobile-nav-item:nth-child(4) { animation-delay: 0.075s; }
   .mobile-nav-item:nth-child(5) { animation-delay: 0.1s; }
   .mobile-nav-item:nth-child(6) { animation-delay: 0.125s; }
+  .mobile-nav-item:nth-child(7) { animation-delay: 0.15s; }
+  /* The social set, last in the drawer. */
+  .mobile-nav-item:nth-child(8) { animation-delay: 0.175s; }
 
   .stack-group {
     transition: background-color 0.35s var(--ease-out-soft), transform 0.35s var(--ease-out-soft);
@@ -1022,123 +1071,49 @@
    default and there is no token to say so — each one is worth a token upstream,
    and none of them can be expressed from an earlier layer. */
 @layer utilities {
-  /* Two steps larger than duck across the scale: the hero is the identity.
-     Plain classes rather than :where(), so they beat the theme rules no matter
-     which of the two blocks a reinstall writes last. Family and weight still
-     come from the theme. */
+  /* Two steps larger than duck across the scale — the only size decision this
+     site still overrides, because a portfolio hero is the identity and duck sizes
+     its display type for a docs page. Plain classes rather than :where(), so they
+     beat the theme rules no matter which of the two blocks a reinstall writes
+     last. Family and weight still come from the theme. */
+  /* Tracking is duck's, not the old noir numbers: Space Grotesk needed -0.045em
+     to close up at hero size, and Bricolage Grotesque is already that tight —
+     the same value ran the letters into each other. Only the size and the
+     line-height are this site's. */
   .display-xl {
     font-size: clamp(2.75rem, 9.6vw, 8.5rem);
-    font-weight: 700;
-    line-height: 0.88;
-    letter-spacing: -0.045em;
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
   }
 
   .display-lg {
     font-size: clamp(2rem, 6vw, 4.5rem);
     font-weight: 700;
-    line-height: 0.94;
-    letter-spacing: -0.04em;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
   }
 
-  /* ── Prose, the noir half ──────────────────────────────────────
-     @duck/duck-prose carries the scale, the spacing, the headings, the code,
-     the rules and the captions. These are the places the journal reads
-     differently, and each one is a deliberate call rather than a leftover. */
+  /* ── Prose, the two structural fixes ──────────────────────────
+     @duck/duck-prose carries the measure, the scale, the spacing, the headings,
+     the links, the code, the lists, the rules, the tables and the captions —
+     unrestyled. The noir half that used to sit here (muted body, lime-underlined
+     links, square lime bullets, a drawn code chip, fully ruled tables) is gone
+     with the rest of that identity. What is left is the two things react-markdown
+     breaks that no theme can fix from the inside. */
 
-  /* Body type is quiet and emphasis is bright, not the other way round: a note
-     is mostly context with a few lines that matter. */
-  .duck-prose {
-    color: var(--muted-foreground);
-  }
-
-  .duck-prose h2,
-  .duck-prose h3,
-  .duck-prose strong {
-    color: var(--foreground);
-  }
-
-  /* The h2 tracks the viewport rather than sitting at one size — these notes
-     are read on a phone as often as on a display. */
-  .duck-prose h2 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    line-height: 1.1;
-  }
-
-  /* A link inside a paragraph of muted text is already the brightest thing in
-     the line; colouring it lime as well makes a note with six links unreadable.
-     The lime goes in the underline, and the hover promotes it. */
-  .duck-prose a {
-    color: var(--foreground);
-    text-decoration-color: color-mix(in oklab, var(--primary) 50%, transparent);
-    text-underline-offset: 3px;
-  }
-
-  .duck-prose a:hover {
-    color: var(--primary);
-  }
-
-  /* An inline chip is drawn, not filled. A --muted block behind a word is the
-     one place duck reaches for a solid surface, and on this canvas it reads as
-     a highlight rather than as code. */
-  .duck-prose code {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--foreground);
-    padding: 0.1rem 0.35rem;
-  }
-
-  .duck-prose pre code {
-    border: 0;
-    padding: 0;
-  }
-
-  /* Square lime bullets, the same mark the HUD uses everywhere else. */
-  .duck-prose ul {
-    list-style: none;
-    padding-left: 0;
-  }
-
-  .duck-prose ul > li {
-    position: relative;
-    padding-left: 1.5rem;
-  }
-
-  .duck-prose ul > li::before {
-    content: "";
-    position: absolute;
-    top: 0.7em;
-    left: 0;
-    width: 0.375rem;
-    height: 0.375rem;
-    background: var(--primary);
-  }
-
-  /* Ruled all the way round, header on the raised surface. The notes lean on
-     tables hard enough that the cells need edges to be scannable.
-
-     `display: block` is what keeps a wide table from widening the page: the
-     duck rule puts the scroll on a .duck-prose-scroll wrapper, and markdown
-     emits a bare <table> with nothing to hang that class on. */
+  /* `display: block` is what keeps a wide table from widening the page: the duck
+     rule puts the scroll on a .duck-prose-scroll wrapper, and markdown emits a
+     bare <table> with nothing to hang that class on. */
   .duck-prose table {
     display: block;
     overflow-x: auto;
   }
 
-  .duck-prose th,
-  .duck-prose td {
-    border: 1px solid var(--border);
-    padding: 0.75rem 1rem;
-  }
-
-  .duck-prose th {
-    color: var(--foreground);
-    background: var(--surface);
-  }
-
-  /* Screenshots carry small HUD type, so they need more room than the 68ch
-     measure. A paragraph holding nothing but an image breaks out of it — but
-     only from lg up, where the container has slack on both sides; narrower than
-     that the extra width would push the page into horizontal scroll. */
+  /* A paragraph holding nothing but an image breaks the 68ch measure — the
+     journal screenshots carry small type and are unreadable at it. From lg up
+     only, where the container has slack; narrower than that the extra width
+     would push the page into horizontal scroll. */
   .duck-prose p:has(> img:only-child) {
     margin-block: 2.5rem;
   }
@@ -1150,14 +1125,6 @@
     .duck-prose p:has(> img:only-child) {
       width: calc(100% + 12rem);
     }
-  }
-
-  .duck-prose img {
-    display: block;
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 0;
-    background: var(--surface);
   }
 
   /* Tags answer to their own hover and to the hover of the row they sit in, so
@@ -1204,12 +1171,11 @@
   }
 
   /* The theme grain is an element, not a ::before on a wrapper, so the markup
-     now carries a bare <div className="grain" />. These two values are the only
-     part of it noir disagrees with: 0.04 reads as texture on a near-black
-     canvas, and the overlay belongs under the nav rather than over it. */
+     carries a bare <div className="grain" />. Its opacity is duck's now; the one
+     thing left here is the stacking order, which is a layout call rather than a
+     theme one — the overlay belongs under the nav rather than over it. */
   .grain {
     z-index: 50;
-    opacity: 0.022;
   }
 
   /* The outline CTA fill. Here rather than in the components layer because the
@@ -1218,6 +1184,36 @@
   [data-slot="holo-button"][data-variant="outline"]:hover {
     background: color-mix(in oklab, var(--surface-raised) 70%, transparent);
     transform: translateY(-1px);
+  }
+
+  /* The left rail flyout. The handle exists only on hover or keyboard focus, so
+     the resting rail is a column of glyphs in the page gutter rather than a
+     second nav. Here rather than in the components layer because it rides on a
+     duck button whose own utilities would outrank it. */
+  .social-flyout {
+    position: absolute;
+    left: calc(100% + 0.5rem);
+    padding: 0.3rem 0.5rem;
+    white-space: nowrap;
+    color: var(--foreground);
+    background: color-mix(in oklab, var(--background) 88%, transparent);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    opacity: 0;
+    transform: translateX(-6px);
+    pointer-events: none;
+    transition:
+      opacity 0.35s var(--ease-out-expo),
+      transform 0.35s var(--ease-out-expo),
+      border-color 0.35s var(--ease-out-expo);
+  }
+
+  .social-node:hover .social-flyout,
+  .social-node:focus-visible .social-flyout {
+    opacity: 1;
+    transform: translateX(0);
+    border-color: color-mix(in oklab, var(--primary) 45%, transparent);
   }
 }
 
@@ -1267,38 +1263,41 @@
     box-shadow: var(--glow-primary);
 }
 
+/* Same values as :root. Nothing in the app sets .dark — there is one palette —
+   but the shadcn CLI rewrites this block on every `shadcn add`, so it is kept in
+   sync rather than deleted and re-added wrong. */
 .dark {
-  --background: oklch(0.144 0.003 264);
-  --foreground: oklch(0.963 0.003 68);
-  --card: oklch(0.18 0.005 253);
-  --card-foreground: oklch(0.963 0.003 68);
-  --popover: oklch(0.213 0.007 253);
-  --popover-foreground: oklch(0.963 0.003 68);
-  --primary: oklch(0.897 0.25 135);
-  --primary-foreground: oklch(0.144 0.003 264);
-  --secondary: oklch(0.235 0.008 253);
-  --secondary-foreground: oklch(0.863 0.008 68);
-  --muted: oklch(0.224 0.007 253);
-  --muted-foreground: oklch(0.703 0.011 68);
-  --accent: oklch(0.897 0.25 135);
-  --accent-foreground: oklch(0.144 0.003 264);
-  --destructive: oklch(0.641 0.218 29);
-  --destructive-foreground: oklch(0.963 0.003 68);
-  --border: oklch(0.277 0.008 253);
-  --input: oklch(0.277 0.008 253);
-  --ring: oklch(0.897 0.25 135);
-  --chart-1: oklch(0.897 0.25 135);
+  --background: oklch(0.145 0.006 285);
+  --foreground: oklch(0.965 0.004 285);
+  --card: oklch(0.185 0.007 285);
+  --card-foreground: oklch(0.965 0.004 285);
+  --popover: oklch(0.175 0.007 285);
+  --popover-foreground: oklch(0.965 0.004 285);
+  --primary: oklch(0.85 0.17 115);
+  --primary-foreground: oklch(0.24 0.07 115);
+  --secondary: oklch(0.235 0.008 285);
+  --secondary-foreground: oklch(0.965 0.004 285);
+  --muted: oklch(0.225 0.008 285);
+  --muted-foreground: oklch(0.68 0.012 285);
+  --accent: oklch(0.26 0.03 200);
+  --accent-foreground: oklch(0.9 0.05 200);
+  --destructive: oklch(0.65 0.2 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.275 0.009 285);
+  --input: oklch(0.275 0.009 285);
+  --ring: oklch(0.85 0.17 115);
+  --chart-1: oklch(0.72 0.2 305);
   --chart-2: oklch(0.75 0.14 220);
-  --chart-3: oklch(0.703 0.011 68);
-  --chart-4: oklch(0.641 0.218 29);
-  --chart-5: oklch(0.863 0.008 68);
-  --glow: 0 0 28px oklch(0.897 0.25 135 / 0.16);
-  --glow-primary: 0 0 0 1px oklch(0.897 0.25 135 / 0.5), 0 12px 40px -12px oklch(0.897 0.25 135 / 0.6);
-  --sheet: oklch(0.18 0.005 253);
-  --sheet-line: oklch(0.277 0.008 253);
-  --cut: oklch(0.337 0.01 253);
-  --surface: oklch(0.18 0.005 253);
-  --surface-raised: oklch(0.213 0.007 253);
-  --glass: oklch(0.18 0.005 253 / 0.72);
-  --sheen: oklch(0.897 0.25 135 / 0.14);
+  --chart-3: oklch(0.78 0.14 160);
+  --chart-4: oklch(0.85 0.17 115);
+  --chart-5: oklch(0.7 0.19 350);
+  --glow: 0 0 32px oklch(0.78 0.15 195 / 0.25);
+  --glow-primary: 0 0 32px oklch(0.85 0.17 115 / 0.35);
+  --sheet: oklch(0.175 0.006 285);
+  --sheet-line: oklch(0.225 0.008 285);
+  --cut: oklch(0.34 0.01 285);
+  --surface: oklch(0.185 0.007 285);
+  --surface-raised: oklch(0.225 0.008 285);
+  --glass: oklch(0.185 0.007 285 / 0.72);
+  --sheen: oklch(1 0 0 / 0.16);
 }

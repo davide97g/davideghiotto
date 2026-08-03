@@ -8,18 +8,20 @@ import {
   type RalAccess,
   type RalGateError,
 } from "@/lib/ralAccess";
-import { GlowInput } from "@/components/ui/glow-input";
+import { GlowField, GlowFieldset, GlowInput } from "@/components/ui/glow-input";
 import { HoloBadge } from "@/components/ui/holo-badge";
-import { HoloButton } from "@/components/ui/holo-button";
+import { QuackButton } from "@/components/ui/quack-button";
+import { StickerOtp } from "@/components/ui/sticker-otp";
 import {
   StickerDialog,
   StickerDialogContent,
   StickerDialogDescription,
+  StickerDialogFooter,
   StickerDialogHeader,
   StickerDialogTitle,
 } from "@/components/ui/sticker-dialog";
-import { ArrowLeft, Loader2, Lock, Mail, ShieldCheck, Unlock } from "lucide-react";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { ArrowLeft, Lock, ShieldCheck, Unlock } from "lucide-react";
+import { FormEvent, useEffect, useState } from "react";
 
 interface RalGateProps {
   open: boolean;
@@ -33,7 +35,18 @@ type Step = "email" | "code";
 type GateFailure = { error: RalGateError; retryAfterMinutes?: number };
 
 /**
+ * Digits the gate service issues — `services/ral-gate` config.otpLength, whose
+ * default this mirrors. Raising OTP_LENGTH there means raising this too, since
+ * the strip draws one cell per digit and gates submit on a full code.
+ */
+const CODE_LENGTH = 6;
+
+/**
  * Two-step OTP gate: request code → verify. Fail-closed against the ral-gate API.
+ *
+ * Stock duck composition throughout — GlowField owns the label, the helper and
+ * the error, QuackButton owns the pending state, StickerOtp owns the code — and
+ * not one colour class at any call site. The palette is the theme's job.
  */
 export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps) {
   const { t } = useLanguage();
@@ -43,19 +56,7 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
   const [devCode, setDevCode] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [failure, setFailure] = useState<GateFailure | null>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const codeRef = useRef<HTMLInputElement>(null);
   const apiReady = isRalApiConfigured();
-
-  useEffect(() => {
-    if (!open) return;
-    setFailure(null);
-    const id = window.setTimeout(() => {
-      if (step === "email") emailRef.current?.focus();
-      else codeRef.current?.focus();
-    }, 80);
-    return () => window.clearTimeout(id);
-  }, [open, step]);
 
   useEffect(() => {
     if (!open) {
@@ -89,11 +90,16 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
     setStep("code");
   };
 
-  const verifyCode = async (e: FormEvent) => {
-    e.preventDefault();
+  /**
+   * Takes the code as an argument rather than reading state: StickerOtp fires
+   * `onComplete` in the same tick as its last `onValueChange`, so the state
+   * holding the sixth digit has not landed yet when the auto-submit runs.
+   */
+  const submitCode = async (value: string) => {
+    if (pending) return;
     setPending(true);
     setFailure(null);
-    const result = await verifyRalOtp(email, code);
+    const result = await verifyRalOtp(email, value);
     setPending(false);
     if (result.ok === false) {
       setFailure({ error: result.error, retryAfterMinutes: result.retryAfterMinutes });
@@ -138,133 +144,108 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
     }
   };
 
+  // One message, in the field it belongs to — the duck form rule. An offline
+  // gate is a permanent version of the same failure, so it reads the same way.
+  const fieldError = !apiReady
+    ? t(ui.ral.gate.errors.unavailable)
+    : failure
+      ? errorCopy(failure)
+      : undefined;
+
+  // Loading only. A gate failure is a field-level message — duck's error state
+  // would repaint the CTA destructive and say the same thing twice, and the
+  // recovery action is still "submit again", so the button stays itself.
+  const buttonState = pending ? "loading" : "idle";
+
   return (
     <StickerDialog open={open} onOpenChange={onOpenChange}>
-      <StickerDialogContent className="max-w-lg gap-0 bg-surface p-0">
-        <div className="relative overflow-hidden p-6 md:p-8">
-          <div
-            className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full opacity-30"
-            style={{
-              background:
-                "radial-gradient(circle, color-mix(in oklab, var(--primary) 45%, transparent), transparent 70%)",
-            }}
-            aria-hidden
-          />
-
-          <StickerDialogHeader className="relative gap-3 text-left">
-            <p className="hud text-primary inline-flex items-center gap-2">
-              <Lock size={12} /> {t(ui.ral.gate.eyebrow)}
-            </p>
-            <StickerDialogTitle className="text-2xl md:text-3xl">
-              {step === "email" ? t(ui.ral.gate.title) : t(ui.ral.gate.codeTitle)}
-            </StickerDialogTitle>
-            <StickerDialogDescription className="max-w-xl md:text-base">
-              {step === "email" ? t(ui.ral.gate.lead) : t(ui.ral.gate.codeLead)}
-            </StickerDialogDescription>
-            <HoloBadge
-              variant="outline"
-              className="hud rounded-none border-primary/40 bg-primary/5 px-2.5 py-1 text-primary"
-            >
+      <StickerDialogContent className="gap-6 p-6 md:p-8">
+        <StickerDialogHeader className="gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <HoloBadge variant="muted">
+              <Lock /> {t(ui.ral.gate.eyebrow)}
+            </HoloBadge>
+            <HoloBadge variant={apiReady ? "success" : "danger"}>
               {apiReady ? t(ui.ral.gate.badge) : t(ui.ral.gate.badgeOffline)}
             </HoloBadge>
-          </StickerDialogHeader>
+          </div>
+          <StickerDialogTitle className="text-xl md:text-2xl">
+            {step === "email" ? t(ui.ral.gate.title) : t(ui.ral.gate.codeTitle)}
+          </StickerDialogTitle>
+          <StickerDialogDescription>
+            {step === "email" ? t(ui.ral.gate.lead) : t(ui.ral.gate.codeLead)}
+          </StickerDialogDescription>
+        </StickerDialogHeader>
 
-          {!apiReady && (
-            <p className="relative mt-6 text-sm text-destructive" role="alert">
-              {t(ui.ral.gate.errors.unavailable)}
-            </p>
-          )}
-
-          {step === "email" ? (
-            <form
-              onSubmit={requestCode}
-              className="relative mt-8 flex flex-col gap-3 sm:flex-row"
+        {step === "email" ? (
+          <form onSubmit={requestCode} className="flex flex-col gap-6">
+            <GlowField
+              label={t(ui.ral.gate.emailLabel)}
+              helper={t(ui.ral.gate.footnote)}
+              error={fieldError}
+              required
             >
-              <label className="sr-only" htmlFor="ral-email">
-                {t(ui.ral.gate.emailLabel)}
-              </label>
-              <div className="relative flex-1">
-                <Mail
-                  size={14}
-                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-                <GlowInput
-                  ref={emailRef}
-                  id="ral-email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  disabled={!apiReady}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t(ui.ral.gate.placeholder)}
-                  className="h-12 border-border bg-background/80 pr-3 pl-9 font-mono placeholder:text-muted-foreground/70"
-                />
-              </div>
-              <HoloButton
+              <GlowInput
+                type="email"
+                autoComplete="email"
+                autoFocus
+                disabled={!apiReady}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t(ui.ral.gate.placeholder)}
+              />
+            </GlowField>
+            <StickerDialogFooter>
+              <QuackButton
                 type="submit"
-                variant="primary"
                 size="lg"
+                state={buttonState}
+                loadingLabel={t(ui.ral.gate.pending)}
                 disabled={pending || !apiReady}
-                className="disabled:opacity-60"
               >
-                {pending ? (
-                  <>
-                    <Loader2 size={14} className="animate-spin" /> {t(ui.ral.gate.pending)}
-                  </>
-                ) : (
-                  <>
-                    <Unlock size={14} /> {t(ui.ral.gate.submit)}
-                  </>
-                )}
-              </HoloButton>
-            </form>
-          ) : (
-            <form onSubmit={verifyCode} className="relative mt-8 space-y-4">
-              <p className="hud text-muted-foreground">
-                {t(ui.ral.gate.sentTo)} <span className="text-foreground">{email}</span>
-              </p>
-              {devCode && (
-                <p className="border border-primary/30 bg-primary/5 px-3 py-2 font-mono text-sm text-primary">
-                  {t(ui.ral.gate.devCode)}: {devCode}
-                </p>
-              )}
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <label className="sr-only" htmlFor="ral-code">
-                  {t(ui.ral.gate.codeLabel)}
-                </label>
-                <GlowInput
-                  ref={codeRef}
-                  id="ral-code"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  required
-                  value={code}
-                  onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 8))}
-                  placeholder="••••••"
-                  className="h-12 flex-1 border-border bg-background/80 px-3 text-center font-mono text-lg tracking-[0.4em]"
-                />
-                <HoloButton
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  disabled={pending}
-                  className="disabled:opacity-60"
-                >
-                  {pending ? (
-                    <>
-                      <Loader2 size={14} className="animate-spin" /> {t(ui.ral.gate.pending)}
-                    </>
-                  ) : (
-                    <>
-                      <ShieldCheck size={14} /> {t(ui.ral.gate.verify)}
-                    </>
-                  )}
-                </HoloButton>
-              </div>
-              <button
+                <Unlock /> {t(ui.ral.gate.submit)}
+              </QuackButton>
+            </StickerDialogFooter>
+          </form>
+        ) : (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              void submitCode(code);
+            }}
+            className="flex flex-col gap-6"
+          >
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+              <span>{t(ui.ral.gate.sentTo)}</span>
+              <span className="font-medium text-foreground">{email}</span>
+            </div>
+
+            {devCode && (
+              <HoloBadge variant="muted" shape="tag" className="font-mono">
+                {t(ui.ral.gate.devCode)}: {devCode}
+              </HoloBadge>
+            )}
+
+            <GlowFieldset
+              legend={t(ui.ral.gate.codeLabel)}
+              helper={t(ui.ral.gate.footnote)}
+              error={fieldError}
+              required
+            >
+              <StickerOtp
+                length={CODE_LENGTH}
+                value={code}
+                onValueChange={setCode}
+                onComplete={(value) => void submitCode(value)}
+                disabled={pending}
+                autoFocus
+              />
+            </GlowFieldset>
+
+            <StickerDialogFooter className="sm:justify-between">
+              <QuackButton
                 type="button"
-                className="hud inline-flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                variant="ghost"
                 onClick={() => {
                   setStep("email");
                   setCode("");
@@ -272,19 +253,20 @@ export default function RalGate({ open, onOpenChange, onUnlocked }: RalGateProps
                   setFailure(null);
                 }}
               >
-                <ArrowLeft size={12} /> {t(ui.ral.gate.back)}
-              </button>
-            </form>
-          )}
-
-          {failure && (
-            <p className="mt-3 text-sm text-destructive" role="alert">
-              {errorCopy(failure)}
-            </p>
-          )}
-
-          <p className="mt-5 hud text-muted-foreground">{t(ui.ral.gate.footnote)}</p>
-        </div>
+                <ArrowLeft /> {t(ui.ral.gate.back)}
+              </QuackButton>
+              <QuackButton
+                type="submit"
+                size="lg"
+                state={buttonState}
+                loadingLabel={t(ui.ral.gate.pending)}
+                disabled={pending || code.length < CODE_LENGTH}
+              >
+                <ShieldCheck /> {t(ui.ral.gate.verify)}
+              </QuackButton>
+            </StickerDialogFooter>
+          </form>
+        )}
       </StickerDialogContent>
     </StickerDialog>
   );

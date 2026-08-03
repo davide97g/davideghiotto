@@ -26,36 +26,47 @@ arrives as an optional dependency and the build works without it.
 
 ## Architecture
 
-Single-page personal portfolio (Vite + React 18 + TypeScript + Tailwind v4 + duck/ui) with one fixed
-visual identity — **terminal noir**: near-black canvas, off-white type, a single lime accent
-(`#8CFF2E`), and tiny wide-tracked uppercase mono labels used as HUD chrome. There is no theme
-switcher and no per-company deck; earlier versions had both and they were removed deliberately.
+Single-page personal portfolio (Vite + React 18 + TypeScript + Tailwind v4 + duck/ui) wearing
+**stock duck/ui**: near-black violet-tinted canvas, off-white type, duck lime
+(`#CBDA42`, `oklch(0.85 0.17 115)`), 3px die-cut sticker edges on 0.75rem corners, and the
+violet→cyan→green holo spectrum reserved for one element per viewport. There is no theme switcher
+and no per-company deck; earlier versions had both and they were removed deliberately.
+
+The site used to ship **`@duck/theme-noir`** on top of this — lime at chroma 0.25, a 0.125rem
+radius, a 1px edge, mono uppercase control type. That layer is gone: the palette, the geometry, the
+easings, the control typography and the fonts are duck's own. Do not reintroduce it piecemeal. What
+survives of the old identity is deliberate and listed below (hero display sizes, the HUD label
+chrome, the section marker language).
 
 Three systems carry most of the design intent: **the design system**, **the scroll choreography**
 and **the bilingual copy layer**.
 
-### Design system (duck/ui + @duck/theme-noir)
+### Design system (duck/ui, unthemed)
 
 - UI primitives come from **duck/ui**, the registry at `duckui.davideghiotto.it` (source lives at
   `~/personal/dacoder/projects/duck-ui`). `components.json` registers it as `@duck`, so
   `npx shadcn@latest add @duck/<name>` copies a component into `src/components/ui/`. They are
   ordinary owned files after that — edit them freely, but prefer fixing the registry and
   reinstalling, so other consumers get the fix too.
-- The palette is **`@duck/theme-noir`**, a second theme in that registry carrying this site's
-  identity. Installing it is what makes every duck component read as terminal noir instead of duck:
-  `--radius: 0.125rem`, `--sticker-border: 1px`, `--holo` flattened to a lime gradient, glow
-  narrowed, `--ease-squash` de-bounced. **No duck component is restyled per call site** — if one
-  looks wrong, the fix belongs in the theme or the registry, not in a `className`.
-- In use: `HoloButton`, `HoloBadge`, `HudLabel` (+ the `.hud` utility), `StickerCard`,
-  `StickerDialog`, `DuckSwitch`, `GlowInput`, `QuackToastProvider`, `EmptyPond`, `DuckProse`,
-  `DuckSectionMarker`, `DuckListRow`. Replacing the shadcn/Radix layer with these took the runtime
-  dependency count from 47 to 17.
+- **The tokens at the top of `src/index.css` are the duck dark defaults, verbatim.** Keep them in
+  sync with the `.dark` block of `duck-ui/app/globals.css` rather than editing them by taste: this
+  site is now a consumer of that palette, not a fork of it. **No duck component is restyled per call
+  site** — if one looks wrong, the fix belongs in the registry, not in a `className`.
+- In use: `HoloButton`, `QuackButton`, `HoloBadge`, `HudLabel` (+ the `.hud` utility), `StickerCard`,
+  `StickerDialog`, `DuckSwitch`, `GlowInput` (+ `GlowField` / `GlowFieldset`), `StickerOtp`,
+  `QuackToastProvider`, `EmptyPond`, `DuckProse`, `DuckSectionMarker`, `DuckListRow`. Replacing the
+  shadcn/Radix layer with these took the runtime dependency count from 47 to 17.
+- **`RalGate` is the reference duck form.** `GlowField` owns the label, the helper and the in-field
+  error, `QuackButton` owns the pending state, `StickerOtp` owns the code — and there is not one
+  colour class at any call site. Copy that shape for any new form: errors go in the field, never in a
+  toast or on the button.
 - **CTA and tag typography are tokens, not classes.** `--font-button` / `--weight-button` /
   `--tracking-button` / `--case-button` / `--text-button*` and the five `--*-badge` equivalents are
   declared once in the theme block at the top of `src/index.css`, and `@duck/theme` reads them in a
-  zero-specificity base rule. The old `.btn-hud`, `.btn-hud-ghost` and `.tag` classes — and the
-  `text-xs font-medium` that had to ride beside each of them — are gone. A `<HoloBadge shape="tag">`
-  is square; `shape="pill"` is the status pill.
+  zero-specificity base rule. They now hold duck's values — sentence-case Geist at 0.75/0.875/1rem —
+  where noir made every control mono uppercase at 0.16em. The old `.btn-hud`, `.btn-hud-ghost` and
+  `.tag` classes are gone, and `.btn-ral` reads the same tokens rather than hardcoding a second
+  vocabulary. A `<HoloBadge shape="tag">` follows the radius scale; `shape="pill"` is the status pill.
 - **Every duck component emits `data-variant` / `data-size`**, so a theme rule can say "outline
   buttons get a faint fill on hover" once instead of marking the call sites. Two site rules do
   exactly that, for `[data-variant="outline"]` buttons and `[data-shape="tag"]` badges.
@@ -162,12 +173,12 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   `react-markdown` + `remark-gfm` (the notes lean on GFM tables) inside `DuckProse`, sets
   `document.title`, resets Lenis scroll on slug change, and falls back to an in-page 404 for an
   unknown slug.
-- Long-form copy is **`@duck/duck-prose`** — the 68ch measure, the scale, the spacing, the headings,
-  the rules and the captions all come from it. What noir keeps is a short `.duck-prose` block in the
-  site override layer: muted body with bright headings and emphasis, a foreground link with a lime
-  underline instead of lime text, square lime bullets, a drawn rather than filled code chip, fully
-  ruled tables on a raised header, and the `lg`-and-up image breakout. `@tailwindcss/typography`
-  never fit and stays removed.
+- Long-form copy is **`@duck/duck-prose`**, unrestyled — the 68ch measure, the scale, the spacing,
+  the headings, the links, the code, the lists, the rules, the tables and the captions all come from
+  it. The noir half that used to sit in the override layer (muted body, lime-underlined links, square
+  lime bullets, a drawn code chip, fully ruled tables) is gone; only two structural fixes remain, the
+  table scroll below and the `lg`-and-up image breakout. `@tailwindcss/typography` never fit and stays
+  removed.
 - **`.duck-prose table` sets `display: block; overflow-x: auto` and must keep doing so.** The duck
   rule puts the scroll on a `.duck-prose-scroll` wrapper, and markdown emits a bare `<table>` with
   nothing to hang that class on — without the override a wide table widens the whole page.
@@ -185,6 +196,17 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   `public/shot-*.avif` with a `.jpg` fallback.
 - The nav switches to the burger menu below `lg` (not `md`): six labels plus the name and language
   toggle do not fit a 768 px bar.
+- **`socials` in `src/data/content.ts` is the one link set** — LinkedIn, YouTube, GitHub, dacoder.it,
+  in render order. `journalPlatforms` maps over it and only adds the per-platform `focus` copy, so a
+  changed handle is a one-line change. `src/components/SocialLinks.tsx` renders it two ways:
+  `SocialRail`, the fixed left-gutter rail that mirrors `ScrollRail` (vertical `ui.social.label`,
+  hairline stems, 28px ghost buttons, the handle appearing in a `.social-flyout` on hover or focus),
+  and `SocialRow`, the touch-sized horizontal set — icon-only on the hero scroll-cue line, `labels`
+  on in the nav drawer.
+- **The rail's `min-[1440px]` breakpoint is measured, not chosen.** The content column is
+  `--content-max-width: 82rem` (1312 px), so under ~1440 px there is no gutter and the rail lands on
+  the display type — it did, at `lg`. `SocialRow` in the hero carries the same links below that
+  width and hides above it, so the two never appear together; change one breakpoint and change both.
 - `ChannelSection` pins its video gallery and drags it horizontally on `min-width: 1024px` with
   motion allowed; mobile and reduced-motion get a plain swipeable overflow list. YouTube thumbnails
   use `hqdefault` scaled `1.35` inside an `aspect-video` box to crop the 4:3 letterboxing.
@@ -200,13 +222,19 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   satisfy. In markup use Tailwind's `/opacity` modifier (`bg-primary/55`); in hand-written CSS use
   `color-mix(in oklab, var(--primary) 55%, transparent)`. Never reintroduce `hsl(var(--x))`.
 - The radius scale is **multiplicative** (`calc(var(--radius) * 1.833)`), matching the duck registry.
-  Stock shadcn adds fixed pixel offsets, which would leave every `rounded-2xl` at 12px on a theme
-  whose `--radius` is `0.125rem`.
-- What the theme now ships that used to be local: `.hud` (`@duck/hud-label`), `.display-xl` /
+  Stock shadcn adds fixed pixel offsets, so any theme that moves `--radius` lands on corners it never
+  chose — which is exactly what happened when this site ran at `0.125rem`. It is duck's `0.75rem` now.
+- What the theme ships that used to be local: `.hud` (`@duck/hud-label`), `.display-xl` /
   `.display-lg` / `.display-md`, `.grain`, `.sheen` and `.balance`. The **grain is an element**, not
   a `::before` on a wrapper — every page renders a bare `<div className="grain" aria-hidden />`
   inside its root, and putting `grain` back on the wrapper would make that wrapper the fixed
   full-screen overlay.
+- **The site override layer is down to five things**, and each one is a layout or stacking decision
+  rather than a look: the two `.display-*` sizes (a portfolio hero is bigger than a docs headline —
+  tracking and weight come from duck), the `.grain` z-index (under the nav), the `.duck-prose` table
+  scroll and image breakout, the `[data-shape="tag"]` hover, the `[data-variant="outline"]` hover fill
+  and `.panel-interactive`. Anything colour-shaped that shows up there is a regression toward the old
+  theme — fix the registry instead.
 - Remaining hand-rolled chrome in the component layer: `.line-mask`, `.link-wipe`, `.micro-row`,
   `.marquee-strip` / `.marquee-track` / `.marquee-invert`, `.btn-ral`, `.contact-link`,
   `.stack-group`, `.lang-switch` and the nav classes. Prefer these over ad-hoc utility stacks so the
@@ -223,13 +251,17 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   inside a comment; a stray one swallows the rules that follow and surfaces only as
   `Unterminated string` in a Vite stack trace.
 - `src/components/ShaderBackdrop.tsx` is the fixed WebGL backdrop (OGL): flow-noise haze, a
-  receding grid and a scanline shimmer, with scroll velocity smearing the grid. Note `uResolution`
+  receding grid and a scanline shimmer, with scroll velocity smearing the grid. Its `base` and
+  `accent` defaults are `--background` and `--primary` converted to sRGB 0-1 by hand, since a uniform
+  takes numbers and not tokens — move the palette and move those two arrays. Note `uResolution`
   must be the drawing-buffer size, not the CSS size — `gl_FragCoord` is in device pixels, so using
   CSS pixels shrinks the field to `1/dpr` of the canvas. It renders a single static frame under
   reduced motion and returns early (falling back to the CSS background) if WebGL is unavailable.
 - `src/components/ui/*` is the installed duck/ui set (config in `components.json`) — owned code, but
-  see the design-system section before editing. Fonts are Space Grotesk (display), Inter (body) and
-  JetBrains Mono (chrome), loaded in `index.html`.
+  see the design-system section before editing. Fonts are duck's own, loaded from Google Fonts in
+  `index.html`: **Bricolage Grotesque** (display, variable `opsz`/`wdth`/`wght`), **Geist** (body) and
+  **Geist Mono** (HUD chrome). Bricolage is tighter than the Space Grotesk it replaced, which is why
+  `.display-xl` tracking sits at duck's `-0.03em` instead of the old `-0.045em`.
 
 ### Routes
 
