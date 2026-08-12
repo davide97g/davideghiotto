@@ -191,9 +191,19 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   shipped — only `src/content/journal/` is.
 - `projects` entries may carry a `badge` (rendered under the year, e.g. "Private repo") and a `shot`
   (`{ avif, fallback, alt }`) — a cropped screenshot standing in for a live site that is
-  password-gated or private, rendered as a `StickerCard` preview inside the row. Screenshots are cropped
-  free of browser chrome with `ffmpeg -vf "crop=W:H:0:137,scale=1400:-2"` and encoded to
-  `public/shot-*.avif` with a `.jpg` fallback.
+  password-gated, private, or (Majestic) not deployed anywhere yet. `ProjectPreview` in
+  `WorkSection.tsx` links the card out when the project has a `link` and leaves it a plain figure
+  when it has none, so a card never looks clickable without being so. Screenshots are cropped
+  free of browser chrome with `ffmpeg -vf "crop=W:H:0:137,scale=1400:-2"`, sized **1400×810**, and
+  encoded to `public/shot-*.avif` with a `.jpg` fallback.
+- **Encode those AVIFs with ffmpeg, not `sips`.** `ffmpeg -i shot.png -c:v libsvtav1 -crf 32
+  -preset 4 -pix_fmt yuv420p -f avif out.avif` — `sips -s format avif` wrote files that pass
+  `sips -g pixelWidth` and even decode to the right `naturalWidth` in Chrome, then paint blank. The
+  `.jpg` fallback is still `sips -s format jpeg -s formatOptions 72`. libsvtav1 needs even
+  dimensions, which is the other reason the shots are 810 and not 809 tall.
+- Mobile-first apps get a triptych instead of one desktop frame: screenshot the phone-width column
+  three times, then compose the panels onto a canvas painted the app's own background —
+  `shot-calorico.avif` is three `crop=450:1000:225:0,scale=327:726` panels on `0xdef0c4`.
 - The nav switches to the burger menu below `lg` (not `md`): six labels plus the name and language
   toggle do not fit a 768 px bar.
 - **`socials` in `src/data/content.ts` is the one link set** — LinkedIn, YouTube, GitHub, dacoder.it,

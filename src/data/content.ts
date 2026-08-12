@@ -516,6 +516,43 @@ export const featuredProject = {
 
 export const projects: Project[] = [
   {
+    title: "Calorico",
+    description: {
+      en: "A calorie and macro diary built around the products actually on Italian shelves. Every tracker sold here is an English database with a translation layer on top — search «fusilli Coop» and you get nothing — so this one starts from Open Food Facts filtered to Italy, private labels included, and fills the other half of the diary (raw chicken breast, cooked pasta, an apple) from CREA and BDA-IEO composition tables. Barcode scanning, a meal photo that comes back as food plus estimated grams, day/week/month analysis, weight trend and push reminders, in an installable PWA. Fastify and Drizzle over Postgres with trigram search, self-hosted on a VPS behind Dokploy.",
+      it: "Contacalorie e diario dei macro costruito attorno ai prodotti che stanno davvero sugli scaffali italiani. Ogni app venduta qui è un database inglese con sopra uno strato di traduzione — cerchi «fusilli Coop» e non trovi niente — così questa parte da Open Food Facts filtrato sull'Italia, marche del supermercato incluse, e riempie l'altra metà del diario (petto di pollo crudo, pasta cotta, una mela) con le tabelle di composizione CREA e BDA-IEO. Scansione del codice a barre, foto del pasto che torna come alimenti più grammi stimati, analisi giorno/settimana/mese, andamento del peso e promemoria push, in una PWA installabile. Fastify e Drizzle su Postgres con ricerca trigram, self-hosted su VPS dietro Dokploy.",
+    },
+    tags: ["TypeScript", "Fastify", "Postgres", "PWA"],
+    year: "2026 —",
+    link: "https://calorico.davideghiotto.it/",
+    badge: { en: "AGPL-3.0 · open source", it: "AGPL-3.0 · open source" },
+    shot: {
+      avif: "/shot-calorico.avif",
+      fallback: "/shot-calorico.jpg",
+      alt: {
+        en: "Calorico: the daily diary, a search for «fusilli» returning supermarket brands, and the analysis tab",
+        it: "Calorico: il diario del giorno, una ricerca «fusilli» che restituisce le marche del supermercato e la scheda Analisi",
+      },
+    },
+  },
+  {
+    title: "Majestic",
+    description: {
+      en: "A hand-authored 2D world, where the world is data and the code only renders it: areas compiled into Tiled maps, one catalog of tilesets and brushes, kingdoms sliced from a single landmass file, and a narrative bible the NPCs are written against. A Rust server owns the content and the save state, a React + Phaser client owns none of it. Milestone one is single-player — walk Beown, talk to the people standing in it, gather and build the settlement — with the websocket scaffold already in place for when it stops being solo.",
+      it: "Un mondo 2D scritto a mano, dove il mondo è dato e il codice lo disegna soltanto: aree compilate in mappe Tiled, un solo catalogo di tileset e pennelli, regni ritagliati da un unico file di continente e una bibbia narrativa su cui sono scritti gli NPC. Un server Rust possiede i contenuti e i salvataggi, il client React + Phaser non possiede niente. Il primo traguardo è single-player — girare Beown, parlare con chi ci vive, raccogliere e costruire l'insediamento — con lo scaffold websocket già pronto per quando non sarà più da soli.",
+    },
+    tags: ["Rust", "Phaser", "React", "Tiled"],
+    year: "2026 —",
+    badge: { en: "Not shipped yet", it: "Non ancora pubblicato" },
+    shot: {
+      avif: "/shot-majestic.avif",
+      fallback: "/shot-majestic.jpg",
+      alt: {
+        en: "Majestic: the pixel-art town of Beown with named NPCs, the clock and season readout, and the minimap",
+        it: "Majestic: la città pixel art di Beown con gli NPC nominati, orologio e stagione, e la minimappa",
+      },
+    },
+  },
+  {
     title: "Thumb Studio",
     description: {
       en: "Browser thumbnail editor for the channel, built because every generic design tool fights the 1280×720 workflow. Layer stack for text, freehand strokes, cut-out logos and emoji effects, a reusable asset library, project archive with autosave, undo/redo and one-click PNG export. Backgrounds come from a parametric generator — the 'Grainient' preset warps three colours with tunable frequency, amplitude and grain.",

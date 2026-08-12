@@ -97,19 +97,30 @@ describe("socials", () => {
 });
 
 describe("secondary projects", () => {
-  it("lists the gated sites first, right below the featured one", () => {
-    expect(projects.slice(0, 2).map((p) => p.title)).toEqual(["Thumb Studio", "Channeling"]);
+  it("lists the screenshotted ones first, right below the featured one", () => {
+    expect(projects.slice(0, 4).map((p) => p.title)).toEqual([
+      "Calorico",
+      "Majestic",
+      "Thumb Studio",
+      "Channeling",
+    ]);
+
+    const withShot = projects.flatMap((p, i) => (p.shot ? [i] : []));
+    expect(withShot).toEqual(withShot.map((_, i) => i));
   });
 
-  it("gives the gated ones a screenshot standing in for the live site", () => {
-    const gated = projects.filter((p) => ["Thumb Studio", "Channeling"].includes(p.title));
-    expect(gated).toHaveLength(2);
+  it("pairs every screenshot with a badge saying why it is there", () => {
+    const shown = projects.filter((p) => p.shot);
+    expect(shown).toHaveLength(4);
 
-    for (const project of gated) {
-      expect(project.link, project.title).toMatch(/^https:\/\/\w+\.davideghiotto\.it\/$/);
+    for (const project of shown) {
       expect(project.badge, project.title).toBeDefined();
       expect(project.shot?.avif, project.title).toMatch(/^\/shot-.+\.avif$/);
       expect(project.shot?.fallback, project.title).toMatch(/^\/shot-.+\.jpg$/);
+      // Majestic has nowhere to point yet; the rest link to their live site.
+      if (project.link) {
+        expect(project.link, project.title).toMatch(/^https:\/\/\w+\.davideghiotto\.it\/$/);
+      }
     }
   });
 });

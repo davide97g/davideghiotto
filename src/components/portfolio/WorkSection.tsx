@@ -2,12 +2,72 @@ import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
 import FeaturedProject from "@/components/portfolio/FeaturedProject";
 import { useLanguage } from "@/context/LanguageContext";
-import { projects, ui } from "@/data/content";
+import { projects, ui, type Project } from "@/data/content";
 import { trackOutbound } from "@/lib/analytics";
 import { ArrowUpRight, Github, Linkedin } from "lucide-react";
 import { HoloBadge } from "@/components/ui/holo-badge";
 import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
 import { StickerCard } from "@/components/ui/sticker-card";
+
+/**
+ * The screenshot card under a project row. It links out when the project has a
+ * URL, and stays a plain figure when it has none — Majestic is local-only, and
+ * a card that looks clickable but is not would lie about that.
+ */
+function ProjectPreview({
+  project,
+  label,
+  alt,
+}: {
+  project: Project;
+  label: string;
+  alt: string;
+}) {
+  const shot = project.shot!;
+  const body = (
+    <>
+      <span className="hud flex items-center gap-3 border-b border-border px-4 py-3">
+        <span className="h-1.5 w-1.5 shrink-0 bg-primary" aria-hidden />
+        {label}
+      </span>
+      <picture>
+        <source type="image/avif" srcSet={shot.avif} />
+        <img
+          src={shot.fallback}
+          width={1400}
+          height={809}
+          loading="lazy"
+          decoding="async"
+          alt={alt}
+          className="block w-full opacity-90 transition-opacity duration-500 group-hover:opacity-100"
+        />
+      </picture>
+    </>
+  );
+
+  const className = "panel-interactive sheen mt-8 block gap-0 overflow-hidden p-0";
+
+  if (!project.link) {
+    return (
+      <StickerCard glass className={className}>
+        {body}
+      </StickerCard>
+    );
+  }
+
+  return (
+    <StickerCard asChild glass className={className}>
+      <a
+        href={project.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackOutbound(`project_shot_${project.title}`, project.link!)}
+      >
+        {body}
+      </a>
+    </StickerCard>
+  );
+}
 
 export default function WorkSection() {
   const { t } = useLanguage();
@@ -66,39 +126,10 @@ export default function WorkSection() {
                   ))}
                 </div>
 
-                {/* Screenshot stands in for the live site when it is gated. */}
-                {project.shot && project.link && (
-                  <StickerCard
-                    asChild
-                    glass
-                    className="panel-interactive sheen mt-8 block gap-0 overflow-hidden p-0"
-                  >
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() =>
-                      trackOutbound(`project_shot_${project.title}`, project.link!)
-                    }
-                  >
-                    <span className="hud flex items-center gap-3 border-b border-border px-4 py-3">
-                      <span className="h-1.5 w-1.5 shrink-0 bg-primary" aria-hidden />
-                      {t(ui.work.preview)}
-                    </span>
-                    <picture>
-                      <source type="image/avif" srcSet={project.shot.avif} />
-                      <img
-                        src={project.shot.fallback}
-                        width={1400}
-                        height={809}
-                        loading="lazy"
-                        decoding="async"
-                        alt={t(project.shot.alt)}
-                        className="block w-full opacity-90 transition-opacity duration-500 group-hover:opacity-100"
-                      />
-                    </picture>
-                  </a>
-                  </StickerCard>
+                {/* Screenshot stands in for the live site when it is gated —
+                    or for the site itself when there is nothing to link yet. */}
+                {project.shot && (
+                  <ProjectPreview project={project} label={t(ui.work.preview)} alt={t(project.shot.alt)} />
                 )}
               </div>
 
