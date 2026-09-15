@@ -8,6 +8,6 @@
 ## Learned Workspace Facts
 
 - The portfolio has a `/ral` disclosure page with a salary timeline chart, company logos/colors, and an email OTP unlock flow.
-- Exact RAL amounts live only in `services/ral-gate` (Node/Fastify, VPS-deployable); the portfolio ships company/date metadata without amounts and stays locked if the API is unavailable.
+- Exact RAL amounts live only in `services/ral-gate` (Node/Fastify, deployed on the homelab box); the portfolio ships company/date metadata without amounts and stays locked if the API is unavailable.
 - Verified ral-gate unlocks are time-boxed via `SESSION_TTL_SECONDS` (default about one hour); expired sessions get 401 and the client clears local unlock state.
 - RAL chart employers are Reply, Namirial, Infodati, and Bitrock; chart bands should follow non-overlapping salary tenures rather than overlapping CV date ranges.

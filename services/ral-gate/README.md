@@ -27,19 +27,41 @@ Verified unlocks expire after `SESSION_TTL_SECONDS` (default **1 hour**). Past t
 
 ## Production (Dokploy)
 
-Deployed on the VPS through Dokploy as project **ral-gate**, application **ral-gate-api**:
+Runs on the **homelab mini PC**, Dokploy project **ral-gate**, application **ral-gate-api**
+(`appName` `ral-gate-api-kds6va`). Moved off the Hetzner VPS on 2026-09-15; the VPS project,
+its volume and its image are gone. The runbook for that move lives outside this repo, in the
+homelab notes (`porting-to-homelab.md`).
 
-- Source: this repo (custom git, branch `main`), watch path `services/ral-gate/**`
+- Source: GitHub app on the box (`davide97g/davideghiotto`, branch `main`), watch path
+  `services/ral-gate/**`
 - Build: `dockerfile` — `services/ral-gate/Dockerfile`, context `services/ral-gate`
-- Domain: `ral-api.davideghiotto.it` → container port `8787`, Let's Encrypt
+- Domain: `ral-api.davideghiotto.it` → container port `8787`, **`https: false`,
+  `certificateType: none`**. The box forwards no port: Cloudflare terminates TLS and a
+  `cloudflared` tunnel carries the request to Traefik on plain HTTP. A certificate here
+  would be a second handshake to nowhere.
+- DNS is a **proxied CNAME to the tunnel**, not an A record.
 - Volume: `ral-gate-data` mounted at `/data`, with `DATABASE_PATH=/data/ral-gate.sqlite`
   (the SQLite file must not live in `/app/data` — that path ships in the image and holds
-  `disposable-domains.txt`)
+  `disposable-domains.txt`). The container runs as `USER node` (uid 1000), so a file
+  restored into that volume from outside must be `chown 1000:1000` or the app cannot write.
 - `ALLOWED_ORIGINS=https://davideghiotto.it,https://www.davideghiotto.it`
+
+### Deploys
+
+Dokploy's `autoDeploy` is **off**: a GitHub webhook cannot reach a box with no inbound port.
+[`.github/workflows/ral-gate.yml`](../../.github/workflows/ral-gate.yml) is the only path from
+`main` to production — it runs `npm test` here, then triggers the deploy *and waits for its
+result*, so a red deploy cannot hide under a green workflow.
+
+It reaches Dokploy through `deploy-ral.davideghiotto.it`, a tunnel hostname whose path rule
+allows `api/application\.(deploy|one)` and nothing else; the rest of Dokploy's admin API
+answers 404 at Cloudflare's edge. Three repository secrets carry it: `RAL_DOKPLOY_URL`,
+`RAL_DOKPLOY_API_KEY`, `RAL_DOKPLOY_APPLICATION_ID`.
 
 Checklist when standing it up again elsewhere:
 
-1. Point DNS `ral-api.davideghiotto.it` → VPS, so Let's Encrypt can issue
+1. Point DNS `ral-api.davideghiotto.it` at the host — a proxied CNAME to the tunnel here, an
+   A record only if the host terminates TLS itself
 2. Long random `SESSION_SECRET`
 3. `RESEND_API_KEY` plus an `EMAIL_FROM` on a Resend-verified domain — with the key empty the
    service still boots but only logs codes to the container console (`/health` reports
