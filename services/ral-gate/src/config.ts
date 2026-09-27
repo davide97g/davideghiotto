@@ -32,6 +32,13 @@ export const config = {
   adminToken: process.env.ADMIN_TOKEN?.trim() || "",
   /** Request-log retention. Older rows are swept hourly. 0 keeps everything. */
   logRetentionDays: Number(process.env.LOG_RETENTION_DAYS ?? 180),
+  /** TypeSafe key for the Jev address check. Unset → the check is skipped. */
+  jevApiKey: process.env.JEV_API_KEY?.trim() || "",
+  jevModel: process.env.JEV_MODEL?.trim() || "jev-latest",
+  /** Either Jev probability at or above this blocks the code. */
+  jevThreshold: Number(process.env.JEV_THRESHOLD ?? 0.75),
+  /** Past this, the check gives up and the request goes through (fail open). */
+  jevTimeoutMs: Number(process.env.JEV_TIMEOUT_MS ?? 2500),
   resendApiKey: process.env.RESEND_API_KEY?.trim() || "",
   emailFrom: process.env.EMAIL_FROM ?? "RAL Gate <onboarding@resend.dev>",
   otpTtlSeconds: Number(process.env.OTP_TTL_SECONDS ?? 600),

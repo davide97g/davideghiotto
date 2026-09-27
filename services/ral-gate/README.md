@@ -63,10 +63,11 @@ Checklist when standing it up again elsewhere:
 1. Point DNS `ral-api.davideghiotto.it` at the host — a proxied CNAME to the tunnel here, an
    A record only if the host terminates TLS itself
 2. Long random `SESSION_SECRET`
-3. `RESEND_API_KEY` plus an `EMAIL_FROM` on a Resend-verified domain — with the key empty the
+3. `JEV_API_KEY` for the Jev layer — optional, the gate works without it
+4. `RESEND_API_KEY` plus an `EMAIL_FROM` on a Resend-verified domain — with the key empty the
    service still boots but only logs codes to the container console (`/health` reports
    `"mail": false`)
-4. Set portfolio `VITE_RAL_API_URL=https://ral-api.davideghiotto.it` and rebuild
+5. Set portfolio `VITE_RAL_API_URL=https://ral-api.davideghiotto.it` and rebuild
 
 `deploy/ral-gate.service` is the bare-systemd alternative, kept for a non-Docker host.
 
@@ -82,7 +83,7 @@ out.
 
 ## Anti temp-mail
 
-Three layers, cheapest first. Each one rejects with `error: "disposable"` or `"invalid"`.
+Four layers, cheapest first. Each one rejects with `error: "disposable"` or `"invalid"`.
 
 **1. Shape.** Format, RFC length caps (64 local / 254 total), placeholder local parts (`test@`,
 `qwerty@`), reserved TLDs (`.invalid`, `.local`, `.test`, `.example`, `.onion`, …). Domains are
@@ -96,6 +97,26 @@ matching, so `foo.mailinator.com` is caught by the `mailinator.com` entry.
 Throwaway operators rotate domains constantly but keep pointing MX at the same few hosts, so the
 exchange hostnames are matched against `data/disposable-mx-hosts.txt` **and** the main blocklist —
 a brand-new unlisted domain still resolves its MX to `mail.yopmail.com`.
+
+**4. Jev.** Only an address that passed the first three reaches [TypeSafe](https://docs.typesafe.ai)'s
+Jev (`src/jev.ts`), which answers two yes/no questions over `{ email, local_part, domain, mx_hosts }`:
+
+- `throwaway_service` — is the domain a temp-mail service? Catches the ones no list has yet.
+  Rejects with `"disposable"` (outcome `jev_disposable`). Ignored for allowlisted domains, the
+  same precedence the lists follow.
+- `fake_mailbox` — is the local part a placeholder, a test value or a keyboard mash? Catches
+  `asdfgh@outlook.com`, which every other layer passes. Rejects with `"invalid"` (outcome `jev_fake`).
+
+Either probability at or above `JEV_THRESHOLD` (default **0.75**) blocks. On the addresses it was
+tuned against, real mailboxes (names, `hr@`, `careers@`, `recruiting@`) scored at most 0.10 and junk
+at least 0.77, so the threshold sits in a wide gap. It costs one call (~300 ms) per request that
+survives the lists.
+
+It **fails open**: no `JEV_API_KEY`, a non-2xx, a malformed answer or a timeout past
+`JEV_TIMEOUT_MS` lets the request through, since the OTP still proves the mailbox and locking out a
+recruiter over a slow classifier is the worse failure. Every request row stores what Jev said in
+`request_log.jev` — `{"service":0.01,"fake":0.03}`, or `{"error":"timeout"}` when it failed open —
+so tuning the threshold is a query over real traffic, not a guess.
 
 The A/AAAA fallback stays: RFC 5321 implicit MX is real and small legitimate domains rely on it, so
 dropping it would reject genuine contacts. There is no SMTP `RCPT TO` probe — it is unreliable, gets
@@ -132,9 +153,10 @@ the reserved-TLD rejections.
 
 Every hit on `/request`, `/verify` and `/data` writes one `request_log` row: timestamp, address as
 typed, canonical address, domain, outcome, IP, `X-Forwarded-For`, user agent, referer, origin,
-`Accept-Language`, Cloudflare's `CF-IPCountry` when proxied, and the MX hosts the domain resolved to.
+`Accept-Language`, Cloudflare's `CF-IPCountry` when proxied, the MX hosts the domain resolved to, and
+Jev's scores.
 `outcome` is the exact exit path — `sent`, `unlocked`, `served`, `wrong_code`, `disposable_domain`,
-`disposable_mx`, `no_mail_records`, `rate_limit_email`, `mail_error`, …
+`disposable_mx`, `jev_disposable`, `jev_fake`, `no_mail_records`, `rate_limit_email`, `mail_error`, …
 
 Read it with `ADMIN_TOKEN` set:
 

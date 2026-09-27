@@ -63,6 +63,7 @@ const REQUEST_LOG_COLUMNS: Record<string, string> = {
   country: "TEXT",
   mx_hosts: "TEXT",
   forwarded_for: "TEXT",
+  jev: "TEXT",
 };
 
 const logCols = new Set(
@@ -192,6 +193,8 @@ export interface RequestLogEntry {
   country?: string | null;
   /** MX hostnames the domain resolved to, comma-joined. */
   mxHosts?: string | null;
+  /** Jev's scores (or its error) as compact JSON; null when the check didn't run. */
+  jev?: string | null;
 }
 
 export function logRequestDetails(entry: RequestLogEntry) {
@@ -199,8 +202,8 @@ export function logRequestDetails(entry: RequestLogEntry) {
     `INSERT INTO request_log (
        kind, email, canonical_email, email_domain, outcome,
        ip, forwarded_for, user_agent, referer, origin, accept_language, country,
-       mx_hosts, created_at
-     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       mx_hosts, jev, created_at
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     entry.kind,
     entry.email ?? null,
@@ -215,6 +218,7 @@ export function logRequestDetails(entry: RequestLogEntry) {
     entry.acceptLanguage ?? null,
     entry.country ?? null,
     entry.mxHosts ?? null,
+    entry.jev ?? null,
     new Date().toISOString()
   );
 }
@@ -235,6 +239,7 @@ export interface RequestLogRow {
   origin: string | null;
   accept_language: string | null;
   mx_hosts: string | null;
+  jev: string | null;
 }
 
 /** Newest first, optionally filtered by kind / outcome / email substring. */
@@ -267,7 +272,7 @@ export function listRequests(opts: {
     .prepare(
       `SELECT id, created_at, kind, outcome, email, canonical_email, email_domain,
               ip, forwarded_for, country, user_agent, referer, origin,
-              accept_language, mx_hosts
+              accept_language, mx_hosts, jev
          FROM request_log
          ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
         ORDER BY created_at DESC, id DESC

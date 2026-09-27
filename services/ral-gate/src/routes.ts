@@ -22,10 +22,12 @@ import { sendOtpEmail } from "./email.js";
 import {
   canonicalEmail,
   checkMailDomain,
+  isAllowedDomain,
   isDisposableEmail,
   isValidEmailFormat,
   normalizeEmail,
 } from "./emailPolicy.js";
+import { describeVerdict, judgeEmail } from "./jev.js";
 import { generateOtp, hashOtp, signSession, verifySession } from "./otp.js";
 
 const emailBody = z.object({
@@ -299,6 +301,25 @@ export async function registerRoutes(app: FastifyInstance) {
       return reply.code(400).send({ ok: false, error: "disposable" });
     }
 
+    // Last, so a list or MX hit never costs a call. A Jev failure lets the request
+    // through — the error lands in the log row instead of in front of the visitor.
+    const verdict = await judgeEmail(email, {
+      mxHosts: mail.hosts,
+      allowlisted: isAllowedDomain(domainOf(email) ?? ""),
+    });
+    const jev = describeVerdict(verdict);
+    if (verdict.kind === "error") {
+      req.log.warn({ jev: verdict.reason }, "jev check failed, letting the request through");
+    }
+    if (verdict.kind === "scored" && verdict.block === "disposable") {
+      track(caller, { ...base, kind: "request", outcome: "jev_disposable", mxHosts, jev });
+      return reply.code(400).send({ ok: false, error: "disposable" });
+    }
+    if (verdict.kind === "scored" && verdict.block === "fake") {
+      track(caller, { ...base, kind: "request", outcome: "jev_fake", mxHosts, jev });
+      return reply.code(400).send({ ok: false, error: "invalid" });
+    }
+
     const code = generateOtp();
     const expiresAt = new Date(Date.now() + config.otpTtlSeconds * 1000).toISOString();
     upsertOtp(identity, hashOtp(code, identity), expiresAt);
@@ -307,11 +328,11 @@ export async function registerRoutes(app: FastifyInstance) {
       await sendOtpEmail(email, code);
     } catch (err) {
       req.log.error(err);
-      track(caller, { ...base, kind: "request", outcome: "mail_error", mxHosts });
+      track(caller, { ...base, kind: "request", outcome: "mail_error", mxHosts, jev });
       return reply.code(503).send({ ok: false, error: "mail" });
     }
 
-    track(caller, { ...base, kind: "request", outcome: "sent", mxHosts });
+    track(caller, { ...base, kind: "request", outcome: "sent", mxHosts, jev });
 
     // Always opaque success — don't leak whether the mailbox exists beyond MX.
     return {

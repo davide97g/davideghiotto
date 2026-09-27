@@ -73,6 +73,7 @@ Email e log di verifica sono conservati solo quanto serve a operare il gate, pre
 - **Hosting / delivery** del Sito (hosting statico / CDN che serve davideghiotto.it).
 - **Google** — solo se acconsenti agli analytics.
 - **Fornitore di email** usato dal gate RAL per inviare i codici monouso.
+- **Fornitore di verifica degli indirizzi** (TypeSafe), che riceve l’email che inserisci e i server di posta del suo dominio per valutare se è un indirizzo usa-e-getta o fittizio prima dell’invio del codice.
 - **VPS / server** che ospita l’API del gate RAL, sotto il mio controllo.
 
 Nessuna altra vendita o locazione dei tuoi dati.

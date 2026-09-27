@@ -73,6 +73,7 @@ Email and verification logs are retained only as needed to operate the gate, pre
 - **Hosting / delivery** of the Site (static hosting / CDN used to serve davideghiotto.it).
 - **Google** — only if you consent to analytics.
 - **Email delivery provider** used by the RAL gate to send one-time codes.
+- **Address-screening provider** (TypeSafe) that receives the email address you enter, and its domain’s mail servers, to judge whether it is a disposable or placeholder address before a code is sent.
 - **VPS / server** hosting the RAL gate API, under my control.
 
 No other sale or rental of your data.
