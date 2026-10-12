@@ -29,6 +29,7 @@ import {
 } from "./emailPolicy.js";
 import { describeVerdict, judgeEmail } from "./jev.js";
 import { generateOtp, hashOtp, signSession, verifySession } from "./otp.js";
+import { getYoutubeSnapshot } from "./youtube.js";
 
 const emailBody = z.object({
   email: z.string().min(3).max(254),
@@ -247,6 +248,15 @@ export async function registerRoutes(app: FastifyInstance) {
     env: config.nodeEnv,
     sessionTtlSeconds: config.sessionTtlSeconds,
   }));
+
+  // Public and cacheable: the same snapshot for everyone, refreshed every
+  // YOUTUBE_SYNC_MINUTES. 503 only before the first sync has landed.
+  app.get("/v1/youtube", async (_req, reply) => {
+    const snapshot = getYoutubeSnapshot();
+    if (!snapshot) return reply.code(503).send({ error: "unavailable" });
+    reply.header("cache-control", "public, max-age=300, stale-while-revalidate=600");
+    return snapshot;
+  });
 
   app.post("/v1/ral/request", async (req, reply) => {
     const caller = callerContext(req);

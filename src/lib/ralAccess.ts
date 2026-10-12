@@ -7,6 +7,7 @@
  */
 
 import type { RalUnlockedData } from "@/data/ral";
+import { apiBase } from "@/lib/api";
 
 const STORAGE_KEY = "dg-ral-access-v2";
 const TOKEN_KEY = "dg-ral-token-v2";
@@ -56,12 +57,6 @@ function retryAfterMinutes(
       : Number(res.headers.get("retry-after"));
   if (!Number.isFinite(seconds) || seconds <= 0) return undefined;
   return Math.max(1, Math.ceil(seconds / 60));
-}
-
-function apiBase(): string | null {
-  const raw = import.meta.env.VITE_RAL_API_URL as string | undefined;
-  if (!raw?.trim()) return null;
-  return raw.replace(/\/$/, "");
 }
 
 export function isRalApiConfigured(): boolean {

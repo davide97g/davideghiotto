@@ -22,6 +22,7 @@ Health: `GET http://localhost:8787/health`
 | `POST` | `/v1/ral/verify` | `{ email, code }` | `{ token, access }` (`access.expiresAt`) |
 | `GET` | `/v1/ral/session` | `Authorization: Bearer <token>` | session info (401 if expired) |
 | `GET` | `/v1/ral/data` | `Authorization: Bearer <token>` | RAL amounts (auth + unexpired unlock) |
+| `GET` | `/v1/youtube` | — | channel snapshot for the portfolio (503 until the first sync) |
 
 Verified unlocks expire after `SESSION_TTL_SECONDS` (default **1 hour**). Past that, `/data` and `/session` return 401, the unlock row is deleted, and the portfolio clears local state so figures disappear without a full reload. A background timer on the server sweeps expired unlock rows every minute.
 
@@ -70,6 +71,21 @@ Checklist when standing it up again elsewhere:
 5. Set portfolio `VITE_RAL_API_URL=https://ral-api.davideghiotto.it` and rebuild
 
 `deploy/ral-gate.service` is the bare-systemd alternative, kept for a non-Docker host.
+
+## YouTube sync
+
+The portfolio's channel section (subscriber and video counts, latest uploads) is served from
+here, because the browser cannot read YouTube directly. `src/youtube.ts` syncs on boot and every
+`YOUTUBE_SYNC_MINUTES` (default **15**, `0` turns it off), keeping the snapshot in memory:
+
+- **Videos** — the channel RSS feed, latest 15. No key needed.
+- **Counts** — the YouTube Data API (`channels?part=statistics`, 1 quota unit per call) when
+  `YOUTUBE_API_KEY` is set; otherwise the public `/about?hl=en` page, read off its JSON. The page
+  route needs no key but is scraping — set the key if it ever starts returning `null`s.
+
+Each source keeps its last good value when a refresh fails, and the site merges the response over
+its own static copy, so a failure here only costs freshness. `GET /v1/youtube` sends
+`cache-control: public, max-age=300`.
 
 ## Rate limits
 

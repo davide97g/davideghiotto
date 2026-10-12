@@ -1,7 +1,10 @@
 /**
- * Regenerates the `videos` array in src/data/youtube.ts from the channel RSS feed.
- * Run with `npm run fetch:youtube`. Channel meta (subscribers, videoCount) is not
- * in the feed and stays hand-maintained.
+ * Regenerates the static YouTube copy in src/data/youtube.ts: the `videos` array
+ * from the channel RSS feed, and `subscribers` / `videoCount` from the public
+ * channel about page (they are not in the feed). Run with `npm run fetch:youtube`.
+ *
+ * This is the fallback the bundle ships. The live numbers come from the backend
+ * (GET /v1/youtube in services/ral-gate), which runs the same parse every 15 min.
  */
 import { readFile, writeFile } from "node:fs/promises";
 
@@ -31,9 +34,28 @@ const videos = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(([, entry]) 
 
 if (!videos.length) throw new Error("No entries found in the feed");
 
+// Counts: anchored on the JSON key, since the page also ships i18n templates
+// such as "case1":"1 video" that a bare match would take for the count.
+const page = await fetch(`https://www.youtube.com/channel/${channelId}/about?hl=en&gl=US`, {
+  headers: { "accept-language": "en-US,en", cookie: "SOCS=CAI" },
+}).then((r) => (r.ok ? r.text() : ""));
+const count = (label) => {
+  const m = page.match(new RegExp(`(?:"content"|CountText"):"([\\d.,]+) ${label}s?"`));
+  return m ? Number(m[1].replace(/[.,]/g, "")) : null;
+};
+const subscribers = count("subscriber");
+const videoCount = count("video");
+
 const block = `export const videos: Video[] = ${JSON.stringify(videos, null, 2)};\n`;
-const next = source.replace(/export const videos: Video\[\] = \[[\s\S]*?\n\];\n/, block);
+let next = source.replace(/export const videos: Video\[\] = \[[\s\S]*?\n\];\n/, block);
 if (next === source) throw new Error("Could not locate the videos array to replace");
 
+// Abbreviated counts ("1.2K") are left alone rather than guessed at.
+if (subscribers !== null) next = next.replace(/subscribers: \d+,/, `subscribers: ${subscribers},`);
+if (videoCount !== null) next = next.replace(/videoCount: \d+,/, `videoCount: ${videoCount},`);
+
 await writeFile(TARGET, next);
-console.log(`Wrote ${videos.length} videos to src/data/youtube.ts`);
+console.log(
+  `Wrote ${videos.length} videos to src/data/youtube.ts` +
+    ` (subscribers ${subscribers ?? "unchanged"}, videos ${videoCount ?? "unchanged"})`
+);

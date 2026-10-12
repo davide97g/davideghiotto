@@ -45,6 +45,12 @@ export const config = {
   otpLength: Number(process.env.OTP_LENGTH ?? 6),
   /** How long a verified unlock can fetch RAL data before it expires. */
   sessionTtlSeconds: Number(process.env.SESSION_TTL_SECONDS ?? 3600),
+  /** Channel the portfolio shows, served at GET /v1/youtube. */
+  youtubeChannelId: process.env.YOUTUBE_CHANNEL_ID?.trim() || "UCp-6Cv5ksm2mY-xLJqvLVKw",
+  /** Data API key for exact counts. Unset → counts are read off the public channel page. */
+  youtubeApiKey: process.env.YOUTUBE_API_KEY?.trim() || "",
+  /** Refresh interval for the YouTube snapshot. 0 turns the sync off. */
+  youtubeSyncMinutes: Number(process.env.YOUTUBE_SYNC_MINUTES ?? 15),
   isDev: (process.env.NODE_ENV ?? "development") !== "production",
 };
 

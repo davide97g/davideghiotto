@@ -2,16 +2,17 @@ import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
 import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
-import { channel, thumbnailUrl, videos, watchUrl } from "@/data/youtube";
+import { channel, thumbnailUrl, watchUrl } from "@/data/youtube";
 import { trackEvent, trackOutbound } from "@/lib/analytics";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { useChannelData } from "@/lib/youtubeLive";
 import { ArrowUpRight, Youtube } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { HoloButton } from "@/components/ui/holo-button";
 import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
 import { StickerCard } from "@/components/ui/sticker-card";
 
-const FEATURED = videos.slice(0, 8);
+const FEATURED_COUNT = 8;
 
 const formatDate = (iso: string, lang: string) =>
   new Date(iso).toLocaleDateString(lang === "it" ? "it-IT" : "en-GB", {
@@ -24,6 +25,22 @@ export default function ChannelSection() {
   const { lang, t } = useLanguage();
   const pin = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLUListElement>(null);
+  // Static copy first, then the backend snapshot once it lands (every 15 min).
+  const live = useChannelData();
+  const featured = live.videos.slice(0, FEATURED_COUNT);
+  const featuredKey = featured.map((v) => v.id).join();
+
+  // New uploads change card titles and so the track width the pin was measured
+  // against. Re-measure after the swap, like Index does after a language change.
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const id = window.setTimeout(() => ScrollTrigger.refresh(), 120);
+    return () => window.clearTimeout(id);
+  }, [featuredKey]);
 
   // Desktop: the gallery is pinned and dragged sideways by vertical scroll.
   // Mobile and reduced-motion get a plain swipeable overflow list instead.
@@ -111,13 +128,13 @@ export default function ChannelSection() {
           <div className="stat bg-background p-6">
             <dt className="hud mb-3">{t(ui.channel.stats.subscribers)}</dt>
             <dd className="font-display text-4xl font-bold tracking-tight">
-              {channel.subscribers}
+              {live.subscribers}
             </dd>
           </div>
           <div className="stat bg-background p-6">
             <dt className="hud mb-3">{t(ui.channel.stats.videos)}</dt>
             <dd className="font-display text-4xl font-bold tracking-tight">
-              {channel.videoCount}
+              {live.videoCount}
             </dd>
           </div>
           <div className="stat col-span-2 bg-background p-6 md:col-span-1">
@@ -139,7 +156,7 @@ export default function ChannelSection() {
           ref={track}
           className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 md:px-10 lg:overflow-visible lg:pb-0"
         >
-          {FEATURED.map((video, i) => (
+          {featured.map((video, i) => (
             <li
               key={video.id}
               className="w-[78vw] shrink-0 snap-start sm:w-[54vw] lg:w-[26vw]"

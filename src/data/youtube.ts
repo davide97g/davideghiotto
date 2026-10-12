@@ -1,9 +1,11 @@
 /**
- * YouTube channel data.
+ * YouTube channel data — the static fallback.
  *
- * Static on purpose: the channel RSS feed sends no CORS headers, so it cannot be
- * fetched from the browser. Regenerate with `npm run fetch:youtube`
- * (reads https://www.youtube.com/feeds/videos.xml?channel_id=<CHANNEL_ID>).
+ * The channel RSS feed sends no CORS headers, so the browser cannot read it.
+ * The live copy comes from the backend instead (GET /v1/youtube, refreshed
+ * every 15 min, read through `useChannelData` in `src/lib/youtubeLive.ts`);
+ * this file is what renders first and what stays on screen if that call fails.
+ * Regenerate it with `npm run fetch:youtube` (RSS feed + channel about page).
  */
 
 export interface Video {
@@ -16,8 +18,8 @@ export const channel = {
   id: "UCp-6Cv5ksm2mY-xLJqvLVKw",
   handle: "@davideghi",
   url: "https://www.youtube.com/channel/UCp-6Cv5ksm2mY-xLJqvLVKw",
-  subscribers: 180,
-  videoCount: 37,
+  subscribers: 212,
+  videoCount: 52,
 };
 
 export const thumbnailUrl = (id: string, quality: "hq" | "maxres" = "hq") =>
@@ -28,78 +30,78 @@ export const watchUrl = (id: string) => `https://www.youtube.com/watch?v=${id}`;
 /** Latest videos, newest first. */
 export const videos: Video[] = [
   {
-    "id": "tfHkM5Bk5e0",
-    "title": "stop reading code",
-    "publishedAt": "2026-08-01"
+    "id": "ODXsaA_UhxA",
+    "title": "Lego 2.0: Claude Code genera le istruzioni in 3d per la mia tastiera custom",
+    "publishedAt": "2026-10-12"
   },
   {
-    "id": "_dAk4Ww2RuY",
-    "title": "Ho Ricreato Pokémon Go per un Evento Aziendale con AI generativa!",
-    "publishedAt": "2026-07-30"
+    "id": "r_bNd7V3wYs",
+    "title": "Fino a ieri ero una breadboard. Adesso parlo. ⌨️🔊",
+    "publishedAt": "2026-10-10"
   },
   {
-    "id": "nbWt8rLpLak",
-    "title": "Project Fortitudex: Team building 2.0",
-    "publishedAt": "2026-07-28"
+    "id": "lLebkmYWYPc",
+    "title": "\"Sorry, Claude can't do this\" — so Claude Code built it in 7:40 for $3.72",
+    "publishedAt": "2026-10-09"
   },
   {
-    "id": "pMzN-o7wNlQ",
-    "title": "Claude Opus 5: Il Profeta x Il Clone",
-    "publishedAt": "2026-07-24"
+    "id": "T2EEUZtG5Fk",
+    "title": "Il corriere lancia il pacco, ma dentro c'è la tua tastiera custom 📦⌨️",
+    "publishedAt": "2026-10-09"
   },
   {
-    "id": "t0wFRl-Re5g",
-    "title": "Profetico: Claude Opus 5",
-    "publishedAt": "2026-07-22"
+    "id": "kGj5I7xX7cw",
+    "title": "keybordy MP: full custom macropad that listens | Teaser",
+    "publishedAt": "2026-10-08"
   },
   {
-    "id": "9E1Y0Ry7E3s",
-    "title": "Sharp \"Mega Saas\": AI Maxxing SOL + FABLE + GROK 4.5 + KIMI K3 + Gemini 3.6",
-    "publishedAt": "2026-07-22"
+    "id": "2fRQfnD6epE",
+    "title": "keybordy mp: building a macropad that listens",
+    "publishedAt": "2026-10-08"
   },
   {
-    "id": "3EoE9hhYDwM",
-    "title": "token saving maxxing",
-    "publishedAt": "2026-07-22"
+    "id": "4dFPQwh95_o",
+    "title": "Custom Keyboard con ESP32: Saldatura in live + Simulatore Hardware",
+    "publishedAt": "2026-10-07"
   },
   {
-    "id": "qYqGsOKy40w",
-    "title": "Fable+Sol = Sharp. Rimpiazzo Slack + Notion + Excalidraw (claude & codex)",
-    "publishedAt": "2026-07-16"
+    "id": "6N5R-YSJrG4",
+    "title": "Autocratico: la burocrazia semplificata dall'AI",
+    "publishedAt": "2026-10-03"
   },
   {
-    "id": "i5Yqx-ZIwjQ",
-    "title": "Guida (semplicissima) per iniziare a sviluppare con l'AI",
-    "publishedAt": "2026-07-13"
+    "id": "G0JiXB4-XiA",
+    "title": "HOMELAB da ZERO: NAS + Mini PC Ryzen 5 7640HS | Server, Docker e AI in casa [LIVE]",
+    "publishedAt": "2026-10-02"
   },
   {
-    "id": "LIvW0-c-kUI",
-    "title": "Costruiamo un Personal Knowledge System con Fable (ultime ore 🚨)",
-    "publishedAt": "2026-07-08"
+    "id": "iwr_Yv30m2g",
+    "title": "riddle: a Tom Riddle diary for the reMarkable",
+    "publishedAt": "2026-09-28"
   },
   {
-    "id": "u5c2djqwOPU",
-    "title": "Live 3D Game Fable 5: Qualcosa non va... #000",
-    "publishedAt": "2026-07-05"
+    "id": "bHsGNG2BZPE",
+    "title": "Tom Riddle Diary: reMarkable + AI",
+    "publishedAt": "2026-09-26"
   },
   {
-    "id": "6JAmrUIjDM0",
-    "title": "VPS + Dokploy con Claude Code: Addio Vercel & Supabase",
-    "publishedAt": "2026-07-04"
+    "id": "P9OFJRKhpRU",
+    "title": "Ho CREATO un Brick da 65€ con AI e una Stampante 3D (costa il 99% in meno)",
+    "publishedAt": "2026-09-23"
   },
   {
-    "id": "UwMhqq9Evxk",
-    "title": "Spingiamo Fable 5 al limite: creazione 3D + game dev LIVE",
-    "publishedAt": "2026-07-03"
+    "id": "6p0ZLsQtJHM",
+    "title": "Rinascimento Artificiale: come usare l'AI per migliorarsi",
+    "publishedAt": "2026-09-06"
   },
   {
-    "id": "LdvKveiykjg",
-    "title": "Claude Art Online - Teaser (Fable 5 x Blender)",
-    "publishedAt": "2026-07-02"
+    "id": "jJuME3i6QAI",
+    "title": "Rinascimento Artificiale: un nuovo approccio",
+    "publishedAt": "2026-09-05"
   },
   {
-    "id": "-XmrA0TF__U",
-    "title": "Come pubblicare la tua web app FREE + FAST + EASY",
-    "publishedAt": "2026-07-01"
+    "id": "gW0i5VYqeFQ",
+    "title": "Da grandi poteri derivano troppi progetti: effetti di 1 anno di lavoro con l'AI",
+    "publishedAt": "2026-08-14"
   }
 ];

@@ -140,9 +140,16 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   their extent and writes straight-alpha PNG. Resize and AVIF-encode the result with `sips`
   (`sips -Z 1600 …`, then `sips -s format avif -s formatOptions 60 …`), which also goes through
   ImageIO. Verify alpha survived with `sips -g hasAlpha out.avif`.
-- `src/data/youtube.ts` holds channel meta and the latest videos. It is static because the YouTube
-  RSS feed sends no CORS headers and cannot be fetched from the browser; refresh it with
-  `npm run fetch:youtube` (`scripts/fetch-youtube.mjs`).
+- **YouTube data is live, with a static fallback.** The browser cannot read the channel itself (the
+  RSS feed sends no CORS headers, and the counts are not in it), so `services/ral-gate` refreshes a
+  snapshot every 15 min (`src/youtube.ts`: RSS for the 15 latest videos, the Data API for counts
+  when `YOUTUBE_API_KEY` is set, the public about page otherwise) and serves it at
+  `GET /v1/youtube`. `ChannelSection` reads it through `useChannelData()` in
+  `src/lib/youtubeLive.ts`, which polls on the same beat and merges the response field by field
+  over `src/data/youtube.ts` — the copy the bundle ships, renders first and keeps on screen if the
+  call fails. Refresh that copy with `npm run fetch:youtube` (`scripts/fetch-youtube.mjs`, same
+  feed + about page) so a cold load is not stale. Both the RAL gate and this call take their base
+  URL from `VITE_RAL_API_URL` via `src/lib/api.ts`.
 - Sections are in `src/components/portfolio/` and are composed in fixed order by `Index.tsx`:
   `HeroSection` → `ChannelSection` (01) → `WorkSection` (02, featured project + numbered list) →
   `JournalSection` (detached) → `StackSection` (03) → `PathSection` (04) → `ProfileSection` (05) →

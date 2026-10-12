@@ -5,6 +5,7 @@ import { config } from "./config.js";
 import { clearExpiredUnlocks, pruneRequestLog } from "./db.js";
 import { loadDisposableDomains, policyListSizes } from "./emailPolicy.js";
 import { registerRoutes } from "./routes.js";
+import { startYoutubeSync } from "./youtube.js";
 
 loadDisposableDomains();
 
@@ -45,6 +46,9 @@ const pruneTimer = setInterval(() => {
   if (n > 0) app.log.info({ pruned: n }, "request log pruned");
 }, PRUNE_MS);
 pruneTimer.unref?.();
+
+// The portfolio's channel numbers and latest uploads, refreshed on a timer.
+startYoutubeSync(app.log);
 
 try {
   await app.listen({ port: config.port, host: config.host });
