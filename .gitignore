@@ -39,3 +39,6 @@ services/ral-gate/data/*.sqlite-*
 *.njsproj
 *.sln
 *.sw?
+
+# Poster masters (20 MB PNGs) — the site ships the AVIF/JPG encodes in public/
+drafts/covers/*.png

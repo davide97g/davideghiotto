@@ -17,6 +17,7 @@ const PLATFORM_IDS: JournalPlatformId[] = ["linkedin", "youtube", "github", "sit
 describe("journal section", () => {
   it("is detached, between work and stack", () => {
     expect([...sectionOrder]).toEqual([
+      "covers",
       "hero",
       "channel",
       "work",

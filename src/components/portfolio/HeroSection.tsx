@@ -1,3 +1,4 @@
+import Magnetic from "@/components/motion/Magnetic";
 import SplitReveal from "@/components/motion/SplitReveal";
 import HeroPortrait from "@/components/portfolio/HeroPortrait";
 import { useLanguage } from "@/context/LanguageContext";
@@ -28,27 +29,33 @@ export default function HeroSection() {
       mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(".hero-line-inner, .hero-fade, .hero-portrait", {
           yPercent: 0,
+          y: 0,
           opacity: 1,
           scale: 1,
         });
       });
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
+        // The hero is the second section now, behind the manifesto, so its
+        // intro waits for the reader to arrive instead of playing on load.
+        const intro = gsap.timeline({
+          defaults: { ease: "expo.out" },
+          scrollTrigger: { trigger: root, start: "top 70%", once: true },
+        });
 
         intro
-          .from(".hero-eyebrow", { opacity: 0, duration: 0.8 })
+          .from(".hero-eyebrow", { opacity: 0, duration: 0.6 })
           .from(
             ".hero-line-inner",
-            { yPercent: 118, duration: 1.25, stagger: 0.09 },
-            0.1
+            { yPercent: 118, rotation: 4, duration: 1, stagger: 0.07 },
+            0.05
           )
-          .from(".hero-fade", { opacity: 0, y: 18, duration: 0.9, stagger: 0.08 }, 0.75);
+          .from(".hero-fade", { opacity: 0, y: 18, duration: 0.7, stagger: 0.06 }, 0.55);
 
         intro.fromTo(
           ".hero-portrait",
-          { opacity: 0, scale: 1.06, yPercent: 4 },
-          { opacity: 1, scale: 1, yPercent: 0, duration: 1.6, ease: "expo.out" },
+          { opacity: 0, scale: 1.06, y: 40 },
+          { opacity: 1, scale: 1, y: 0, duration: 1.3, ease: "expo.out" },
           0
         );
 
@@ -78,6 +85,29 @@ export default function HeroSection() {
         });
 
         return () => intro.kill();
+      });
+
+      // Pointer depth: the portrait and the type drift apart under the cursor,
+      // the portrait further, so the hero reads as two planes. x only on the
+      // type, since its y belongs to the scroll drift above.
+      mm.add("(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
+        const back = root.querySelector(".hero-portrait-inner");
+        const front = root.querySelector(".hero-drift");
+        if (!back || !front) return;
+
+        const bx = gsap.quickTo(back, "x", { duration: 1.1, ease: "power3" });
+        const by = gsap.quickTo(back, "y", { duration: 1.1, ease: "power3" });
+        const fx = gsap.quickTo(front, "x", { duration: 1.1, ease: "power3" });
+
+        const move = (e: PointerEvent) => {
+          const nx = e.clientX / window.innerWidth - 0.5;
+          const ny = e.clientY / window.innerHeight - 0.5;
+          bx(nx * -28);
+          by(ny * -16);
+          fx(nx * 10);
+        };
+        root.addEventListener("pointermove", move);
+        return () => root.removeEventListener("pointermove", move);
       });
 
       return () => mm.revert();
@@ -110,21 +140,23 @@ export default function HeroSection() {
             stays inside the left column instead of sitting on top of him. */}
         <div className="mt-12 grid gap-10 border-t border-border pt-9 md:grid-cols-[1.3fr_1fr] md:items-start lg:mt-9 lg:max-w-[56%] lg:grid-cols-1 lg:gap-7 lg:pt-7">
           <SplitReveal
-            immediate
-            delay={0.85}
+            delay={0.35}
             text={t(ui.hero.lead)}
             className="hero-lead max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl"
           />
 
           <div className="hero-fade flex flex-wrap gap-3">
-            <HoloButton asChild variant="primary" size="lg">
-              <a
-                href="#work"
-                onClick={() => trackEvent("cta_click", { cta_id: "work" })}
-              >
-                {t(ui.hero.ctaPrimary)} <ArrowDown size={14} />
-              </a>
-            </HoloButton>
+            <Magnetic>
+              <HoloButton asChild variant="primary" size="lg">
+                <a
+                  href="#work"
+                  onClick={() => trackEvent("cta_click", { cta_id: "work" })}
+                >
+                  {t(ui.hero.ctaPrimary)} <ArrowDown size={14} />
+                </a>
+              </HoloButton>
+            </Magnetic>
+            <Magnetic>
             <HoloButton
               asChild
               variant="outline"
@@ -142,6 +174,7 @@ export default function HeroSection() {
                 <Play size={13} /> {t(ui.hero.ctaSecondary)}
               </a>
             </HoloButton>
+            </Magnetic>
             <Link
               to="/ral"
               className="btn-ral group"

@@ -12,6 +12,9 @@ export default function HeroPortrait() {
       className="hero-portrait pointer-events-none relative mx-auto w-[72%] max-w-xs lg:absolute lg:bottom-0 lg:right-[-2vw] lg:mx-0 lg:w-[46vw] lg:max-w-[700px]"
       aria-hidden={false}
     >
+      {/* Inner plane for the pointer parallax: the outer element already
+          carries the intro and the scroll drift. */}
+      <div className="hero-portrait-inner relative">
       {/* Lime rim glow, so the cut-out edge reads against the near-black page. */}
       <div
         aria-hidden
@@ -28,6 +31,8 @@ export default function HeroPortrait() {
           src="/davide-900.png"
           width={1600}
           height={1376}
+          loading="lazy"
+          decoding="async"
           alt="Davide Ghiotto, wearing headphones, hands steepled"
           className="relative w-full select-none [mask-image:linear-gradient(to_top,transparent_0%,black_16%)] grayscale-[0.3] lg:brightness-[0.72] lg:contrast-[1.05] lg:grayscale-[0.8]"
         />
@@ -39,6 +44,7 @@ export default function HeroPortrait() {
         aria-hidden
         className="absolute inset-0 hidden bg-gradient-to-r from-background via-background/45 to-transparent lg:block"
       />
+      </div>
     </div>
   );
 }

@@ -509,6 +509,160 @@
     overflow: hidden;
   }
 
+  /* ── Covers: the manifesto interlude ─────────────────────────── */
+
+  /* The strike is drawn left to right by GSAP on scaleX, so its tilt lives in
+     the separate rotate property where the tween cannot clobber it. */
+  .covers-strike {
+    position: absolute;
+    left: -0.06em;
+    right: -0.06em;
+    top: 52%;
+    height: 0.09em;
+    border-radius: 999px;
+    background: var(--foreground);
+    transform-origin: left center;
+    rotate: -3deg;
+    pointer-events: none;
+  }
+
+  /* A duck sticker slapped over the struck word: lime fill, die-cut edge in the
+     page colour. Sized in em so it follows the display scale. */
+  .covers-stamp {
+    position: absolute;
+    left: 52%;
+    top: 40%;
+    padding: 0.26em 0.5em 0.3em;
+    border: var(--sticker-border) solid var(--background);
+    border-radius: calc(var(--radius) * 1.333);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    font-family: var(--font-display);
+    font-size: 0.48em;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 18px 40px -12px color-mix(in oklab, var(--primary) 55%, transparent);
+    transform: rotate(-8deg);
+    pointer-events: none;
+  }
+
+  .covers-shard {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.2em;
+    height: 0.2em;
+    margin: -0.1em;
+    border-radius: 2px;
+    background: var(--primary);
+    opacity: 0;
+  }
+
+  .crop-mark {
+    position: absolute;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-left: 1px solid var(--muted-foreground);
+    border-top: 1px solid var(--muted-foreground);
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .cover-card {
+    cursor: zoom-in;
+    border-radius: calc(var(--radius) * 1.333);
+    outline: none;
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Hovering the back cover pulls it out of the stack. */
+  .cover-card:hover,
+  .cover-card:focus-visible {
+    z-index: 5;
+  }
+
+  .cover-lift {
+    box-shadow: 0 30px 60px -20px oklch(0 0 0 / 0.7);
+    transition: transform 0.5s var(--ease-duck), box-shadow 0.5s var(--ease-duck);
+  }
+
+  .cover-card:hover .cover-lift,
+  .cover-card:focus-visible .cover-lift {
+    transform: translateY(-0.5rem) scale(1.025);
+    box-shadow: 0 40px 80px -24px oklch(0 0 0 / 0.8), var(--glow-primary);
+  }
+
+  .cover-card:focus-visible .cover-lift {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+
+  .cover-shade {
+    position: absolute;
+    inset: 0;
+    background: var(--background);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease-duck);
+  }
+
+  /* GSAP writes the resting dim inline, so the hover has to outrank it. */
+  .cover-card:hover .cover-shade,
+  .cover-card:focus-visible .cover-shade {
+    opacity: 0 !important;
+  }
+
+  /* Oversized so the pointer can drag the hotspot around without an edge. */
+  .cover-glare {
+    position: absolute;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, oklch(1 0 0 / 0.32), transparent 32%);
+    mix-blend-mode: overlay;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease-duck);
+  }
+
+  .cover-card:hover .cover-glare {
+    opacity: 1;
+  }
+
+  .cover-open {
+    position: absolute;
+    right: 0.875rem;
+    top: 0.875rem;
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--background) 70%, transparent);
+    color: var(--foreground);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.3s var(--ease-duck), transform 0.4s var(--ease-squash);
+  }
+
+  .cover-card:hover .cover-open,
+  .cover-card:focus-visible .cover-open {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @media (hover: none) {
+    .cover-open {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   /* ── Surfaces ──────────────────────────────────────────────── */
 
   /* The panel is `<StickerCard glass>` now — same translucent surface over the
@@ -1085,6 +1239,12 @@
     font-weight: 800;
     line-height: 0.9;
     letter-spacing: -0.03em;
+  }
+
+  /* The manifesto headline lives inside a pinned viewport, so it is capped by
+     height as well as width: the Italian runs to four lines. */
+  .covers-title {
+    font-size: clamp(2.75rem, min(8vw, 10.5svh), 7rem);
   }
 
   .display-lg {

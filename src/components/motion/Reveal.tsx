@@ -56,7 +56,7 @@ export default function Reveal({
           {
             y: 0,
             opacity: 1,
-            duration: 1,
+            duration: 0.85,
             delay,
             stagger,
             ease: "power3.out",

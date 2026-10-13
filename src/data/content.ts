@@ -125,6 +125,25 @@ export const ui = {
     ctaSecondary: { en: "Watch the builds", it: "Guarda le live" },
     scrollCue: { en: "Scroll", it: "Scorri" },
   },
+  covers: {
+    label: { en: "Manifesto", it: "Manifesto" },
+    /** The headline before the struck word, one masked line per entry. */
+    lines: {
+      en: ["Ship it", "before it's"],
+      it: ["Rilascialo", "prima che sia"],
+    },
+    /** Crossed out on scroll, then stamped over with `stamp`. */
+    struck: { en: "perfect.", it: "perfetto." },
+    stamp: { en: "Shipped.", it: "Fatto." },
+    rules: {
+      en: ["Perfect never shows up.", "Ship today, fix tomorrow.", "Done beats perfect. Always."],
+      it: ["Il perfetto non arriva mai.", "Rilascia oggi, sistema domani.", "Fatto batte perfetto. Sempre."],
+    },
+    cover: { en: "Cover", it: "Copertina" },
+    issue: { en: "Issue 10 · 2026", it: "Numero 10 · 2026" },
+    hint: { en: "Tap a cover to open it", it: "Tocca una copertina per aprirla" },
+    close: { en: "Close", it: "Chiudi" },
+  },
   channel: {
     label: { en: "Channel", it: "Canale" },
     title: {
@@ -456,6 +475,35 @@ export const marqueeTerms = [
  * landing page at sharp.davideghiotto.it; the mark is the project's own
  * favicon (a violet `#` on #0e0e11), kept in public/sharp.svg.
  */
+/**
+ * The two poster covers in the manifesto interlude. `lang` is the language the
+ * poster itself is written in: the one matching the reader lands on top.
+ * Encoded from the masters in `drafts/covers/` (frame cropped, 48px a side) to
+ * `public/cover-<id>-{640,1200}.avif` plus a `-900.jpg` fallback.
+ */
+export const covers = [
+  {
+    id: "ship-it",
+    lang: "it" as LangId,
+    src: "/cover-ship-it",
+    title: { en: "Ship it before it's perfect", it: "Rilascialo prima che sia perfetto" },
+    alt: {
+      en: "Black-and-white poster: Davide on a wooden chair, pen in hand, under hand-lettered lime type reading 'Rilascialo prima che sia perfetto. Il perfetto non arriva mai.'",
+      it: "Poster in bianco e nero: Davide seduto su una sedia di legno, penna in mano, sotto la scritta lime 'Rilascialo prima che sia perfetto. Il perfetto non arriva mai.'",
+    },
+  },
+  {
+    id: "commit-en",
+    lang: "en" as LangId,
+    src: "/cover-commit-en",
+    title: { en: "The Daily Commit", it: "The Daily Commit" },
+    alt: {
+      en: "Magazine cover 'The Daily Commit': Davide holding a newspaper headlined 'Shipped.' while pages fly around him.",
+      it: "Copertina di rivista 'The Daily Commit': Davide regge un giornale con il titolo 'Shipped.' mentre le pagine volano intorno a lui.",
+    },
+  },
+];
+
 export const featuredProject = {
   name: "sharp",
   version: "v0.3.0",
@@ -704,6 +752,7 @@ export const experiences: Experience[] = [
  * why the numbered sections still read 01 → 05.
  */
 export const sectionOrder = [
+  "covers",
   "hero",
   "channel",
   "work",

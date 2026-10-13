@@ -151,7 +151,7 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   feed + about page) so a cold load is not stale. Both the RAL gate and this call take their base
   URL from `VITE_RAL_API_URL` via `src/lib/api.ts`.
 - Sections are in `src/components/portfolio/` and are composed in fixed order by `Index.tsx`:
-  `HeroSection` → `ChannelSection` (01) → `WorkSection` (02, featured project + numbered list) →
+  `CoversSection` (detached, the page opener) → `HeroSection` → `ChannelSection` (01) → `WorkSection` (02, featured project + numbered list) →
   `JournalSection` (detached) → `StackSection` (03) → `PathSection` (04) → `ProfileSection` (05) →
   `Footer`, with `Marquee` strips between. Section numbering is hardcoded in each component;
   renumber if you reorder.
@@ -161,6 +161,26 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   the component does not draw ride in its `className`: `border-b border-border pb-6`. The dot scales
   on section hover, which is why **every section carries `group/section`** — drop that class and the
   marker simply goes static.
+- `CoversSection` is the manifesto and **opens the page**, ahead of the hero; it is unnumbered like
+  the journal (its marker is a `✳`).
+  It deals the two poster covers in `covers` (`src/data/content.ts`) like stickers while the
+  headline writes itself, then strikes the last word and slams a lime stamp over it. Act one (back
+  cover, first line, scroll cue) is a time-based intro played on load, since there is no scroll
+  before the first section; act two is scrubbed, pinned from the very top on desktop and over a
+  short range on phones. Its covers are not lazy-loaded, being the first paint. Because the hero is
+  second, its intro timeline waits on a `top 70%` ScrollTrigger and its lead is a scroll-triggered
+  `SplitReveal`, not an `immediate` one; the portrait intro moves `y`, not `yPercent`, which the
+  scroll drift owns. The stamp is
+  **not** scrubbed — it plays and reverses whole from `onUpdate`, since a scrubbed slam reads as a
+  slow zoom. The cover in the reader's language is dealt last and lands on top. The stage tilts
+  under a fine pointer and shears with `scrollSignal.velocity`; a card opens full-size in a
+  `StickerDialog` (Lenis is stopped while it is open). Posters ship as
+  `public/cover-<id>-{640,1200}.avif` + `-900.jpg`, cropped 48px a side to drop the black frame
+  baked into the masters; the 20 MB PNG masters live in `drafts/covers/` and are git-ignored.
+- `src/components/motion/Magnetic.tsx` pulls a child toward the pointer (fine pointer, motion
+  allowed). The transform sits on the wrapper, never on the duck button inside it. The hero CTAs
+  use it, and the hero portrait has an inner `.hero-portrait-inner` plane for pointer parallax,
+  because the outer element already owns the intro and the scroll drift.
 - `JournalSection` is the detached band: full-bleed on `bg-surface/45` between top and bottom rules,
   and deliberately **unnumbered** (its marker is a `◢` instead of an index) so the numbered sections
   still read 01 → 05. It lists `journalPosts` from `src/data/journal.ts` — each row linking to

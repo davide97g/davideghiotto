@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  covers,
   experiences,
   featuredProject,
   principles,
@@ -38,6 +39,7 @@ describe("localized content", () => {
   collect(
     {
       ui,
+      covers,
       summary,
       principles,
       projects,

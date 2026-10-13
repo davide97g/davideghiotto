@@ -1,6 +1,7 @@
 import Marquee from "@/components/motion/Marquee";
 import Nav from "@/components/Nav";
 import ChannelSection from "@/components/portfolio/ChannelSection";
+import CoversSection from "@/components/portfolio/CoversSection";
 import Footer from "@/components/portfolio/Footer";
 import HeroSection from "@/components/portfolio/HeroSection";
 import JournalSection from "@/components/portfolio/JournalSection";
@@ -42,8 +43,9 @@ export default function Index() {
       <ScrollRail />
 
       <main>
-        <HeroSection />
+        <CoversSection />
         <Marquee items={terms} className="marquee-invert" duration={40} />
+        <HeroSection />
         <ChannelSection />
         <WorkSection />
         <JournalSection />
