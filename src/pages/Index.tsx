@@ -10,7 +10,7 @@ import ProfileSection from "@/components/portfolio/ProfileSection";
 import StackSection from "@/components/portfolio/StackSection";
 import WorkSection from "@/components/portfolio/WorkSection";
 import ScrollRail from "@/components/ScrollRail";
-import ShaderBackdrop from "@/components/ShaderBackdrop";
+import PosterBackdrop from "@/components/PosterBackdrop";
 import { SocialRail } from "@/components/SocialLinks";
 import { useLanguage } from "@/context/LanguageContext";
 import { marqueeTerms } from "@/data/content";
@@ -36,7 +36,7 @@ export default function Index() {
   return (
     <div className="relative min-h-screen">
       <div className="grain" aria-hidden />
-      <ShaderBackdrop />
+      <PosterBackdrop />
       <Nav />
       {/* The two gutter rails: links on the left, scroll position on the right. */}
       <SocialRail />

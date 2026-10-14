@@ -287,6 +287,10 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
 - **No apostrophes in CSS comments.** Tailwind v4's parser treats `'` as a string delimiter even
   inside a comment; a stray one swallows the rules that follow and surfaces only as
   `Unterminated string` in a Vite stack trace.
+- **The home page backdrop is the manifesto poster, not the shader.** `src/components/PosterBackdrop.tsx`
+  pins `public/bg-poster-it-{1952.avif,1200.jpg}` (encoded from `drafts/covers/s1_it_b.png`, frame
+  cropped) full-screen with `object-cover` focused on the face, under a scrim that darkens toward the
+  bottom. The other pages keep the shader.
 - `src/components/ShaderBackdrop.tsx` is the fixed WebGL backdrop (OGL): flow-noise haze, a
   receding grid and a scanline shimmer, with scroll velocity smearing the grid. Its `base` and
   `accent` defaults are `--background` and `--primary` converted to sRGB 0-1 by hand, since a uniform
