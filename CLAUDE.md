@@ -290,7 +290,9 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
 - **The home page backdrop is the manifesto poster, not the shader.** `src/components/PosterBackdrop.tsx`
   pins `public/bg-poster-it-{1952.avif,1200.jpg}` (encoded from `drafts/covers/s1_it_b.png`, frame
   cropped) full-screen with `object-cover` focused on the face, under a scrim that darkens toward the
-  bottom. The other pages keep the shader.
+  bottom. The other pages keep the shader. It parallaxes on a scrubbed tween: a 160%-tall plane
+  drifts up 37.5% over the first 2400px of scroll, then holds. Do not spread the drift over the whole
+  page: the page is ~18000px long, which makes it too slow to read as motion.
 - `src/components/ShaderBackdrop.tsx` is the fixed WebGL backdrop (OGL): flow-noise haze, a
   receding grid and a scanline shimmer, with scroll velocity smearing the grid. Its `base` and
   `accent` defaults are `--background` and `--primary` converted to sRGB 0-1 by hand, since a uniform
