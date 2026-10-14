@@ -91,9 +91,9 @@ export default function Nav() {
         <button
           type="button"
           onClick={goHome}
-          className="hud whitespace-nowrap text-foreground"
+          className="hud flex items-center gap-2.5 whitespace-nowrap text-foreground"
         >
-          <span className="text-primary">◢</span>{" "}
+          <img src="/logo-mark.png" alt="" width={32} height={32} className="size-8" />
           <span className="hidden sm:inline">{bio.name}</span>
           <span className="sm:hidden">DG</span>
         </button>
