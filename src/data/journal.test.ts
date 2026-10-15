@@ -12,7 +12,7 @@ import {
 } from "./journal";
 
 const LANGS = ["en", "it"] as const;
-const PLATFORM_IDS: JournalPlatformId[] = ["linkedin", "youtube", "github", "site"];
+const PLATFORM_IDS: JournalPlatformId[] = ["linkedin", "youtube", "instagram", "github", "site"];
 
 describe("journal section", () => {
   it("is detached, between work and stack", () => {

@@ -173,6 +173,10 @@ const PLATFORM_FOCUS: Record<JournalPlatformId, Localized> = {
     en: "The same thinking, live and unedited",
     it: "Gli stessi ragionamenti, in diretta e senza tagli",
   },
+  instagram: {
+    en: "Reels from the bench: builds, prints and the macropad talking back",
+    it: "Reel dal banco: build, stampe e la macropad che risponde",
+  },
   github: {
     en: "Commits, prototypes and the code behind each note",
     it: "Commit, prototipi e il codice dietro ogni nota",

@@ -2,7 +2,7 @@ import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
 import FeaturedProject from "@/components/portfolio/FeaturedProject";
 import { useLanguage } from "@/context/LanguageContext";
-import { projects, ui, type Project } from "@/data/content";
+import { featuredProjects, projects, ui, type Project } from "@/data/content";
 import { trackOutbound } from "@/lib/analytics";
 import { ArrowUpRight, Github, Linkedin } from "lucide-react";
 import { HoloBadge } from "@/components/ui/holo-badge";
@@ -91,8 +91,10 @@ export default function WorkSection() {
         </Reveal>
       </div>
 
-      <div className="mt-16">
-        <FeaturedProject />
+      <div className="mt-16 flex flex-col gap-10">
+        {featuredProjects.map((project) => (
+          <FeaturedProject key={project.id} project={project} />
+        ))}
       </div>
 
       {/* Reveal has to stay the outer element: it needs a ref, and it

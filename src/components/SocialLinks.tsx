@@ -4,12 +4,13 @@ import { trackOutbound } from "@/lib/analytics";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { HoloButton } from "@/components/ui/holo-button";
-import { Github, Linkedin, Terminal, Youtube, type LucideIcon } from "lucide-react";
+import { Github, Instagram, Linkedin, Terminal, Youtube, type LucideIcon } from "lucide-react";
 import { useRef } from "react";
 
 const ICON: Record<SocialId, LucideIcon> = {
   linkedin: Linkedin,
   youtube: Youtube,
+  instagram: Instagram,
   github: Github,
   site: Terminal,
 };
@@ -105,6 +106,44 @@ export function SocialRail() {
   );
 }
 
+const instagram = socials.find((social) => social.id === "instagram");
+
+/**
+ * Instagram-style "Follow" badge: the platform gradient on one pill, so the
+ * account people are asked to follow reads at a glance. `small` is the inline
+ * size for a list row; the default matches the 44px touch row beside it.
+ */
+export function InstagramFollow({
+  source,
+  small = false,
+  handle = true,
+  className,
+}: {
+  /** Analytics prefix, as on `SocialRow`. */
+  source: string;
+  small?: boolean;
+  handle?: boolean;
+  className?: string;
+}) {
+  const { t } = useLanguage();
+  if (!instagram) return null;
+
+  return (
+    <a
+      href={instagram.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${t(ui.social.follow)} ${instagram.handle} — Instagram`}
+      onClick={() => trackOutbound(`${source}_instagram_follow`, instagram.url)}
+      className={cn("ig-follow", small && "ig-follow-sm", className)}
+    >
+      <Instagram size={small ? 13 : 16} aria-hidden />
+      {t(ui.social.follow)}
+      {handle && <span className="ig-follow-handle">{instagram.handle}</span>}
+    </a>
+  );
+}
+
 /**
  * The same links as a horizontal set, for the two places with no gutter to hang
  * the rail in: the bottom of the hero and the nav drawer. `labels` spells the
@@ -139,7 +178,7 @@ export function SocialRow({
             size={labels ? "default" : "icon"}
             /* h-11 both ways: the duck sizes land at 40px, and these are the
                touch-sized copies of the rail. */
-            className={cn("h-11 text-muted-foreground hover:text-primary", !labels && "w-11")}
+            className={cn("h-11 text-foreground/80 hover:text-primary", !labels && "w-11")}
           >
             <a
               href={social.url}

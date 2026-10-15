@@ -129,21 +129,30 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
 - `src/data/content.ts` holds `bio`, `ui` (all chrome strings), `summary`, `principles`,
   `marqueeTerms`, `featuredProject`, `projects`, `journalEntries`, `journalPlatforms`, `stackGroups`,
   `experiences`, and `sectionOrder`.
-- `featuredProject` is the pinned lead project, the one in active development (currently
-  **Autocratico**, the private register for Italian bureaucracy). Its copy, version and feature list
-  mirror the repo README and the landing page at autocratico.it, and its mark is that project's own
-  favicon, stored at `public/autocratico.svg`. `src/components/portfolio/FeaturedProject.tsx`
-  renders it and locally overrides `--primary` (and `--ring` / `--glow-primary`) with the entry's
-  `brand` colour, so accent utilities inside the card adopt the project's brand instead of the site
-  lime. That local-override trick is the pattern to follow for any future brand-colored block.
-  **sharp** held the slot until it stopped being self-hosted; it is hidden, not deleted — its entry
-  is in git history and `public/sharp.svg` is kept.
-- Two alpha cut-out portraits carry the page. `src/components/portfolio/HeroPortrait.tsx` is the
-  hero one: a normal block above the headline on mobile, absolutely positioned bleeding off the
-  bottom-right from `lg` up, where it is dimmed and desaturated behind the display type and carries
-  a left-to-right scrim so white and lime text stay legible over it (assets
-  `public/davide-{900,1600}.avif`, ~49 KB / ~166 KB, `public/davide-900.png` as the `<picture>`
-  fallback). `src/components/portfolio/JournalPortrait.tsx` is the pointing one inside the journal
+- `featuredProjects` are the projects in active development, each a full `FeaturedProject` card at
+  the top of Work, in render order: currently **Autocratico** (the private register for Italian
+  bureaucracy) and **keybordy MP** (the ESP32-S3 macropad that listens). Copy, specs and feature
+  lists mirror each project's README and landing page; each mark is the project's own favicon in
+  `public/` (`autocratico.svg`, `keybordy.svg`). The card locally overrides `--primary` (and
+  `--ring` / `--glow-primary`) with the entry's `brand` colour, so accent utilities inside it adopt
+  the project's brand instead of the site lime — the pattern for any future brand-colored block.
+  Under the pitch sits a media strip: the first of `trailers` as a YouTube tile (maxres thumbnail,
+  links out), then `shots` (`public/shot-<project>-*.avif` + `.jpg`, 1400 wide, 16:9 or 16:10),
+  then any further cuts as text links. Autocratico shots are the app screenshots from its landing
+  page; keybordy MP shots are frames of its CAD-rendered trailer. **sharp** held the first slot
+  until it stopped being self-hosted; it is hidden, not deleted — its entry is in git history and
+  `public/sharp.svg` is kept.
+- `src/components/portfolio/HeroPortrait.tsx` is the hero poster: slide `01-intro` ("Hi, I'm
+  Davide") of the Instagram presentation carousel in Contexto, shown whole — its own type included —
+  as a tilted sticker card (`public/hero-intro-{640,1120}.avif` + `hero-intro-800.jpg`). A normal
+  block above the headline on mobile; from `lg` up it is vertically centred in the right column,
+  clear of the display type, and neither dimmed nor overlapped. Two things keep it that way: the
+  placement sits on a wrapper, not on `.hero-portrait`, because GSAP owns that element's transform
+  and resets CSS `translate` (a `-translate-y` centring was silently dropped); and the `h1` reserves
+  the card's width as right padding, so the long Italian line wraps instead of running under the
+  card. The `max-[1439.98px]` / `min-[1440px]` pair on that padding is deliberate: a bare
+  `min-[1440px]:` loses to `lg:` in Tailwind's ordering. The only alpha cut-out left is
+  `src/components/portfolio/JournalPortrait.tsx`, the pointing one inside the journal
   band — its raised hand sits top-right in the frame, which is why the figure is placed left of the
   copy and reads as pointing at the notes; it also gets a scrubbed vertical parallax (assets
   `public/davide-point-{900,1600}.avif`, ~42 KB / ~118 KB, plus `davide-point-900.png`).
@@ -247,13 +256,15 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   `shot-calorico.avif` is three `crop=450:1000:225:0,scale=327:726` panels on `0xdef0c4`.
 - The nav switches to the burger menu below `lg` (not `md`): six labels plus the name and language
   toggle do not fit a 768 px bar.
-- **`socials` in `src/data/content.ts` is the one link set** — LinkedIn, YouTube, GitHub, dacoder.it,
+- **`socials` in `src/data/content.ts` is the one link set** — LinkedIn, YouTube, Instagram, GitHub, dacoder.it,
   in render order. `journalPlatforms` maps over it and only adds the per-platform `focus` copy, so a
   changed handle is a one-line change. `src/components/SocialLinks.tsx` renders it two ways:
   `SocialRail`, the fixed left-gutter rail that mirrors `ScrollRail` (vertical `ui.social.label`,
   hairline stems, 28px ghost buttons, the handle appearing in a `.social-flyout` on hover or focus),
   and `SocialRow`, the touch-sized horizontal set — icon-only on the hero scroll-cue line, `labels`
-  on in the nav drawer.
+  on in the nav drawer. Instagram (`@ai_quack`) also gets `InstagramFollow`, the one element that wears the
+  platform gradient (`.ig-follow`): a "Follow" pill beside the hero links, at every width, and a small
+  inert copy on its journal rail row, which is already the link.
 - **The rail's `min-[1440px]` breakpoint is measured, not chosen.** The content column is
   `--content-max-width: 82rem` (1312 px), so under ~1440 px there is no gutter and the rail lands on
   the display type — it did, at `lg`. `SocialRow` in the hero carries the same links below that

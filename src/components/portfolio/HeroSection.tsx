@@ -11,7 +11,7 @@ import { ArrowDown, Play, Sparkles } from "lucide-react";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { HoloButton } from "@/components/ui/holo-button";
-import { SocialRow } from "@/components/SocialLinks";
+import { InstagramFollow, SocialRow } from "@/components/SocialLinks";
 
 export default function HeroSection() {
   const { t } = useLanguage();
@@ -59,10 +59,11 @@ export default function HeroSection() {
           0
         );
 
-        // The headline drifts up and dims as the next section arrives.
+        // The headline drifts up as the next section arrives. It used to dim
+        // to 15% as well, which left the CTAs and the lead unreadable over the
+        // portrait for the whole second half of the hero.
         gsap.to(".hero-drift", {
           yPercent: -14,
-          opacity: 0.15,
           ease: "none",
           scrollTrigger: {
             trigger: root,
@@ -126,7 +127,9 @@ export default function HeroSection() {
       <div className="section-container hero-drift relative z-10 w-full">
         <p className="hero-eyebrow hud mb-8 lg:mb-7">{t(ui.hero.eyebrow)}</p>
 
-        <h1 className="display-xl uppercase">
+        {/* From lg up the right of the headline is the poster card's: long lines
+            (the Italian one) wrap instead of running under it. */}
+        <h1 className="display-xl uppercase lg:max-[1439.98px]:pr-[calc(min(28vw,24rem)+4rem)] min-[1440px]:pr-[calc(min(28vw,24rem)+2rem)]">
           {lines.map((line, i) => (
             <span key={line} className="line-mask">
               <span className={`hero-line-inner block ${i === lines.length - 1 ? "text-accent-glow" : ""}`}>
@@ -210,7 +213,14 @@ export default function HeroSection() {
 
         {/* Hidden once the viewport is wide enough for the left rail to carry the
             same links — two copies on one screen would be one too many. */}
-        <SocialRow source="hero" className="hero-fade min-[1440px]:hidden" />
+        <div className="flex flex-wrap items-center gap-3">
+          {/* hero-fade on a wrapper: the badge has a CSS transform transition
+              for its hover, which fought the intro tween and left it 18px low. */}
+          <div className="hero-fade">
+            <InstagramFollow source="hero" />
+          </div>
+          <SocialRow source="hero" className="hero-fade min-[1440px]:hidden" />
+        </div>
       </div>
     </section>
   );

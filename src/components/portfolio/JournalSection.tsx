@@ -5,7 +5,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { ui } from "@/data/content";
 import { journalPlatforms, journalPosts, type JournalPlatformId } from "@/data/journal";
 import { trackEvent, trackOutbound } from "@/lib/analytics";
-import { ArrowUpRight, Github, Linkedin, Terminal, Youtube } from "lucide-react";
+import { ArrowUpRight, Github, Instagram, Linkedin, Terminal, Youtube } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EmptyPond } from "@/components/ui/empty-pond";
@@ -17,6 +17,7 @@ import { StickerCard } from "@/components/ui/sticker-card";
 const PLATFORM_ICON: Record<JournalPlatformId, LucideIcon> = {
   linkedin: Linkedin,
   youtube: Youtube,
+  instagram: Instagram,
   github: Github,
   site: Terminal,
 };
@@ -194,6 +195,13 @@ export default function JournalSection() {
                           <span className="font-mono text-xs text-muted-foreground">
                             {platform.handle}
                           </span>
+                          {/* A span, not InstagramFollow: the whole row is already the link. */}
+                          {platform.id === "instagram" && (
+                            <span className="ig-follow ig-follow-sm self-center" aria-hidden>
+                              <Instagram size={13} />
+                              {t(ui.social.follow)}
+                            </span>
+                          )}
                         </div>
                         <p className="mt-1.5 text-sm leading-snug text-muted-foreground">
                           {t(platform.focus)}

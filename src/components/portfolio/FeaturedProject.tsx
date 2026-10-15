@@ -1,9 +1,10 @@
 import Reveal from "@/components/motion/Reveal";
 import SplitReveal from "@/components/motion/SplitReveal";
 import { useLanguage } from "@/context/LanguageContext";
-import { featuredProject, ui } from "@/data/content";
-import { trackOutbound } from "@/lib/analytics";
-import { ArrowUpRight, Github } from "lucide-react";
+import { ui, type FeaturedProjectEntry } from "@/data/content";
+import { thumbnailUrl, watchUrl } from "@/data/youtube";
+import { trackEvent, trackOutbound } from "@/lib/analytics";
+import { ArrowUpRight, Github, Play } from "lucide-react";
 import type { CSSProperties } from "react";
 import { HoloBadge } from "@/components/ui/holo-badge";
 import { HoloButton } from "@/components/ui/holo-button";
@@ -29,9 +30,14 @@ const brandStyle = (c: string) =>
     "--glow-primary": `0 0 0 1px color-mix(in oklab, ${c} 50%, transparent), 0 12px 40px -12px color-mix(in oklab, ${c} 60%, transparent)`,
   }) as CSSProperties;
 
-export default function FeaturedProject() {
+/**
+ * One project in active development: the pitch and the spec strip on the left,
+ * what is inside and what it is built with on the right, then the trailer and
+ * the screenshots underneath. Work renders one per `featuredProjects` entry.
+ */
+export default function FeaturedProject({ project: p }: { project: FeaturedProjectEntry }) {
   const { t } = useLanguage();
-  const p = featuredProject;
+  const [trailer, ...moreCuts] = p.trailers;
 
   return (
     <StickerCard asChild glass ticks className="relative gap-0 overflow-hidden p-7 md:p-12">
@@ -73,9 +79,9 @@ export default function FeaturedProject() {
                 href={p.site}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackOutbound("featured_site", p.site)}
+                onClick={() => trackOutbound(`featured_${p.id}_site`, p.site)}
               >
-                {t(ui.work.visit)} <ArrowUpRight size={14} />
+                {t(ui.work.visit)} {p.name} <ArrowUpRight size={14} />
               </a>
             </HoloButton>
             <HoloButton
@@ -87,7 +93,7 @@ export default function FeaturedProject() {
                 href={p.repo}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackOutbound("featured_repo", p.repo)}
+                onClick={() => trackOutbound(`featured_${p.id}_repo`, p.repo)}
               >
                 <Github size={14} /> {t(ui.work.source)}
               </a>
@@ -100,18 +106,16 @@ export default function FeaturedProject() {
             stagger={0.06}
             className="mt-10 grid grid-cols-3 gap-px border border-border bg-border"
           >
-            <div className="featured-meta bg-background p-4">
-              <dt className="hud mb-2">Version</dt>
-              <dd className="font-mono text-sm text-foreground">{p.version}</dd>
-            </div>
-            <div className="featured-meta bg-background p-4">
-              <dt className="hud mb-2">License</dt>
-              <dd className="font-mono text-sm text-foreground">{p.license}</dd>
-            </div>
-            <div className="featured-meta bg-background p-4">
-              <dt className="hud mb-2">Price</dt>
-              <dd className="font-mono text-sm text-primary">{p.price}</dd>
-            </div>
+            {p.meta.map((item) => (
+              <div key={item.label.en} className="featured-meta bg-background p-4">
+                <dt className="hud mb-2">{t(item.label)}</dt>
+                <dd
+                  className={`font-mono text-sm ${item.accent ? "text-primary" : "text-foreground"}`}
+                >
+                  {t(item.value)}
+                </dd>
+              </div>
+            ))}
           </Reveal>
         </div>
 
@@ -143,6 +147,87 @@ export default function FeaturedProject() {
           </Reveal>
         </div>
       </div>
+
+      {/* The trailer, then the screenshots: the thing in motion before the stills. */}
+      <Reveal
+        selector=".featured-media"
+        stagger={0.08}
+        className="relative mt-12 grid gap-3 border-t border-border pt-8 md:grid-cols-3"
+      >
+        {trailer && (
+          <a
+            href={watchUrl(trailer.id)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => {
+              trackEvent("youtube_click", { video_id: trailer.id });
+              trackOutbound(`featured_${p.id}_trailer`, watchUrl(trailer.id));
+            }}
+            className="featured-media group/trailer relative block aspect-video overflow-hidden rounded-xl border border-border bg-card"
+            aria-label={`${t(ui.work.trailer)} — ${t(trailer.title)}`}
+          >
+            <img
+              src={thumbnailUrl(trailer.id, "maxres")}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover/trailer:scale-[1.04]"
+            />
+            <span
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent"
+            />
+            <span className="absolute inset-x-4 bottom-4 flex items-center gap-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-[var(--glow-primary)] transition-transform duration-500 ease-out group-hover/trailer:scale-110">
+                <Play size={15} className="translate-x-px fill-current" />
+              </span>
+              <span className="min-w-0">
+                <span className="hud block text-primary">{t(ui.work.trailer)}</span>
+                <span className="block truncate text-sm font-medium text-foreground">
+                  {t(trailer.title)}
+                </span>
+              </span>
+            </span>
+          </a>
+        )}
+
+        {p.shots.map((shot) => (
+          <figure
+            key={shot.avif}
+            className="featured-media relative aspect-video overflow-hidden rounded-xl border border-border bg-card"
+          >
+            <picture>
+              <source type="image/avif" srcSet={shot.avif} />
+              <img
+                src={shot.fallback}
+                alt={t(shot.alt)}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover object-top"
+              />
+            </picture>
+          </figure>
+        ))}
+      </Reveal>
+
+      {moreCuts.length > 0 && (
+        <Reveal className="relative mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+          <span className="hud">{t(ui.work.alsoWatch)}</span>
+          {moreCuts.map((cut) => (
+            <a
+              key={cut.id}
+              href={watchUrl(cut.id)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackOutbound(`featured_${p.id}_cut_${cut.id}`, watchUrl(cut.id))}
+              className="link-wipe inline-flex items-center gap-1.5 text-sm text-foreground"
+            >
+              <Play size={12} className="text-primary" /> {t(cut.title)}
+              <ArrowUpRight size={13} className="text-muted-foreground" />
+            </a>
+          ))}
+        </Reveal>
+      )}
       </article>
     </StickerCard>
   );

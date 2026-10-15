@@ -1,8 +1,10 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   cover,
   experiences,
-  featuredProject,
+  featuredProjects,
   principles,
   projects,
   socials,
@@ -45,7 +47,7 @@ describe("localized content", () => {
       projects,
       stackGroups,
       experiences,
-      featuredProject,
+      featuredProjects,
     },
     "root",
     found
@@ -68,16 +70,31 @@ describe("localized content", () => {
   });
 });
 
-describe("featured project", () => {
-  it("points at the live site and the public repo", () => {
-    expect(featuredProject.site).toBe("https://autocratico.it/");
-    expect(featuredProject.repo).toBe("https://github.com/davide97g/autocratico");
-    expect(featuredProject.logo).toBe("/autocratico.svg");
+describe("featured projects", () => {
+  it("each point at a live site, a public repo and a mark that ships", () => {
+    expect(featuredProjects.map((p) => p.id)).toEqual(["autocratico", "keybordy-mp"]);
+    for (const p of featuredProjects) {
+      expect(p.site, p.id).toMatch(/^https:\/\//);
+      expect(p.repo, p.id).toMatch(/^https:\/\/github\.com\/davide97g\//);
+      expect(existsSync(join("public", p.logo)), p.logo).toBe(true);
+    }
   });
 
-  it("is not duplicated in the secondary project list", () => {
+  it("each carry a trailer and screenshots that exist in public/", () => {
+    for (const p of featuredProjects) {
+      expect(p.trailers.length, p.id).toBeGreaterThan(0);
+      for (const trailer of p.trailers) expect(trailer.id, p.id).toMatch(/^[A-Za-z0-9_-]{11}$/);
+      expect(p.shots.length, p.id).toBeGreaterThan(0);
+      for (const shot of p.shots) {
+        expect(existsSync(join("public", shot.avif)), shot.avif).toBe(true);
+        expect(existsSync(join("public", shot.fallback)), shot.fallback).toBe(true);
+      }
+    }
+  });
+
+  it("are not duplicated in the secondary project list", () => {
     const titles = projects.map((p) => p.title.toLowerCase());
-    expect(titles).not.toContain(featuredProject.name.toLowerCase());
+    for (const p of featuredProjects) expect(titles).not.toContain(p.name.toLowerCase());
   });
 });
 

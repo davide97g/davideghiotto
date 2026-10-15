@@ -23,6 +23,37 @@ export interface Project {
   shot?: ProjectShot;
 }
 
+/** A YouTube cut a featured project links to. The first one is the trailer. */
+export interface ProjectTrailer {
+  id: string;
+  title: Localized;
+}
+
+/** One cell of a featured project's spec strip. `accent` paints the value in the brand colour. */
+export interface ProjectMeta {
+  label: Localized;
+  value: Localized;
+  accent?: boolean;
+}
+
+/** A project in active development, rendered as a full `FeaturedProject` card. */
+export interface FeaturedProjectEntry {
+  id: string;
+  name: string;
+  logo: string;
+  site: string;
+  repo: string;
+  /** Its own accent, swapped in for `--primary` inside the card. A complete colour. */
+  brand: string;
+  tagline: Localized;
+  description: Localized;
+  meta: ProjectMeta[];
+  features: Localized[];
+  stack: string[];
+  trailers: ProjectTrailer[];
+  /** 16:9-ish screenshots or renders, shown beside the trailer. */
+  shots: ProjectShot[];
+}
 
 export interface Experience {
   role: Localized;
@@ -47,12 +78,13 @@ export const bio = {
   phone: "+39 3455779838",
   linkedin: "davide-ghiotto",
   github: "davide97g",
+  instagram: "ai_quack",
   workshop: "https://dacoder.it",
   /** The design system this site wears — credited in the footer. */
   duckUi: "https://duckui.davideghiotto.it/",
 };
 
-export type SocialId = "linkedin" | "github" | "youtube" | "site";
+export type SocialId = "linkedin" | "github" | "youtube" | "instagram" | "site";
 
 export interface Social {
   id: SocialId;
@@ -63,7 +95,7 @@ export interface Social {
 }
 
 /**
- * The four places worth following, in the order every rail renders them.
+ * The places worth following, in the order every rail renders them.
  *
  * Single source of truth for the links: the left rail, the nav drawer, the hero
  * row and `journalPlatforms` in `src/data/journal.ts` all read this list, so a
@@ -81,6 +113,12 @@ export const socials: Social[] = [
     name: "YouTube",
     handle: channel.handle,
     url: channel.url,
+  },
+  {
+    id: "instagram",
+    name: "Instagram",
+    handle: `@${bio.instagram}`,
+    url: `https://www.instagram.com/${bio.instagram}/`,
   },
   {
     id: "github",
@@ -170,10 +208,13 @@ export const ui = {
       en: "Open-source tools and platforms, mostly built in the open.",
       it: "Tool e piattaforme open-source, quasi sempre costruiti in pubblico.",
     },
-    featuredLabel: { en: "Current focus", it: "Progetto attuale" },
+    featuredLabel: { en: "Building now", it: "In sviluppo" },
     featuresLabel: { en: "Inside", it: "Cosa contiene" },
     stackLabel: { en: "Built with", it: "Costruito con" },
-    visit: { en: "Open Autocratico", it: "Apri Autocratico" },
+    /** Followed by the project name: "Open Autocratico". */
+    visit: { en: "Open", it: "Apri" },
+    trailer: { en: "Watch the trailer", it: "Guarda il trailer" },
+    alsoWatch: { en: "Also on YouTube", it: "Anche su YouTube" },
     source: { en: "Source", it: "Codice" },
     others: { en: "Also shipping", it: "Altri progetti" },
     preview: { en: "Preview", it: "Anteprima" },
@@ -274,6 +315,8 @@ export const ui = {
   social: {
     /** Vertical label on the left rail, and the accessible name of every set. */
     label: { en: "Elsewhere", it: "Altrove" },
+    /** The Instagram-style badge beside the hero links and on the journal rail. */
+    follow: { en: "Follow", it: "Segui" },
   },
   ral: {
     label: { en: "Compensation", it: "Compenso" },
@@ -488,62 +531,182 @@ export const cover = {
 };
 
 /**
- * Pinned lead project, the one in active development. Copy, feature list and
- * version mirror the repo README and the landing page at autocratico.it; the
- * mark is the project's own favicon (an off-white A on #1a1a1a), kept in
- * public/autocratico.svg. sharp held this slot until it stopped being
- * self-hosted; it is in git history if it comes back.
+ * The projects in active development, each a full card at the top of Work, in
+ * render order. Copy, feature lists and specs mirror each project's README and
+ * landing page; each mark is the project's own favicon in public/.
+ *
+ * sharp held the first slot until it stopped being self-hosted; it is in git
+ * history if it comes back.
  */
-export const featuredProject = {
-  name: "Autocratico",
-  version: "v0.1.0",
-  license: "MIT",
-  price: "€0",
-  logo: "/autocratico.svg",
-  site: "https://autocratico.it/",
-  repo: "https://github.com/davide97g/autocratico",
-  /** Its own accent, swapped in for `--primary` inside the card. Autocratico ships monochrome. */
-  brand: "oklch(0.93 0 0)",
-  tagline: {
-    en: "The private register for your Italian bureaucracy.",
-    it: "Il registro privato della tua burocrazia.",
+export const featuredProjects: FeaturedProjectEntry[] = [
+  {
+    id: "autocratico",
+    name: "Autocratico",
+    logo: "/autocratico.svg",
+    site: "https://autocratico.it/",
+    repo: "https://github.com/davide97g/autocratico",
+    // Autocratico ships monochrome: its accent is off-white.
+    brand: "oklch(0.93 0 0)",
+    tagline: {
+      en: "The private register for your Italian bureaucracy.",
+      it: "Il registro privato della tua burocrazia.",
+    },
+    description: {
+      en: "Deadlines, payments, checks and cases, kept in plain-text files and shown in a web app you install on phone and desktop. An always-on Claude Code agent files whatever arrives — Gmail, forwarded PEC, photos, Telegram messages, WhatsApp exports — updates the deadlines, opens the cases and pings you on Telegram. Every change it makes is a git commit you can undo.",
+      it: "Scadenze, pagamenti, controlli e pratiche, tenuti in file di testo e mostrati in una web app da installare su telefono e desktop. Un agente Claude Code sempre acceso archivia tutto quello che arriva — Gmail, PEC inoltrate, foto, messaggi Telegram, export di WhatsApp — aggiorna le scadenze, apre le pratiche e ti avvisa su Telegram. Ogni modifica è un commit git che puoi annullare.",
+    },
+    meta: [
+      { label: { en: "Version", it: "Versione" }, value: { en: "v0.1.0", it: "v0.1.0" } },
+      { label: { en: "License", it: "Licenza" }, value: { en: "MIT", it: "MIT" } },
+      { label: { en: "Price", it: "Prezzo" }, value: { en: "€0", it: "€0" }, accent: true },
+    ],
+    features: [
+      {
+        en: "One inbox for everything: several Gmail accounts, PEC, photos, PDFs, voice notes, WhatsApp exports",
+        it: "Un'inbox per tutto: più account Gmail, PEC, foto, PDF, note vocali, export di WhatsApp",
+      },
+      {
+        en: "Always-on agent (Claude Code, headless) that files each item in about a minute",
+        it: "Agente sempre acceso (Claude Code headless) che archivia ogni documento in circa un minuto",
+      },
+      {
+        en: "Every change is a git commit, reviewed and undone from the Activity log",
+        it: "Ogni modifica è un commit git, da rivedere e annullare nel registro Attività",
+      },
+      {
+        en: "Deadlines coloured by urgency, recurring ones expanded, .ics export for any calendar",
+        it: "Scadenze colorate per urgenza, ricorrenze espanse, export .ics per qualsiasi calendario",
+      },
+      {
+        en: "Telegram reminders at 7 and 3 days, with personal data masked",
+        it: "Promemoria Telegram a 7 e a 3 giorni, con i dati personali oscurati",
+      },
+      {
+        en: "Chat with Claude over your own files, from the app, ⌘K or Telegram",
+        it: "Chat con Claude sui tuoi file, dall'app, da ⌘K o da Telegram",
+      },
+      {
+        en: "No database: plain-text files on your own server, and a privacy mode for demos",
+        it: "Nessun database: file di testo sul tuo server, e una modalità privacy per le demo",
+      },
+    ],
+    stack: ["React 19", "Vite", "Tailwind v4", "Hono", "Node 24", "Python", "Claude Code", "PWA"],
+    trailers: [
+      {
+        id: "6N5R-YSJrG4",
+        title: {
+          en: "Autocratico: Italian bureaucracy, simplified by AI",
+          it: "Autocratico: la burocrazia semplificata dall'AI",
+        },
+      },
+    ],
+    shots: [
+      {
+        avif: "/shot-autocratico-overview.avif",
+        fallback: "/shot-autocratico-overview.jpg",
+        alt: {
+          en: "Autocratico overview: a six-month calendar of deadlines by area, and a dark panel of what is still to pay.",
+          it: "Panoramica di Autocratico: calendario a sei mesi delle scadenze per ambito, e un pannello scuro con quello che resta da pagare.",
+        },
+      },
+      {
+        avif: "/shot-autocratico-inbox.avif",
+        fallback: "/shot-autocratico-inbox.jpg",
+        alt: {
+          en: "Autocratico inbox: documents arriving from email, Telegram and uploads, each already filed by the agent, one flagged as phishing.",
+          it: "Inbox di Autocratico: documenti arrivati da email, Telegram e caricamenti, ognuno già archiviato dall'agente, uno segnalato come phishing.",
+        },
+      },
+    ],
   },
-  description: {
-    en: "Deadlines, payments, checks and cases, kept in plain-text files and shown in a web app you install on phone and desktop. An always-on Claude Code agent files whatever arrives — Gmail, forwarded PEC, photos, Telegram messages, WhatsApp exports — updates the deadlines, opens the cases and pings you on Telegram. Every change it makes is a git commit you can undo.",
-    it: "Scadenze, pagamenti, controlli e pratiche, tenuti in file di testo e mostrati in una web app da installare su telefono e desktop. Un agente Claude Code sempre acceso archivia tutto quello che arriva — Gmail, PEC inoltrate, foto, messaggi Telegram, export di WhatsApp — aggiorna le scadenze, apre le pratiche e ti avvisa su Telegram. Ogni modifica è un commit git che puoi annullare.",
+  {
+    id: "keybordy-mp",
+    name: "keybordy MP",
+    logo: "/keybordy.svg",
+    site: "https://keybordy.davideghiotto.it/",
+    repo: "https://github.com/davide97g/keybordy",
+    // The landing page lime, a touch yellower than the site one.
+    brand: "#d6ff1f",
+    tagline: {
+      en: "A macropad that listens.",
+      it: "Una macropad che ti ascolta.",
+    },
+    description: {
+      en: "An ESP32-S3 macropad I am designing, 3D-printing and assembling by hand: 22 hot-swap MX keys, three clicky knobs, a white OLED that names each key's action as you press it, and a green push-to-talk bar. Hold it and talk: the audio goes to the Mac, which transcribes it and works out the answer, and keybordy says it back from its own speaker.",
+      it: "Una macropad ESP32-S3 che sto progettando, stampando in 3D e montando a mano: 22 switch MX hot-swap, tre manopole a scatti, un OLED bianco che dice cosa fa ogni tasto mentre lo premi e una barra verde push-to-talk. La tieni premuta e parli: l'audio va al Mac, che trascrive e pensa la risposta, e keybordy la dice dal suo speaker.",
+    },
+    meta: [
+      { label: { en: "MCU", it: "MCU" }, value: { en: "ESP32-S3", it: "ESP32-S3" } },
+      { label: { en: "Keys", it: "Tasti" }, value: { en: "22 + 3 knobs", it: "22 + 3 manopole" } },
+      { label: { en: "Status", it: "Stato" }, value: { en: "On the bench", it: "Sul banco" }, accent: true },
+    ],
+    features: [
+      {
+        en: "22 hot-swap MX keys in three sizes (1u, 1.5u, 2u), legends are just K numbers",
+        it: "22 switch MX hot-swap in tre misure (1u, 1,5u, 2u), sui tasti solo il numero K",
+      },
+      {
+        en: "Three 24-detent push encoders for volume, scroll, brightness, or whatever you map",
+        it: "Tre encoder a 24 scatti con pulsante: volume, scroll, luminosità o quello che vuoi",
+      },
+      {
+        en: "White 2.42\" OLED that names each key's action on every press",
+        it: "OLED bianco da 2,42\" che mostra l'azione di ogni tasto a ogni pressione",
+      },
+      {
+        en: "Push-to-talk bar: I2S mic with a hardware kill switch, a speaker for sounds and speech",
+        it: "Barra push-to-talk: microfono I2S con interruttore hardware, speaker per suoni e voce",
+      },
+      {
+        en: "USB-C or LiPo, wired as USB HID or over Bluetooth LE",
+        it: "USB-C o LiPo, via cavo come HID USB o in Bluetooth LE",
+      },
+      {
+        en: "Custom PCB assembled by JLCPCB, case printed in one piece on a Bambu Lab A1",
+        it: "PCB custom assemblato da JLCPCB, case stampato in un pezzo solo su una Bambu Lab A1",
+      },
+      {
+        en: "Keymap editor on the Mac: apps, shell commands, Shortcuts, keystrokes, media keys",
+        it: "Editor della keymap sul Mac: app, comandi shell, Comandi rapidi, scorciatoie, tasti media",
+      },
+    ],
+    stack: ["ESP32-S3", "Arduino C++", "KiCad", "three.js", "TypeScript", "Python", "Hammerspoon", "Bambu Lab A1"],
+    trailers: [
+      {
+        id: "kGj5I7xX7cw",
+        title: {
+          en: "keybordy MP: full custom macropad that listens",
+          it: "keybordy MP: la macropad custom che ti ascolta",
+        },
+      },
+      {
+        id: "2fRQfnD6epE",
+        title: {
+          en: "Building a macropad that listens",
+          it: "Costruire una macropad che ti ascolta",
+        },
+      },
+    ],
+    shots: [
+      {
+        avif: "/shot-keybordy-mp-deck.avif",
+        fallback: "/shot-keybordy-mp-deck.jpg",
+        alt: {
+          en: "keybordy MP rendered from its CAD: black case, white keycaps labelled with their actions, a green talk bar and three knobs.",
+          it: "keybordy MP renderizzata dal CAD: case nero, tasti bianchi con le loro azioni, barra verde per parlare e tre manopole.",
+        },
+      },
+      {
+        avif: "/shot-keybordy-mp-oled.avif",
+        fallback: "/shot-keybordy-mp-oled.jpg",
+        alt: {
+          en: "Close-up of the keybordy MP OLED reading MUTE above the keycaps, rendered from the CAD.",
+          it: "Primo piano dell'OLED di keybordy MP con la scritta MUTE sopra i tasti, renderizzato dal CAD.",
+        },
+      },
+    ],
   },
-  features: [
-    {
-      en: "One inbox for everything: several Gmail accounts, PEC, photos, PDFs, voice notes, WhatsApp exports",
-      it: "Un'inbox per tutto: più account Gmail, PEC, foto, PDF, note vocali, export di WhatsApp",
-    },
-    {
-      en: "Always-on agent (Claude Code, headless) that files each item in about a minute",
-      it: "Agente sempre acceso (Claude Code headless) che archivia ogni documento in circa un minuto",
-    },
-    {
-      en: "Every change is a git commit, reviewed and undone from the Activity log",
-      it: "Ogni modifica è un commit git, da rivedere e annullare nel registro Attività",
-    },
-    {
-      en: "Deadlines coloured by urgency, recurring ones expanded, .ics export for any calendar",
-      it: "Scadenze colorate per urgenza, ricorrenze espanse, export .ics per qualsiasi calendario",
-    },
-    {
-      en: "Telegram reminders at 7 and 3 days, with personal data masked",
-      it: "Promemoria Telegram a 7 e a 3 giorni, con i dati personali oscurati",
-    },
-    {
-      en: "Chat with Claude over your own files, from the app, ⌘K or Telegram",
-      it: "Chat con Claude sui tuoi file, dall'app, da ⌘K o da Telegram",
-    },
-    {
-      en: "No database: plain-text files on your own server, and a privacy mode for demos",
-      it: "Nessun database: file di testo sul tuo server, e una modalità privacy per le demo",
-    },
-  ],
-  stack: ["React 19", "Vite", "Tailwind v4", "Hono", "Node 24", "Python", "Claude Code", "PWA"],
-};
+];
 
 export const projects: Project[] = [
   {
