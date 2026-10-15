@@ -67,7 +67,7 @@ export default function Reveal({
 
       return () => mm.revert();
     },
-    { scope, dependencies: [selector, start] }
+    { scope, dependencies: [selector, start], revertOnUpdate: true }
   );
 
   return (

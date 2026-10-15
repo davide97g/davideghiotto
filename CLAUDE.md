@@ -98,6 +98,16 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   enter), `SplitReveal` (masked line-by-line `SplitText` reveal, `autoSplit` so it survives resize
   and font swaps), `Marquee` (seamless double-track loop whose timescale is boosted by scroll
   velocity).
+- **Every `useGSAP` with `dependencies` also passes `revertOnUpdate: true`.** Without it the hook
+  re-runs on a change but never reverts the previous run, so each language switch stacked another
+  copy of every ScrollTrigger, tween and ticker callback — the page got slower the longer it was
+  used. For the same reason `SplitReveal` keys its element by `text` (SplitText detaches the node
+  React would patch) and the cover cards are keyed by language (a moved card keeps GSAP's cached
+  transform for its old slot).
+- **`gsap.ticker` callbacks must be free at rest.** They run every frame for the life of the page:
+  skip the write when the value has not changed (`ScrollRail`, the covers shear), and pause loops
+  that are off screen (`Marquee` toggles its tween and its boost on a ScrollTrigger). An idle page
+  should make zero style writes.
 - Every animation branches through `gsap.matchMedia()` with a `(prefers-reduced-motion: reduce)`
   arm that sets the final state instead of animating. When adding motion, add that arm too —
   content must never be left invisible.

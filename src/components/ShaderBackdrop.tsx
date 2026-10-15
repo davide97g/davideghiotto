@@ -121,7 +121,9 @@ export default function ShaderBackdrop({
     let mesh: Mesh;
     try {
       renderer = new Renderer({
-        dpr: Math.min(window.devicePixelRatio, 2),
+        // The field is soft: 1.5 is indistinguishable from 2 on a retina panel
+        // and fills ~44% fewer fragments every frame.
+        dpr: Math.min(window.devicePixelRatio, 1.5),
         canvas,
         antialias: false,
         alpha: false,

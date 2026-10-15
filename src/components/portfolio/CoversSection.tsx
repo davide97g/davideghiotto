@@ -209,9 +209,16 @@ export default function CoversSection() {
 
           // Velocity shear: a fast flick bends the stack, then it springs back.
           const skew = q(".covers-skew")[0];
+          // Only retargeted when the velocity moves, so a page at rest (or
+          // scrolled far past the stage) does not restyle it every frame.
           const skewTo = gsap.quickTo(skew, "skewY", { duration: 0.5, ease: "power3" });
-          const shear = () =>
-            skewTo(gsap.utils.clamp(-6, 6, scrollSignal.velocity * -0.22));
+          let skewed = 0;
+          const shear = () => {
+            const next = Math.round(gsap.utils.clamp(-6, 6, scrollSignal.velocity * -0.22) * 10) / 10;
+            if (next === skewed) return;
+            skewed = next;
+            skewTo(next);
+          };
           gsap.ticker.add(shear);
 
           // Pointer tilt and glare, only where there is a pointer to follow.
@@ -273,7 +280,7 @@ export default function CoversSection() {
 
       return () => mm.revert();
     },
-    { scope, dependencies: [lang] }
+    { scope, dependencies: [lang], revertOnUpdate: true }
   );
 
   return (
@@ -340,9 +347,12 @@ export default function CoversSection() {
             <div className="covers-impact absolute inset-0">
               <div className="covers-tilt absolute inset-0">
                 <div className="covers-skew absolute inset-0">
+                  {/* Keyed by language too: a switch reorders the deck, and a
+                      card moved rather than remounted keeps the transform
+                      GSAP cached for its old slot, landing it off the stage. */}
                   {deck.map((cover, i) => (
                     <button
-                      key={cover.id}
+                      key={`${lang}:${cover.id}`}
                       type="button"
                       onClick={() => {
                         setOpen(cover);

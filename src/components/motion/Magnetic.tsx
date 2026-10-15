@@ -61,7 +61,7 @@ export default function Magnetic({ children, className = "", strength = 0.3 }: P
 
       return () => mm.revert();
     },
-    { scope: ref, dependencies: [strength] }
+    { scope: ref, dependencies: [strength], revertOnUpdate: true }
   );
 
   return (

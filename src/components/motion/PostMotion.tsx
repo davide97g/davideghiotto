@@ -45,7 +45,7 @@ export default function PostMotion({ children, contentKey }: Props) {
 
       return () => mm.revert();
     },
-    { scope, dependencies: [contentKey] }
+    { scope, dependencies: [contentKey], revertOnUpdate: true }
   );
 
   return <div ref={scope}>{children}</div>;

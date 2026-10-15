@@ -112,7 +112,7 @@ export default function HeroSection() {
 
       return () => mm.revert();
     },
-    { scope, dependencies: [lines] }
+    { scope, dependencies: [lines], revertOnUpdate: true }
   );
 
   return (

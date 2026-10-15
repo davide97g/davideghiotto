@@ -1,4 +1,4 @@
-import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { scrollSignal } from "@/lib/scrollSignal";
 import { ReactNode, useRef } from "react";
 
@@ -45,18 +45,38 @@ export default function Marquee({
         }
       );
 
+      // Off screen the strip is paused and the boost is off: two strips
+      // looping forever would restyle four tracks every frame for nothing.
+      let scale = 1;
       const boost = () => {
-        const extra = gsap.utils.clamp(0, 4, Math.abs(scrollSignal.velocity) / 9);
-        tween.timeScale(1 + extra);
+        const next = 1 + gsap.utils.clamp(0, 4, Math.abs(scrollSignal.velocity) / 9);
+        if (Math.abs(next - scale) < 0.01) return;
+        scale = next;
+        tween.timeScale(scale);
       };
-      gsap.ticker.add(boost);
+      const toggle = (on: boolean) => {
+        if (on) {
+          tween.play();
+          gsap.ticker.add(boost);
+        } else {
+          tween.pause();
+          gsap.ticker.remove(boost);
+        }
+      };
+      tween.pause();
+      ScrollTrigger.create({
+        trigger: scope.current,
+        start: "top bottom",
+        end: "bottom top",
+        onToggle: (self) => toggle(self.isActive),
+      });
 
       return () => {
         gsap.ticker.remove(boost);
         tween.kill();
       };
     },
-    { scope, dependencies: [duration, direction] }
+    { scope, dependencies: [duration, direction], revertOnUpdate: true }
   );
 
   const track = (key: string) => (

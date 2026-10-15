@@ -12,9 +12,12 @@ export default function ScrollRail() {
 
   useGSAP(() => {
     let shown = -1;
+    let filled = -1;
 
     const update = () => {
       const progress = gsap.utils.clamp(0, 1, scrollSignal.progress);
+      if (progress === filled) return;
+      filled = progress;
       if (fill.current) gsap.set(fill.current, { scaleY: progress });
 
       const percent = Math.round(progress * 100);

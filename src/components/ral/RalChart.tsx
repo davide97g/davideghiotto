@@ -274,7 +274,7 @@ export default function RalChart({
         { opacity: 1, y: 0, duration: 0.9, ease: "expo.out" }
       );
     },
-    { scope, dependencies: [unlocked] }
+    { scope, dependencies: [unlocked], revertOnUpdate: true }
   );
 
   return (

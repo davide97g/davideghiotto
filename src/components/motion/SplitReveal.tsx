@@ -70,11 +70,15 @@ export default function SplitReveal({
 
       return () => mm.revert();
     },
-    { scope: ref, dependencies: [text, immediate] }
+    { scope: ref, dependencies: [text, immediate], revertOnUpdate: true }
   );
 
+  // Keyed by the text: SplitText moves the text node into its own line
+  // wrappers, so React patching it in place (a language switch) would update a
+  // detached node and leave the old copy on screen. A new element per text
+  // gives the split a clean node to work on.
   return (
-    <Tag ref={ref} className={className}>
+    <Tag key={text} ref={ref} className={className}>
       {text}
     </Tag>
   );
