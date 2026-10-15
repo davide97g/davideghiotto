@@ -289,8 +289,11 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   `Unterminated string` in a Vite stack trace.
 - **The home page backdrop is the manifesto poster, not the shader.** `src/components/PosterBackdrop.tsx`
   pins `public/bg-poster-it-{1952.avif,1200.jpg}` (encoded from `drafts/covers/s1_it_b.png`, frame
-  cropped) full-screen with `object-cover` focused on the face, under a scrim that darkens toward the
-  bottom. The other pages keep the shader. It parallaxes on a scrubbed tween: a 160%-tall plane
+  cropped) full-screen with `object-cover` focused on the face, under a scrim that
+  darkens toward the bottom. The manifesto shows it as it is; below that a canvas-colour veil shades
+  it in two scrubbed steps, to 70% as `#hero` arrives and 95% as `#channel` arrives, then holds —
+  the poster lettering is the site lime and fought every line of body copy. Do not thin the later
+  step to show more poster. The other pages keep the shader. It parallaxes on a scrubbed tween: a 160%-tall plane
   drifts up 37.5% over the first 2400px of scroll, then holds. Do not spread the drift over the whole
   page: the page is ~18000px long, which makes it too slow to read as motion.
 - `src/components/ShaderBackdrop.tsx` is the fixed WebGL backdrop (OGL): flow-noise haze, a
