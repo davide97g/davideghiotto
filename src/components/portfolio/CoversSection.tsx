@@ -1,12 +1,12 @@
 import Reveal from "@/components/motion/Reveal";
 import { useLanguage } from "@/context/LanguageContext";
-import { covers, ui } from "@/data/content";
+import { cover, ui } from "@/data/content";
 import { trackEvent } from "@/lib/analytics";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { scrollSignal } from "@/lib/scrollSignal";
 import { useLenis } from "lenis/react";
 import { Maximize2 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DuckSectionMarker } from "@/components/ui/duck-section-marker";
 import { HoloBadge } from "@/components/ui/holo-badge";
 import {
@@ -17,27 +17,22 @@ import {
   StickerDialogTitle,
 } from "@/components/ui/sticker-dialog";
 
-type Cover = (typeof covers)[number];
+/** Where the card comes to rest. Shared by every branch. */
+const REST = { xPercent: 0, yPercent: 0, rotation: 4, rotationX: 0, rotationY: 0, scale: 1, opacity: 1 };
 
-/** Where each card comes to rest, back then front. Shared by every branch. */
-const REST = [
-  { xPercent: -7, yPercent: 0, rotation: -7, rotationX: 0, rotationY: 0, scale: 1, opacity: 1 },
-  { xPercent: 6, yPercent: 0, rotation: 5, rotationX: 0, rotationY: 0, scale: 1, opacity: 1 },
-];
-
-/** Each card carries its own perspective, so the deal reads 3D without a preserve-3d chain. */
+/** The card carries its own perspective, so the deal reads 3D without a preserve-3d chain. */
 const DEPTH = { transformPerspective: 1200 };
 
 /** Shards thrown off by the stamp. Fixed angles, so no layout shift between renders. */
 const SHARDS = Array.from({ length: 10 }, (_, i) => (i / 10) * Math.PI * 2 + 0.3);
 
 /**
- * Manifesto interlude between the hero and the channel: the two poster covers
- * dealt onto the page like stickers while the headline writes itself, and the
- * last word gets struck through and stamped over.
+ * Manifesto opener: the magazine cover dealt onto the page like a sticker
+ * while the headline writes itself, and the last word gets struck through and
+ * stamped over. The Italian poster is the page backdrop, so it is not dealt.
  *
  * Desktop with motion: the section pins and one scrubbed timeline deals the
- * cards; the stage tilts under the pointer and shears with scroll velocity.
+ * card; the stage tilts under the pointer and shears with scroll velocity.
  * Mobile with motion: the same deal, scrubbed over the section without a pin.
  * Reduced motion: everything sits in its final state.
  *
@@ -48,13 +43,7 @@ export default function CoversSection() {
   const { lang, t } = useLanguage();
   const lenis = useLenis();
   const scope = useRef<HTMLElement>(null);
-  const [open, setOpen] = useState<Cover | null>(null);
-
-  // The poster in the reader's language is dealt last, so it lands on top.
-  const deck = useMemo(
-    () => [...covers].sort((a, b) => Number(a.lang === lang) - Number(b.lang === lang)),
-    [lang]
-  );
+  const [open, setOpen] = useState(false);
   const lines = t(ui.covers.lines);
 
   // Lenis keeps wheeling the page behind a modal unless it is told to stop.
@@ -70,10 +59,8 @@ export default function CoversSection() {
       if (!root) return;
 
       const q = gsap.utils.selector(root);
-      const cards = q(".cover-card");
-      const shades = q(".cover-shade");
+      const card = q(".cover-card")[0];
       const rules = q(".covers-rule");
-      const counter = q(".covers-counter")[0] as HTMLElement | undefined;
       const bar = q(".covers-bar")[0];
 
       const mm = gsap.matchMedia();
@@ -88,16 +75,13 @@ export default function CoversSection() {
           const { desktop, reduce } = ctx.conditions as Record<string, boolean>;
 
           if (reduce) {
-            gsap.set(cards, { ...REST[0] });
-            gsap.set(cards[1], { ...REST[1] });
+            gsap.set(card, { ...REST });
             gsap.set(".covers-line-inner", { yPercent: 0 });
             gsap.set(".covers-strike", { scaleX: 1 });
             gsap.set(".covers-stamp", { opacity: 1, scale: 1, rotation: -8 });
             gsap.set(".covers-struck", { opacity: 0.45 });
             gsap.set(rules, { opacity: 1 });
-            gsap.set(shades[0], { opacity: 0.35 });
             gsap.set(bar, { scaleX: 1 });
-            if (counter) counter.textContent = "02";
             return;
           }
 
@@ -137,28 +121,15 @@ export default function CoversSection() {
 
           // Act one is the page intro, played on load rather than scrubbed:
           // this is the first section, so there is no scroll to drive it. The
-          // back cover and the first line arrive, and the pin opens on them.
+          // first line arrives over the backdrop poster, and the pin opens on it.
           const intro = gsap
             .timeline({ defaults: { ease: "expo.out" }, delay: 0.15 })
-            .fromTo(
-              cards[0],
-              { ...DEPTH, xPercent: -40, yPercent: 70, rotation: -26, rotationX: 38, opacity: 0, scale: 0.9 },
-              { ...REST[0], duration: 1.3 },
-              0
-            )
             .fromTo(lineInners[0], { yPercent: 115 }, { yPercent: 0, duration: 1 }, 0.2)
             .fromTo(rules[0], { opacity: 0.25 }, { opacity: 1, duration: 0.6 }, 0.6)
             .fromTo(".covers-cue", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8 }, 0.9);
 
-          let shown = "";
           const onUpdate = (self: ScrollTrigger) => {
-            const p = self.progress;
-            const label = p < 0.3 ? "01" : "02";
-            if (counter && label !== shown) {
-              counter.textContent = label;
-              shown = label;
-            }
-            if (p > 0.7) stamp.play();
+            if (self.progress > 0.7) stamp.play();
             else stamp.reverse();
           };
 
@@ -184,9 +155,9 @@ export default function CoversSection() {
 
           deal
             .fromTo(
-              cards[1],
+              card,
               { ...DEPTH, xPercent: 50, yPercent: 90, rotation: 30, rotationY: -38, opacity: 0, scale: 0.9 },
-              { ...REST[1], duration: 1.4 },
+              { ...REST, duration: 1.4 },
               0
             )
             .fromTo(
@@ -195,16 +166,14 @@ export default function CoversSection() {
               { yPercent: 0, duration: 0.9, stagger: 0.9, ease: "expo.out" },
               0.1
             )
-            .fromTo(shades[0], { opacity: 0 }, { opacity: 0.35, duration: 1 }, 0.2)
             // immediateRender off: the intro owns the cue until the first scroll.
             .fromTo(".covers-cue", { opacity: 1 }, { opacity: 0, duration: 0.3, immediateRender: false }, 0)
             .fromTo(rules[1], { opacity: 0.25 }, { opacity: 1, duration: 0.4 }, 0.6)
             .fromTo(".covers-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, 1.3)
             .fromTo(rules[2], { opacity: 0.25 }, { opacity: 1, duration: 0.4 }, 1.6)
-            // Fan out a touch once both are down, so the stack keeps moving
-            // while the reader is still scrolling through the pin.
-            .to(cards[0], { xPercent: -12, rotation: -10, duration: 1, ease: "none" }, 1.9)
-            .to(cards[1], { xPercent: 10, rotation: 7, scale: 1.03, duration: 1, ease: "none" }, 1.9);
+            // Drift a touch once it is down, so the card keeps moving while
+            // the reader is still scrolling through the pin.
+            .to(card, { xPercent: 4, rotation: 6, scale: 1.03, duration: 1, ease: "none" }, 1.9);
           deal.fromTo(bar, { scaleX: 0 }, { scaleX: 1, duration: deal.duration(), ease: "none" }, 0);
 
           // Velocity shear: a fast flick bends the stack, then it springs back.
@@ -347,65 +316,51 @@ export default function CoversSection() {
             <div className="covers-impact absolute inset-0">
               <div className="covers-tilt absolute inset-0">
                 <div className="covers-skew absolute inset-0">
-                  {/* Keyed by language too: a switch reorders the deck, and a
-                      card moved rather than remounted keeps the transform
-                      GSAP cached for its old slot, landing it off the stage. */}
-                  {deck.map((cover, i) => (
-                    <button
-                      key={`${lang}:${cover.id}`}
-                      type="button"
-                      onClick={() => {
-                        setOpen(cover);
-                        trackEvent("cover_open", { cover: cover.id });
-                      }}
-                      aria-label={`${t(ui.covers.cover)} — ${t(cover.title)}`}
-                      className={`cover-card group/cover absolute w-[64%] sm:w-[70%] ${
-                        i === 0 ? "left-[3%] top-[3%]" : "bottom-[3%] right-[3%]"
-                      }`}
-                    >
-                      <span className="cover-lift sticker relative block overflow-hidden rounded-2xl border-foreground bg-card">
-                        <picture>
-                          <source
-                            type="image/avif"
-                            srcSet={`${cover.src}-640.avif 640w, ${cover.src}-1200.avif 1200w`}
-                            sizes="(min-width: 1024px) 30vw, 70vw"
-                          />
-                          <img
-                            src={`${cover.src}-900.jpg`}
-                            width={1200}
-                            height={1514}
-                            // First screen of the page now: no lazy loading,
-                            // and the cover dealt on top gets the bandwidth.
-                            fetchPriority={i === 1 ? "high" : "auto"}
-                            decoding="async"
-                            alt={t(cover.alt)}
-                            draggable={false}
-                            className="block h-auto w-full select-none"
-                          />
-                        </picture>
-                        <span aria-hidden className="cover-shade" />
-                        <span aria-hidden className="cover-glare" />
-                      </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(true);
+                      trackEvent("cover_open", { cover: cover.id });
+                    }}
+                    aria-label={`${t(ui.covers.cover)} — ${t(cover.title)}`}
+                    className="cover-card group/cover absolute left-[9%] top-[7%] w-[82%]"
+                  >
+                    <span className="cover-lift sticker relative block overflow-hidden rounded-2xl border-foreground bg-card">
+                      <picture>
+                        <source
+                          type="image/avif"
+                          srcSet={`${cover.src}-640.avif 640w, ${cover.src}-1200.avif 1200w`}
+                          sizes="(min-width: 1024px) 36vw, 82vw"
+                        />
+                        <img
+                          src={`${cover.src}-900.jpg`}
+                          width={1200}
+                          height={1514}
+                          // Dealt on the first scroll of the page: no lazy loading.
+                          decoding="async"
+                          alt={t(cover.alt)}
+                          draggable={false}
+                          className="block h-auto w-full select-none"
+                        />
+                      </picture>
+                      <span aria-hidden className="cover-glare" />
+                    </span>
 
-                      <HoloBadge
-                        variant={cover.lang === lang ? "primary" : "muted"}
-                        className="absolute -top-3 left-5"
-                      >
-                        {cover.lang.toUpperCase()}
-                      </HoloBadge>
-                      <span className="cover-open" aria-hidden>
-                        <Maximize2 size={14} />
-                      </span>
-                    </button>
-                  ))}
+                    <HoloBadge variant="primary" className="absolute -top-3 left-5">
+                      {cover.lang.toUpperCase()}
+                    </HoloBadge>
+                    <span className="cover-open" aria-hidden>
+                      <Maximize2 size={14} />
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* HUD under the sheet: which cover is on top, and how far the deal has got. */}
+            {/* HUD under the sheet: how far the deal has got. */}
             <div className="absolute -bottom-9 left-0 right-0 flex items-center gap-4" aria-hidden>
               <span className="hud whitespace-nowrap">
-                {t(ui.covers.cover)} <span className="covers-counter text-primary">01</span> / 02
+                {t(ui.covers.cover)}
               </span>
               <span className="relative h-px flex-1 bg-border">
                 <span className="covers-bar absolute inset-0 origin-left scale-x-0 bg-primary" />
@@ -422,32 +377,28 @@ export default function CoversSection() {
         </div>
       </div>
 
-      <StickerDialog open={open !== null} onOpenChange={(next) => !next && setOpen(null)}>
+      <StickerDialog open={open} onOpenChange={setOpen}>
         <StickerDialogContent
           closeLabel={t(ui.covers.close)}
           className="max-h-[92svh] max-w-[min(30rem,calc(100%-2rem))] gap-4 overflow-y-auto"
           data-lenis-prevent
         >
-          {open && (
-            <>
-              <StickerDialogHeader>
-                <StickerDialogTitle>{t(open.title)}</StickerDialogTitle>
-                <StickerDialogDescription className="hud">
-                  {t(ui.covers.issue)} · {open.lang.toUpperCase()}
-                </StickerDialogDescription>
-              </StickerDialogHeader>
-              <picture>
-                <source type="image/avif" srcSet={`${open.src}-1200.avif`} />
-                <img
-                  src={`${open.src}-900.jpg`}
-                  width={1200}
-                  height={1514}
-                  alt={t(open.alt)}
-                  className="block h-auto w-full rounded-xl"
-                />
-              </picture>
-            </>
-          )}
+          <StickerDialogHeader>
+            <StickerDialogTitle>{t(cover.title)}</StickerDialogTitle>
+            <StickerDialogDescription className="hud">
+              {t(ui.covers.issue)} · {cover.lang.toUpperCase()}
+            </StickerDialogDescription>
+          </StickerDialogHeader>
+          <picture>
+            <source type="image/avif" srcSet={`${cover.src}-1200.avif`} />
+            <img
+              src={`${cover.src}-900.jpg`}
+              width={1200}
+              height={1514}
+              alt={t(cover.alt)}
+              className="block h-auto w-full rounded-xl"
+            />
+          </picture>
         </StickerDialogContent>
       </StickerDialog>
     </section>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  covers,
+  cover,
   experiences,
   featuredProject,
   principles,
@@ -39,7 +39,7 @@ describe("localized content", () => {
   collect(
     {
       ui,
-      covers,
+      cover,
       summary,
       principles,
       projects,
@@ -70,9 +70,9 @@ describe("localized content", () => {
 
 describe("featured project", () => {
   it("points at the live site and the public repo", () => {
-    expect(featuredProject.site).toBe("https://sharp.davideghiotto.it/");
-    expect(featuredProject.repo).toBe("https://github.com/davide97g/sharp");
-    expect(featuredProject.logo).toBe("/sharp.svg");
+    expect(featuredProject.site).toBe("https://autocratico.it/");
+    expect(featuredProject.repo).toBe("https://github.com/davide97g/autocratico");
+    expect(featuredProject.logo).toBe("/autocratico.svg");
   });
 
   it("is not duplicated in the secondary project list", () => {

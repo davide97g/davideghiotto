@@ -129,12 +129,15 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
 - `src/data/content.ts` holds `bio`, `ui` (all chrome strings), `summary`, `principles`,
   `marqueeTerms`, `featuredProject`, `projects`, `journalEntries`, `journalPlatforms`, `stackGroups`,
   `experiences`, and `sectionOrder`.
-- `featuredProject` is the pinned lead project (currently **sharp**, the self-hosted Slack
-  alternative). Its copy, version and feature list mirror the official landing page at
-  sharp.davideghiotto.it, and its mark is that project's own favicon, stored at `public/sharp.svg`.
-  `src/components/portfolio/FeaturedProject.tsx` renders it and locally overrides `--primary` with
-  sharp's violet, so accent utilities inside the card adopt the project's brand instead of the site
+- `featuredProject` is the pinned lead project, the one in active development (currently
+  **Autocratico**, the private register for Italian bureaucracy). Its copy, version and feature list
+  mirror the repo README and the landing page at autocratico.it, and its mark is that project's own
+  favicon, stored at `public/autocratico.svg`. `src/components/portfolio/FeaturedProject.tsx`
+  renders it and locally overrides `--primary` (and `--ring` / `--glow-primary`) with the entry's
+  `brand` colour, so accent utilities inside the card adopt the project's brand instead of the site
   lime. That local-override trick is the pattern to follow for any future brand-colored block.
+  **sharp** held the slot until it stopped being self-hosted; it is hidden, not deleted — its entry
+  is in git history and `public/sharp.svg` is kept.
 - Two alpha cut-out portraits carry the page. `src/components/portfolio/HeroPortrait.tsx` is the
   hero one: a normal block above the headline on mobile, absolutely positioned bleeding off the
   bottom-right from `lg` up, where it is dimmed and desaturated behind the display type and carries
@@ -173,18 +176,19 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   marker simply goes static.
 - `CoversSection` is the manifesto and **opens the page**, ahead of the hero; it is unnumbered like
   the journal (its marker is a `✳`).
-  It deals the two poster covers in `covers` (`src/data/content.ts`) like stickers while the
-  headline writes itself, then strikes the last word and slams a lime stamp over it. Act one (back
-  cover, first line, scroll cue) is a time-based intro played on load, since there is no scroll
+  It deals one magazine cover, `cover` in `src/data/content.ts` (The Daily Commit), like a sticker
+  while the headline writes itself, then strikes the last word and slams a lime stamp over it. The
+  Italian "Rilascialo" poster is **not** dealt: it is the page backdrop, and a card of it on top read
+  as a clone. Act one (first line, scroll cue) is a time-based intro played on load, since there is no scroll
   before the first section; act two is scrubbed, pinned from the very top on desktop and over a
-  short range on phones. Its covers are not lazy-loaded, being the first paint. Because the hero is
+  short range on phones. The cover is not lazy-loaded, being dealt on the first scroll. Because the hero is
   second, its intro timeline waits on a `top 70%` ScrollTrigger and its lead is a scroll-triggered
   `SplitReveal`, not an `immediate` one; the portrait intro moves `y`, not `yPercent`, which the
   scroll drift owns. The stamp is
   **not** scrubbed — it plays and reverses whole from `onUpdate`, since a scrubbed slam reads as a
-  slow zoom. The cover in the reader's language is dealt last and lands on top. The stage tilts
-  under a fine pointer and shears with `scrollSignal.velocity`; a card opens full-size in a
-  `StickerDialog` (Lenis is stopped while it is open). Posters ship as
+  slow zoom. The stage tilts
+  under a fine pointer and shears with `scrollSignal.velocity`; the card opens full-size in a
+  `StickerDialog` (Lenis is stopped while it is open). The cover ships as
   `public/cover-<id>-{640,1200}.avif` + `-900.jpg`, cropped 48px a side to drop the black frame
   baked into the masters; the 20 MB PNG masters live in `drafts/covers/` and are git-ignored.
 - `src/components/motion/Magnetic.tsx` pulls a child toward the pointer (fine pointer, motion

@@ -578,12 +578,6 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Hovering the back cover pulls it out of the stack. */
-  .cover-card:hover,
-  .cover-card:focus-visible {
-    z-index: 5;
-  }
-
   .cover-lift {
     box-shadow: 0 30px 60px -20px oklch(0 0 0 / 0.7);
     transition: transform 0.5s var(--ease-duck), box-shadow 0.5s var(--ease-duck);
@@ -598,21 +592,6 @@
   .cover-card:focus-visible .cover-lift {
     outline: 2px solid var(--ring);
     outline-offset: 4px;
-  }
-
-  .cover-shade {
-    position: absolute;
-    inset: 0;
-    background: var(--background);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s var(--ease-duck);
-  }
-
-  /* GSAP writes the resting dim inline, so the hover has to outrank it. */
-  .cover-card:hover .cover-shade,
-  .cover-card:focus-visible .cover-shade {
-    opacity: 0 !important;
   }
 
   /* Oversized so the pointer can drag the hotspot around without an edge. */

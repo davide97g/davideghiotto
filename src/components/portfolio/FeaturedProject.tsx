@@ -10,25 +10,24 @@ import { HoloButton } from "@/components/ui/holo-button";
 import { StickerCard } from "@/components/ui/sticker-card";
 
 /**
- * Inside this block `--primary` is swapped for sharp's own violet, so every
- * accent utility picks up the project's brand instead of the site lime.
+ * Inside this block `--primary` is swapped for the project's own accent, so
+ * every accent utility picks up its brand instead of the site lime.
  *
- * A complete colour, not the `247 100% 71%` channel triple this used to be:
- * since the move to Tailwind v4 the token is consumed as `var(--primary)`
- * directly rather than wrapped in `hsl()`, so a bare triple is an invalid
- * value. It fails silently — `bg-primary` computes to nothing and the button
- * renders near-black text on the near-black card.
+ * It has to be a complete colour: the token is consumed as `var(--primary)`
+ * directly, so a bare `247 100% 71%` channel triple is an invalid value. It
+ * fails silently — `bg-primary` computes to nothing and the button renders
+ * near-black text on the near-black card.
  *
  * `--glow-primary` has to come along. It is a whole box-shadow string with the
  * accent baked in, so leaving it alone lit this card's hover states in site
- * lime while everything else in them was violet.
+ * lime while everything else in them was the project's colour.
  */
-const sharpBrand = {
-  "--primary": "oklch(0.623 0.211 284)",
-  "--ring": "oklch(0.623 0.211 284)",
-  "--glow-primary":
-    "0 0 0 1px oklch(0.623 0.211 284 / 0.5), 0 12px 40px -12px oklch(0.623 0.211 284 / 0.6)",
-} as CSSProperties;
+const brandStyle = (c: string) =>
+  ({
+    "--primary": c,
+    "--ring": c,
+    "--glow-primary": `0 0 0 1px color-mix(in oklab, ${c} 50%, transparent), 0 12px 40px -12px color-mix(in oklab, ${c} 60%, transparent)`,
+  }) as CSSProperties;
 
 export default function FeaturedProject() {
   const { t } = useLanguage();
@@ -36,18 +35,17 @@ export default function FeaturedProject() {
 
   return (
     <StickerCard asChild glass ticks className="relative gap-0 overflow-hidden p-7 md:p-12">
-      <article style={sharpBrand}>
-      {/* Brand wash, matching the landing page's violet/cyan glow. */}
+      <article style={brandStyle(p.brand)}>
+      {/* Brand wash, in the project accent. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full opacity-[0.18] blur-3xl"
-        style={{ background: "radial-gradient(circle, #7c6cff 0%, #4fd1e8 55%, transparent 72%)" }}
+        className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[radial-gradient(circle,var(--primary)_0%,transparent_70%)] opacity-[0.12] blur-3xl"
       />
 
       <Reveal className="relative flex flex-wrap items-center gap-4" stagger={0.07}>
-        <img src={p.logo} alt="sharp logo" className="h-11 w-11 shrink-0" />
+        <img src={p.logo} alt={`${p.name} logo`} className="h-11 w-11 shrink-0 rounded-[22%]" />
         <div>
-          <h3 className="font-display text-3xl font-bold lowercase tracking-tight md:text-4xl">
+          <h3 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
             {p.name}
           </h3>
         </div>
@@ -75,7 +73,7 @@ export default function FeaturedProject() {
                 href={p.site}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackOutbound("sharp_site", p.site)}
+                onClick={() => trackOutbound("featured_site", p.site)}
               >
                 {t(ui.work.visit)} <ArrowUpRight size={14} />
               </a>
@@ -89,7 +87,7 @@ export default function FeaturedProject() {
                 href={p.repo}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackOutbound("sharp_repo", p.repo)}
+                onClick={() => trackOutbound("featured_repo", p.repo)}
               >
                 <Github size={14} /> {t(ui.work.source)}
               </a>
@@ -98,19 +96,19 @@ export default function FeaturedProject() {
 
           <Reveal
             as="dl"
-            selector=".sharp-meta"
+            selector=".featured-meta"
             stagger={0.06}
             className="mt-10 grid grid-cols-3 gap-px border border-border bg-border"
           >
-            <div className="sharp-meta bg-background p-4">
+            <div className="featured-meta bg-background p-4">
               <dt className="hud mb-2">Version</dt>
               <dd className="font-mono text-sm text-foreground">{p.version}</dd>
             </div>
-            <div className="sharp-meta bg-background p-4">
+            <div className="featured-meta bg-background p-4">
               <dt className="hud mb-2">License</dt>
               <dd className="font-mono text-sm text-foreground">{p.license}</dd>
             </div>
-            <div className="sharp-meta bg-background p-4">
+            <div className="featured-meta bg-background p-4">
               <dt className="hud mb-2">Price</dt>
               <dd className="font-mono text-sm text-primary">{p.price}</dd>
             </div>

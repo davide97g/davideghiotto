@@ -173,7 +173,7 @@ export const ui = {
     featuredLabel: { en: "Current focus", it: "Progetto attuale" },
     featuresLabel: { en: "Inside", it: "Cosa contiene" },
     stackLabel: { en: "Built with", it: "Costruito con" },
-    visit: { en: "Open sharp", it: "Apri sharp" },
+    visit: { en: "Open Autocratico", it: "Apri Autocratico" },
     source: { en: "Source", it: "Codice" },
     others: { en: "Also shipping", it: "Altri progetti" },
     preview: { en: "Preview", it: "Anteprima" },
@@ -471,95 +471,78 @@ export const marqueeTerms = [
 ];
 
 /**
- * Pinned lead project. Copy, feature list and version mirror the official
- * landing page at sharp.davideghiotto.it; the mark is the project's own
- * favicon (a violet `#` on #0e0e11), kept in public/sharp.svg.
- */
-/**
- * The two poster covers in the manifesto interlude. `lang` is the language the
- * poster itself is written in: the one matching the reader lands on top.
- * Encoded from the masters in `drafts/covers/` (frame cropped, 48px a side) to
+ * The magazine cover dealt in the manifesto opener. The Italian poster that
+ * used to sit beside it is the home page backdrop now, so it is not dealt.
+ * Encoded from the master in `drafts/covers/` (frame cropped, 48px a side) to
  * `public/cover-<id>-{640,1200}.avif` plus a `-900.jpg` fallback.
  */
-export const covers = [
-  {
-    id: "ship-it",
-    lang: "it" as LangId,
-    src: "/cover-ship-it",
-    title: { en: "Ship it before it's perfect", it: "Rilascialo prima che sia perfetto" },
-    alt: {
-      en: "Black-and-white poster: Davide on a wooden chair, pen in hand, under hand-lettered lime type reading 'Rilascialo prima che sia perfetto. Il perfetto non arriva mai.'",
-      it: "Poster in bianco e nero: Davide seduto su una sedia di legno, penna in mano, sotto la scritta lime 'Rilascialo prima che sia perfetto. Il perfetto non arriva mai.'",
-    },
+export const cover = {
+  id: "commit-en",
+  lang: "en" as LangId,
+  src: "/cover-commit-en",
+  title: { en: "The Daily Commit", it: "The Daily Commit" },
+  alt: {
+    en: "Magazine cover 'The Daily Commit': Davide holding a newspaper headlined 'Shipped.' while pages fly around him.",
+    it: "Copertina di rivista 'The Daily Commit': Davide regge un giornale con il titolo 'Shipped.' mentre le pagine volano intorno a lui.",
   },
-  {
-    id: "commit-en",
-    lang: "en" as LangId,
-    src: "/cover-commit-en",
-    title: { en: "The Daily Commit", it: "The Daily Commit" },
-    alt: {
-      en: "Magazine cover 'The Daily Commit': Davide holding a newspaper headlined 'Shipped.' while pages fly around him.",
-      it: "Copertina di rivista 'The Daily Commit': Davide regge un giornale con il titolo 'Shipped.' mentre le pagine volano intorno a lui.",
-    },
-  },
-];
+};
 
+/**
+ * Pinned lead project, the one in active development. Copy, feature list and
+ * version mirror the repo README and the landing page at autocratico.it; the
+ * mark is the project's own favicon (an off-white A on #1a1a1a), kept in
+ * public/autocratico.svg. sharp held this slot until it stopped being
+ * self-hosted; it is in git history if it comes back.
+ */
 export const featuredProject = {
-  name: "sharp",
-  version: "v0.3.0",
-  license: "AGPL-3.0",
-  price: "$0",
-  logo: "/sharp.svg",
-  site: "https://sharp.davideghiotto.it/",
-  repo: "https://github.com/davide97g/sharp",
+  name: "Autocratico",
+  version: "v0.1.0",
+  license: "MIT",
+  price: "€0",
+  logo: "/autocratico.svg",
+  site: "https://autocratico.it/",
+  repo: "https://github.com/davide97g/autocratico",
+  /** Its own accent, swapped in for `--primary` inside the card. Autocratico ships monochrome. */
+  brand: "oklch(0.93 0 0)",
   tagline: {
-    en: "The self-hosted Slack alternative.",
-    it: "L'alternativa a Slack, self-hosted.",
+    en: "The private register for your Italian bureaucracy.",
+    it: "Il registro privato della tua burocrazia.",
   },
   description: {
-    en: "Chat, collaborative docs, whiteboards, kanban boards, voice and video calls, a calendar, a Linear-lite task tracker and an AI assistant — one open-source container on your own server. No per-seat pricing, no history caps, and your data never leaves your infrastructure.",
-    it: "Chat, documenti collaborativi, whiteboard, kanban, chiamate voce e video, calendario, un task tracker in stile Linear e un assistente AI — un solo container open-source sul tuo server. Nessun prezzo per utente, nessun limite di cronologia, e i dati non lasciano mai la tua infrastruttura.",
+    en: "Deadlines, payments, checks and cases, kept in plain-text files and shown in a web app you install on phone and desktop. An always-on Claude Code agent files whatever arrives — Gmail, forwarded PEC, photos, Telegram messages, WhatsApp exports — updates the deadlines, opens the cases and pings you on Telegram. Every change it makes is a git commit you can undo.",
+    it: "Scadenze, pagamenti, controlli e pratiche, tenuti in file di testo e mostrati in una web app da installare su telefono e desktop. Un agente Claude Code sempre acceso archivia tutto quello che arriva — Gmail, PEC inoltrate, foto, messaggi Telegram, export di WhatsApp — aggiorna le scadenze, apre le pratiche e ti avvisa su Telegram. Ogni modifica è un commit git che puoi annullare.",
   },
   features: [
     {
-      en: "Chat, threads & DMs with presence and full-text search",
-      it: "Chat, thread e DM con presenza e ricerca full-text",
+      en: "One inbox for everything: several Gmail accounts, PEC, photos, PDFs, voice notes, WhatsApp exports",
+      it: "Un'inbox per tutto: più account Gmail, PEC, foto, PDF, note vocali, export di WhatsApp",
     },
     {
-      en: "Collaborative docs with real-time co-editing (Yjs)",
-      it: "Documenti collaborativi con co-editing in tempo reale (Yjs)",
+      en: "Always-on agent (Claude Code, headless) that files each item in about a minute",
+      it: "Agente sempre acceso (Claude Code headless) che archivia ogni documento in circa un minuto",
     },
     {
-      en: "Infinite canvas and kanban boards",
-      it: "Canvas infinita e board kanban",
+      en: "Every change is a git commit, reviewed and undone from the Activity log",
+      it: "Ogni modifica è un commit git, da rivedere e annullare nel registro Attività",
     },
     {
-      en: "Voice, video and screen share up to 25 participants (LiveKit SFU)",
-      it: "Voce, video e screen share fino a 25 partecipanti (LiveKit SFU)",
+      en: "Deadlines coloured by urgency, recurring ones expanded, .ics export for any calendar",
+      it: "Scadenze colorate per urgenza, ricorrenze espanse, export .ics per qualsiasi calendario",
     },
     {
-      en: "Sharpy AI assistant with permission-aware workspace RAG",
-      it: "Assistente AI Sharpy con RAG sul workspace che rispetta i permessi",
+      en: "Telegram reminders at 7 and 3 days, with personal data masked",
+      it: "Promemoria Telegram a 7 e a 3 giorni, con i dati personali oscurati",
     },
     {
-      en: "Tasks and projects with GitHub sync, calendar with Google sync",
-      it: "Task e progetti con sync GitHub, calendario con sync Google",
+      en: "Chat with Claude over your own files, from the app, ⌘K or Telegram",
+      it: "Chat con Claude sui tuoi file, dall'app, da ⌘K o da Telegram",
     },
     {
-      en: "Optional end-to-end encrypted DMs and passkeys",
-      it: "DM con crittografia end-to-end opzionale e passkey",
+      en: "No database: plain-text files on your own server, and a privacy mode for demos",
+      it: "Nessun database: file di testo sul tuo server, e una modalità privacy per le demo",
     },
   ],
-  stack: [
-    "Rust (axum)",
-    "Postgres 16 + pgvector",
-    "Redis",
-    "LiveKit",
-    "React",
-    "Vite",
-    "Tauri 2",
-    "Astro",
-  ],
+  stack: ["React 19", "Vite", "Tailwind v4", "Hono", "Node 24", "Python", "Claude Code", "PWA"],
 };
 
 export const projects: Project[] = [
