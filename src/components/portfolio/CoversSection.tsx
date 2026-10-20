@@ -37,7 +37,7 @@ const SHARDS = Array.from({ length: 10 }, (_, i) => (i / 10) * Math.PI * 2 + 0.3
  * Reduced motion: everything sits in its final state.
  *
  * Unnumbered like the journal band (its marker is a ✳), so the numbered
- * sections still read 01 → 05.
+ * sections still read 01 → 06.
  */
 export default function CoversSection() {
   const { lang, t } = useLanguage();

@@ -19,6 +19,7 @@ arrives as an optional dependency and the build works without it.
 - `bun run test:watch` — Vitest watch mode.
 - Run one test file: `bunx vitest run src/path/to/file.test.ts` (or `... -t "case name"` to filter by test name).
 - `bun run fetch:youtube` — regenerates the `videos` array in `src/data/youtube.ts` from the channel RSS feed.
+- `bun run fetch:prints` — regenerates `src/data/prints.snapshot.json`, the static fallback of the 3D section (set `GITHUB_TOKEN` to lift the 60/hour limit).
 - `bun run sitemap` — regenerates `public/sitemap.xml` from `src/data/journal.ts` (`scripts/generate-sitemap.mjs`). `build` and `build:dev` run it first, so the committed file only goes stale if a note is added without building; `src/data/sitemap.test.ts` catches that.
 - `bun run preview` — preview the production build.
 
@@ -174,7 +175,7 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   URL from `VITE_RAL_API_URL` via `src/lib/api.ts`.
 - Sections are in `src/components/portfolio/` and are composed in fixed order by `Index.tsx`:
   `CoversSection` (detached, the page opener) → `HeroSection` → `ChannelSection` (01) → `WorkSection` (02, featured project + numbered list) →
-  `JournalSection` (detached) → `StackSection` (03) → `PathSection` (04) → `ProfileSection` (05) →
+  `PrintsSection` (03, 3D prints) → `JournalSection` (detached) → `StackSection` (04) → `PathSection` (05) → `ProfileSection` (06) →
   `Footer`, with `Marquee` strips between. Section numbering is hardcoded in each component;
   renumber if you reorder.
 - Every section opens with a **`DuckSectionMarker`** — dot, index, label, dissolving rule — wrapped
@@ -206,9 +207,51 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
   because the outer element already owns the intro and the scroll drift.
 - `JournalSection` is the detached band: full-bleed on `bg-surface/45` between top and bottom rules,
   and deliberately **unnumbered** (its marker is a `◢` instead of an index) so the numbered sections
-  still read 01 → 05. It lists `journalPosts` from `src/data/journal.ts` — each row linking to
+  still read 01 → 06. It lists `journalPosts` from `src/data/journal.ts` — each row linking to
   `/journal/:slug` — plus the `journalPlatforms` rail (LinkedIn, YouTube, GitHub, dacoder.it). With
   no posts it falls back to a dashed empty state and a LinkedIn CTA rather than filler.
+
+### 3D prints
+
+- `PrintsSection` (03, `#prints`, nav label "3D") renders the GitHub repos tagged with the
+  **`3d-printing` topic** — nothing else is scanned. Opting a project in means adding the topic and
+  committing its `.stl` / `.3mf` files; the site picks them up at runtime.
+- Discovery is `src/lib/printsGithub.ts`: one `GET /users/davide97g/repos` (filtered on `topics`),
+  then one recursive git tree per tagged repo. Models are fetched from `raw.githubusercontent.com`,
+  which is CORS-open and not rate limited. An optional **`3d.json`** at the repo root sets `title`,
+  a localized `summary`, `paths` (folder or file prefixes to include) and per-file `name` / `color`
+  (a `#rrggbb` filament hex); without it every model in the tree is listed under the repo name and
+  description. The file is pure (types-only imports, `fetch` injected) because
+  `scripts/fetch-prints.mjs` runs it under Node type stripping.
+- No backend in the loop, unlike YouTube: GitHub sends CORS headers. `usePrints()`
+  (`src/lib/printsLive.ts`) calls GitHub from the browser, caches the result in `sessionStorage` for
+  15 min so reloads do not spend the unauthenticated 60/hour, and falls back to
+  `src/data/prints.snapshot.json` on any failure. A live answer of zero repos is trusted: the empty
+  state (`EmptyPond` pointing at the topic) is what an untagged account looks like.
+- The viewer is three.js, **lazy**: `src/components/prints/printScene.ts` is its own ~150 KB gzip
+  chunk, imported when the viewer comes within 600px of the viewport. Never import three anywhere
+  else. One renderer per viewer, reused across parts; it renders only while the canvas intersects
+  the viewport, and under reduced motion there is no loop at all (a frame per orbit change, no
+  auto-rotate, no reveal).
+- Loading plays a "print" reveal: a clipping plane rises from the bed and a back-face twin of the
+  mesh paints the cut face lime. The camera fit holds the circle the footprint sweeps under
+  auto-rotate, in both fields of view — fitting the axis-aligned box crops wide parts mid-turn on a
+  phone. Zoom and pan are off (the wheel belongs to Lenis) and the canvas keeps `touch-action:
+  pan-y` so a vertical swipe still scrolls the page.
+- Files over 12 MB wait for a click. Prefer plain STL exports over sliced Bambu plates: a plate
+  3MF carries the G-code and thumbnails (the keybordy caps plate is 1.1 MB zipped for 38k
+  triangles). Bambu project 3MFs with `3D/Objects/*.model` sub-models load fine.
+- Empty, loading, error and "no WebGL" states use **`StateSticker`** (`src/components/StateSticker.tsx`):
+  six die-cut stickers of the logo character — `empty`, `loading`, `error`, `success`, `notfound`,
+  `offline` — in `public/stickers/` as 640 px WebP with alpha plus a 320 px PNG fallback. They were
+  generated as one set with Codex image generation (`codex exec --enable image_generation
+  --image=<logo> < prompt`); the prompt is `drafts/stickers/PROMPT.md` and the 1254 px masters
+  beside it are git-ignored. Reuse a sticker for a new state rather than drawing an icon, and
+  regenerate the whole set from that prompt if a new state is needed, so the six stay one voice.
+  `NotFound` wears `notfound`. AVIF is not an option here: libsvtav1 cannot encode alpha.
+- The filament swatches are the four Bambu PLA Basic spools from
+  `~/personal/projects/bambulab/filament-pla-basic.md` (`filaments` in `src/data/prints.ts`);
+  `--primary` is hardcoded as `#CBDA42` in the scene, since a three `Color` cannot read an oklch token.
 
 ### The journal
 
@@ -254,8 +297,9 @@ Two systems carry the rest: **the scroll choreography** and **the bilingual copy
 - Mobile-first apps get a triptych instead of one desktop frame: screenshot the phone-width column
   three times, then compose the panels onto a canvas painted the app's own background —
   `shot-calorico.avif` is three `crop=450:1000:225:0,scale=327:726` panels on `0xdef0c4`.
-- The nav switches to the burger menu below `lg` (not `md`): six labels plus the name and language
-  toggle do not fit a 768 px bar.
+- The nav switches to the burger menu below `lg` (not `md`): seven labels plus the name and language
+  toggle do not fit a 768 px bar. Between `lg` and `xl` the name shows as its initials ("DG") and the
+  gaps drop to `gap-4` — at 1024 px the full name pushed the Italian RAL link onto two lines.
 - **`socials` in `src/data/content.ts` is the one link set** — LinkedIn, YouTube, Instagram, GitHub, dacoder.it,
   in render order. `journalPlatforms` maps over it and only adds the per-platform `focus` copy, so a
   changed handle is a one-line change. `src/components/SocialLinks.tsx` renders it two ways:

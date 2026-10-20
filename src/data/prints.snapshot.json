@@ -1,0 +1,95 @@
+{
+  "syncedAt": "2026-10-20T21:37:47.596Z",
+  "projects": [
+    {
+      "repo": "keybordy",
+      "url": "https://github.com/davide97g/keybordy",
+      "branch": "main",
+      "title": "keybordy MP",
+      "summary": {
+        "en": "The printed shell of the ESP32-S3 macropad that listens: a black tray and deck, a gray switch plate, white and gray keycaps, and a green talk key. Generated in CadQuery, printed on a Bambu Lab A1.",
+        "it": "Il guscio stampato del macropad ESP32-S3 che ascolta: tray e deck neri, plate grigia, keycap bianche e grigie e un tasto talk verde. Generato in CadQuery, stampato su una Bambu Lab A1."
+      },
+      "pushedAt": "2026-10-20T21:37:34Z",
+      "models": [
+        {
+          "path": "cad/out/stl/tray.stl",
+          "name": "Tray",
+          "format": "stl",
+          "size": 2834184,
+          "url": "https://raw.githubusercontent.com/davide97g/keybordy/main/cad/out/stl/tray.stl",
+          "color": "#000000"
+        },
+        {
+          "path": "cad/out/stl/deck.stl",
+          "name": "Deck",
+          "format": "stl",
+          "size": 1259484,
+          "url": "https://raw.githubusercontent.com/davide97g/keybordy/main/cad/out/stl/deck.stl",
+          "color": "#000000"
+        },
+        {
+          "path": "cad/out/stl/plate.stl",
+          "name": "Switch plate",
+          "format": "stl",
+          "size": 1200684,
+          "url": "https://raw.githubusercontent.com/davide97g/keybordy/main/cad/out/stl/plate.stl",
+          "color": "#8E9089"
+        },
+        {
+          "path": "cad/out/stl/cap1.stl",
+          "name": "Keycap 1u",
+          "format": "stl",
+          "size": 101784,
+          "url": "https://raw.githubusercontent.com/davide97g/keybordy/main/cad/out/stl/cap1.stl",
+          "color": "#FFFFFF"
+        },
+        {
+          "path": "cad/out/stl/cap15.stl",
+          "name": "Keycap 1.5u",
+          "format": "stl",
+          "size": 101484,
+          "url": "https://raw.githubusercontent.com/davide97g/keybordy/main/cad/out/stl/cap15.stl",
+          "color": "#8E9089"
+        },
+        {
+          "path": "cad/out/stl/cap2_talk.stl",
+          "name": "Talk key",
+          "format": "stl",
+          "size": 241084,
+          "url": "https://raw.githubusercontent.com/davide97g/keybordy/main/cad/out/stl/cap2_talk.stl",
+          "color": "#00AE42"
+        },
+        {
+          "path": "cad/out/stl/knob.stl",
+          "name": "Knob",
+          "format": "stl",
+          "size": 58884,
+          "url": "https://raw.githubusercontent.com/davide97g/keybordy/main/cad/out/stl/knob.stl",
+          "color": "#000000"
+        }
+      ]
+    },
+    {
+      "repo": "homelab",
+      "url": "https://github.com/davide97g/homelab",
+      "branch": "main",
+      "title": "GMKtec M6 stand",
+      "summary": {
+        "en": "Height-extension stand for the GMKtec NucBox M6 Ultra in the homelab. A parametric CadQuery rebuild of mintonette's K6 stand, sized for the 128.8 x 127 mm chassis.",
+        "it": "Rialzo per il GMKtec NucBox M6 Ultra dell'homelab. Ricostruzione parametrica in CadQuery dello stand K6 di mintonette, ridimensionata per lo chassis da 128,8 x 127 mm."
+      },
+      "pushedAt": "2026-10-20T21:37:01Z",
+      "models": [
+        {
+          "path": "hardware/m6-stand/GMKtec_NucBox_M6_height_extension_stand.3mf",
+          "name": "M6 stand",
+          "format": "3mf",
+          "size": 495683,
+          "url": "https://raw.githubusercontent.com/davide97g/homelab/main/hardware/m6-stand/GMKtec_NucBox_M6_height_extension_stand.3mf",
+          "color": "#8E9089"
+        }
+      ]
+    }
+  ]
+}

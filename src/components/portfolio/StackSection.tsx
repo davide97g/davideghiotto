@@ -12,7 +12,7 @@ export default function StackSection() {
       {/* Reveal has to stay the outer element: it needs a ref, and it
           staggers the parts of the marker rather than the marker itself. */}
       <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
-        <DuckSectionMarker index="03" className="border-b border-border pb-6">
+        <DuckSectionMarker index="04" className="border-b border-border pb-6">
           {t(ui.stack.label)}
         </DuckSectionMarker>
       </Reveal>

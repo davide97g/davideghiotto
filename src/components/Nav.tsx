@@ -10,6 +10,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 const LINKS = [
   { id: "channel", label: ui.nav.channel },
   { id: "work", label: ui.nav.work },
+  { id: "prints", label: ui.nav.prints },
   { id: "journal", label: ui.nav.journal },
   { id: "stack", label: ui.nav.stack },
   { id: "path", label: ui.nav.path },
@@ -87,23 +88,25 @@ export default function Nav() {
       ref={shell}
       className="fixed inset-x-0 top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl"
     >
-      <div className="section-container flex h-14 items-center justify-between gap-6">
+      <div className="section-container flex h-14 items-center justify-between gap-4 xl:gap-6">
         <button
           type="button"
           onClick={goHome}
           className="hud flex items-center gap-2.5 whitespace-nowrap text-foreground"
         >
           <img src="/logo-mark.png" alt="" width={32} height={32} className="size-8" />
-          <span className="hidden sm:inline">{bio.name}</span>
-          <span className="sm:hidden">DG</span>
+          {/* Seven labels and the RAL link fill a 1024 px bar, so between lg and
+              xl the name gives way to its initials, as it does on a phone. */}
+          <span className="hidden sm:inline lg:hidden xl:inline">{bio.name}</span>
+          <span className="sm:hidden lg:inline xl:hidden">DG</span>
         </button>
 
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-4 lg:flex xl:gap-6">
           {LINKS.map((link) => (
             <button
               key={link.id}
               onClick={() => goTo(link.id)}
-              className="hud link-wipe transition-colors hover:text-foreground"
+              className="hud link-wipe whitespace-nowrap transition-colors hover:text-foreground"
             >
               {t(link.label)}
             </button>
@@ -114,7 +117,7 @@ export default function Nav() {
               setOpen(false);
               trackEvent("nav_click", { target: "ral" });
             }}
-            className="hud link-wipe text-primary transition-colors hover:text-foreground"
+            className="hud link-wipe whitespace-nowrap text-primary transition-colors hover:text-foreground"
           >
             {t(ui.ral.cta)}
           </Link>

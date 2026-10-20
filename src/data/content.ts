@@ -139,6 +139,7 @@ export const ui = {
   nav: {
     channel: { en: "Channel", it: "Canale" },
     work: { en: "Work", it: "Progetti" },
+    prints: { en: "3D", it: "3D" },
     journal: { en: "Journal", it: "Diario" },
     stack: { en: "Stack", it: "Stack" },
     path: { en: "Trajectory", it: "Percorso" },
@@ -238,6 +239,45 @@ export const ui = {
     minutes: { en: "min read", it: "min di lettura" },
     watch: { en: "Watch the source live", it: "Guarda la live sorgente" },
     alsoOn: { en: "Also published on", it: "Pubblicato anche su" },
+  },
+  prints: {
+    label: { en: "3D prints", it: "Stampa 3D" },
+    title: { en: "Designed in code, printed in PLA.", it: "Disegnati in codice, stampati in PLA." },
+    lead: {
+      en: "Parametric CAD, sliced for a Bambu Lab A1 and printed at home. Every model here is read live from its GitHub repo: push a new STL and it shows up.",
+      it: "CAD parametrico, slicing per una Bambu Lab A1 e stampa a casa. Ogni modello qui è letto in tempo reale dal suo repo GitHub: pusho un nuovo STL e compare.",
+    },
+    projects: { en: "Projects", it: "Progetti" },
+    parts: { en: "Parts", it: "Pezzi" },
+    /** Counted: "1 part", "7 parts". */
+    partCount: { en: ["part", "parts"], it: ["pezzo", "pezzi"] },
+    filament: { en: "Filament", it: "Filamento" },
+    size: { en: "Size", it: "Ingombro" },
+    triangles: { en: "Triangles", it: "Triangoli" },
+    file: { en: "File", it: "File" },
+    updated: { en: "Updated", it: "Aggiornato" },
+    source: { en: "Open on GitHub", it: "Apri su GitHub" },
+    download: { en: "Download", it: "Scarica" },
+    hint: { en: "Drag to rotate", it: "Trascina per ruotare" },
+    loading: { en: "Loading model", it: "Carico il modello" },
+    heavy: { en: "Large file", it: "File pesante" },
+    load: { en: "Load", it: "Carica" },
+    error: { en: "This model did not load.", it: "Il modello non si è caricato." },
+    retry: { en: "Retry", it: "Riprova" },
+    unsupported: {
+      en: "This browser cannot draw WebGL, so the model stays a download.",
+      it: "Questo browser non disegna WebGL, quindi il modello resta un download.",
+    },
+    emptyLabel: { en: "Bed clear · 0 parts", it: "Piatto libero · 0 pezzi" },
+    empty: {
+      en: "First prints are still on the bed.",
+      it: "Le prime stampe sono ancora sul piatto.",
+    },
+    emptyHint: {
+      en: "Every model here is pulled straight from GitHub, so the next push lands on this plate. Until then, the CAD is in the repos.",
+      it: "Ogni modello qui arriva direttamente da GitHub, quindi il prossimo push finisce su questo piatto. Nel frattempo il CAD è nei repo.",
+    },
+    emptyAction: { en: "Browse the repos", it: "Sfoglia i repo" },
   },
   stack: {
     label: { en: "Stack", it: "Stack" },
@@ -894,14 +934,15 @@ export const experiences: Experience[] = [
 
 /**
  * Section render order, and the anchor ids the nav points at. `journal` is the
- * detached band between Work and Stack — it carries no section number, which is
- * why the numbered sections still read 01 → 05.
+ * detached band between 3D prints and Stack — it carries no section number, which
+ * is why the numbered sections still read 01 → 06.
  */
 export const sectionOrder = [
   "covers",
   "hero",
   "channel",
   "work",
+  "prints",
   "journal",
   "stack",
   "path",

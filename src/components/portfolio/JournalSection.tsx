@@ -27,7 +27,7 @@ const linkedin = journalPlatforms.find((p) => p.id === "linkedin") ?? journalPla
 /**
  * Detached band, sitting between Work (02) and Stack (03): a full-bleed strip on a
  * raised surface with no section number, so the numbered sections still read
- * 01 → 05. Lists the journal posts (each a route under `/journal/:slug`) and the
+ * 01 → 06. Lists the journal posts (each a route under `/journal/:slug`) and the
  * platforms they are cross-posted on.
  */
 export default function JournalSection() {

@@ -16,7 +16,7 @@ export default function ProfileSection() {
       {/* Reveal has to stay the outer element: it needs a ref, and it
           staggers the parts of the marker rather than the marker itself. */}
       <Reveal selector="[data-slot='duck-section-marker'] > *" stagger={0.06}>
-        <DuckSectionMarker index="05" className="border-b border-border pb-6">
+        <DuckSectionMarker index="06" className="border-b border-border pb-6">
           {t(ui.profile.label)}
         </DuckSectionMarker>
       </Reveal>

@@ -882,8 +882,44 @@
   .mobile-nav-item:nth-child(5) { animation-delay: 0.1s; }
   .mobile-nav-item:nth-child(6) { animation-delay: 0.125s; }
   .mobile-nav-item:nth-child(7) { animation-delay: 0.15s; }
-  /* The social set, last in the drawer. */
   .mobile-nav-item:nth-child(8) { animation-delay: 0.175s; }
+  /* The social set, last in the drawer. */
+  .mobile-nav-item:nth-child(9) { animation-delay: 0.2s; }
+
+  /* The empty 3D section: a print plate, 10 mm-ish cells that fade out toward
+     the edges so the sticker sits on a lit patch of bed. */
+  .print-bed {
+    background-image:
+      radial-gradient(ellipse at 30% 50%, color-mix(in oklab, var(--primary) 7%, transparent), transparent 60%),
+      linear-gradient(color-mix(in oklab, var(--border) 45%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--border) 45%, transparent) 1px, transparent 1px);
+    background-size: 100% 100%, 28px 28px, 28px 28px;
+    background-position: center, -1px -1px, -1px -1px;
+  }
+
+  /* A spool on the 3D viewer. The fill is the filament hex, set inline: it is
+     data, not a token. */
+  .filament-swatch {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: transform 0.25s var(--ease-out-soft), box-shadow 0.25s var(--ease-out-soft);
+  }
+
+  .filament-swatch:hover {
+    transform: scale(1.12);
+  }
+
+  .filament-swatch[aria-pressed="true"] {
+    box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--primary);
+  }
+
+  .filament-swatch:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
 
   .stack-group {
     transition: background-color 0.35s var(--ease-out-soft), transform 0.35s var(--ease-out-soft);
