@@ -6,8 +6,10 @@ import { getRalPayload } from "./data.js";
 import {
   bumpOtpAttempts,
   clearOtp,
+  countRecentOutcomes,
   getOtp,
   getValidUnlock,
+  ipsSeenWith,
   listEmailActivity,
   listRequests,
   logRequestDetails,
@@ -24,11 +26,13 @@ import {
   checkMailDomain,
   isAllowedDomain,
   isDisposableEmail,
+  isMainstreamHosted,
   isValidEmailFormat,
   normalizeEmail,
 } from "./emailPolicy.js";
 import { describeVerdict, judgeEmail } from "./jev.js";
 import { generateOtp, hashOtp, signSession, verifySession } from "./otp.js";
+import { classifyMailbox, loadOwnerEmails, splitIps, type Label, type Who } from "./visitors.js";
 import { getYoutubeSnapshot } from "./youtube.js";
 
 const emailBody = z.object({
@@ -129,6 +133,19 @@ const LIMITS = {
 } as const;
 
 /**
+ * Outcomes that mean "this caller reached for a throwaway inbox". One of them
+ * puts the IP on probation for THROWAWAY_PROBATION_HOURS — including the
+ * probation rejection itself, so someone cycling domains keeps the window open.
+ */
+const THROWAWAY_OUTCOMES = [
+  "disposable_domain",
+  "disposable_mx",
+  "jev_disposable",
+  "throwaway_retry",
+] as const;
+const THROWAWAY_PROBATION_HOURS = 24;
+
+/**
  * Seconds until one slot frees up, given the in-window hit timestamps (oldest
  * first). The hit that matters is the one at `length - limit`: once it ages out
  * of the window there is room for a new attempt.
@@ -193,51 +210,179 @@ const escapeHtml = (value: unknown) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-function adminHtml(
-  totals: ReturnType<typeof requestTotals>,
+type Labeled<T> = Label & { throwaway: boolean } & T;
+
+/**
+ * Tag every mailbox and event as you / test / real. An event inherits its
+ * mailbox's label; one whose mailbox fell outside the rollup is judged alone.
+ */
+function labelActivity(
   emails: ReturnType<typeof listEmailActivity>,
   recent: ReturnType<typeof listRequests>
+) {
+  const ownerEmails = loadOwnerEmails();
+  const owner = { emails: ownerEmails, ips: new Set(ipsSeenWith([...ownerEmails])) };
+
+  const mailboxes = (emails as Record<string, unknown>[]).map(
+    (row): Labeled<Record<string, unknown>> => {
+      const label = classifyMailbox(
+        {
+          email: String(row.email),
+          scripted: row.scripted as number | null,
+          ips: splitIps(row.ips),
+        },
+        owner
+      );
+      // Tried a throwaway, or used one a later list update caught.
+      const { ips, scripted, throwaway, ...rest } = row;
+      return {
+        ...label,
+        throwaway: Boolean(throwaway) || isDisposableEmail(String(row.email)),
+        ...rest,
+      };
+    }
+  );
+
+  const byMailbox = new Map(mailboxes.map((m) => [String(m.email), m]));
+  const events = recent.map((row) => {
+    const key = row.canonical_email ?? row.email;
+    const known = key ? byMailbox.get(key) : undefined;
+    const label: Label & { throwaway: boolean } = known
+      ? { who: known.who, why: known.why, throwaway: known.throwaway }
+      : key
+        ? {
+            ...classifyMailbox(
+              {
+                email: key,
+                scripted: Boolean(row.user_agent && !row.user_agent.startsWith("Mozilla/")),
+                ips: row.ip ? [row.ip] : [],
+              },
+              owner
+            ),
+            throwaway: false,
+          }
+        : { who: "test", why: "no address", throwaway: false };
+    return { ...label, ...row };
+  });
+
+  return { mailboxes, events };
+}
+
+const WHO_ORDER: Who[] = ["real", "you", "test"];
+
+function whoBadge(row: { who: Who; throwaway: boolean }): string {
+  if (row.who === "real" && row.throwaway) {
+    return `<span class="badge badge-throwaway">real · throwaway</span>`;
+  }
+  return `<span class="badge badge-${row.who}">${row.who}</span>`;
+}
+
+function adminHtml(
+  totals: ReturnType<typeof requestTotals>,
+  mailboxes: Labeled<Record<string, unknown>>[],
+  events: Labeled<Record<string, unknown>>[],
+  query: Record<string, string | undefined>,
+  whoFilter: Who | undefined
 ): string {
   const table = (caption: string, rows: Record<string, unknown>[]) => {
     if (!rows.length) return `<h2>${caption}</h2><p class="empty">nothing yet</p>`;
-    const cols = Object.keys(rows[0]!);
+    const cols = Object.keys(rows[0]!).filter((c) => c !== "throwaway");
+    const labeled = "who" in rows[0]!;
     return `<h2>${caption}</h2><div class="scroll"><table>
       <thead><tr>${cols.map((c) => `<th>${escapeHtml(c)}</th>`).join("")}</tr></thead>
       <tbody>${rows
-        .map(
-          (row) =>
-            `<tr>${cols.map((c) => `<td>${escapeHtml(row[c])}</td>`).join("")}</tr>`
-        )
+        .map((row) => {
+          const cls = labeled
+            ? ` class="row-${row.who}${row.who === "real" && row.throwaway ? " row-throwaway" : ""}"`
+            : "";
+          const cells = cols.map((c) =>
+            c === "who"
+              ? `<td>${whoBadge(row as { who: Who; throwaway: boolean })}</td>`
+              : `<td>${escapeHtml(row[c])}</td>`
+          );
+          return `<tr${cls}>${cells.join("")}</tr>`;
+        })
         .join("")}</tbody>
     </table></div>`;
   };
+
+  // Links keep the token and every other filter; only `who` changes.
+  const link = (who: Who | undefined) => {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== undefined && key !== "who") params.set(key, value);
+    }
+    params.set("format", "html");
+    if (who) params.set("who", who);
+    return `?${escapeHtml(params.toString())}`;
+  };
+
+  const counts = Object.fromEntries(
+    WHO_ORDER.map((who) => [who, mailboxes.filter((m) => m.who === who).length])
+  ) as Record<Who, number>;
+  const throwaway = mailboxes.filter((m) => m.who === "real" && m.throwaway).length;
+
+  const chip = (who: Who | undefined, label: string, n: number) =>
+    `<a class="chip chip-${who ?? "all"}${whoFilter === who ? " is-on" : ""}" href="${link(who)}">
+      <b>${n}</b> ${label}</a>`;
+
+  const keep = <T extends { who: Who }>(rows: T[]) =>
+    whoFilter ? rows.filter((r) => r.who === whoFilter) : rows;
 
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>ral-gate — request log</title>
 <style>
-  :root { color-scheme: dark; }
+  :root { color-scheme: dark; --lime:#CBDA42; --amber:#FFB547; --you:#8FA8FF; }
   body { margin:0; padding:32px; background:#08090A; color:#F4F2F0;
          font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; }
-  h1 { font-size:15px; letter-spacing:.18em; text-transform:uppercase; color:#8CFF2E; margin:0 0 4px; }
+  h1 { font-size:15px; letter-spacing:.18em; text-transform:uppercase; color:var(--lime); margin:0 0 4px; }
   h2 { font-size:11px; letter-spacing:.18em; text-transform:uppercase;
        color:#9a9590; margin:32px 0 8px; }
   p.meta { color:#9a9590; margin:0 0 8px; }
   p.empty { color:#9a9590; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 4px; }
+  .chip { display:inline-flex; align-items:baseline; gap:8px; padding:8px 14px;
+          border:1px solid #23262a; border-radius:999px; color:#9a9590; text-decoration:none; }
+  .chip b { font-size:20px; color:#F4F2F0; }
+  .chip.is-on { border-color:#F4F2F0; }
+  .chip-real { border-color:var(--lime); color:var(--lime); }
+  .chip-real b { color:var(--lime); }
+  .chip-you b { color:var(--you); }
+  .legend { color:#6b6762; margin:6px 0 0; }
   .scroll { overflow-x:auto; border:1px solid #23262a; }
   table { border-collapse:collapse; width:100%; }
   th, td { padding:6px 10px; text-align:left; border-bottom:1px solid #191c20;
            white-space:nowrap; max-width:340px; overflow:hidden; text-overflow:ellipsis; }
-  th { color:#8CFF2E; font-weight:600; font-size:11px; letter-spacing:.1em;
+  th { color:var(--lime); font-weight:600; font-size:11px; letter-spacing:.1em;
        text-transform:uppercase; background:#0d0f11; position:sticky; top:0; }
   tr:hover td { background:#0d0f11; }
+  .badge { display:inline-block; padding:1px 8px; border-radius:999px; font-size:11px;
+           font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  .badge-real { background:var(--lime); color:#08090A; }
+  .badge-throwaway { background:var(--amber); color:#08090A; }
+  .badge-you { border:1px solid var(--you); color:var(--you); }
+  .badge-test { border:1px solid #3a3d42; color:#6b6762; }
+  tr.row-real td { background:color-mix(in oklab, var(--lime) 14%, transparent); font-weight:600; }
+  tr.row-real td:first-child { box-shadow:inset 3px 0 0 var(--lime); }
+  tr.row-throwaway td { background:color-mix(in oklab, var(--amber) 14%, transparent); }
+  tr.row-throwaway td:first-child { box-shadow:inset 3px 0 0 var(--amber); }
+  tr.row-you td, tr.row-test td { color:#5d5a56; }
+  tr.row-you:hover td, tr.row-test:hover td { color:#F4F2F0; }
 </style></head><body>
 <h1>ral-gate — request log</h1>
 <p class="meta">${escapeHtml(JSON.stringify(totals.totals))}</p>
+<div class="chips">
+  ${chip(undefined, "mailboxes", mailboxes.length)}
+  ${chip("real", throwaway ? `real (${throwaway} throwaway)` : "real", counts.real)}
+  ${chip("you", "you", counts.you)}
+  ${chip("test", "test", counts.test)}
+</div>
+<p class="legend">real = someone else, lit up · you = your mailbox or an IP it used · test = curl, placeholder name or reserved domain · the why column says which rule fired</p>
 ${table("by kind / outcome", totals.byOutcome as Record<string, unknown>[])}
-${table("mailboxes", emails as Record<string, unknown>[])}
-${table("recent events", recent as unknown as Record<string, unknown>[])}
+${table("mailboxes", keep(mailboxes))}
+${table("recent events", keep(events))}
 </body></html>`;
 }
 
@@ -308,6 +453,17 @@ export async function registerRoutes(app: FastifyInstance) {
     // a known throwaway backend. This is the layer that catches those.
     if (mail.disposableMx) {
       track(caller, { ...base, kind: "request", outcome: "disposable_mx", mxHosts });
+      return reply.code(400).send({ ok: false, error: "disposable" });
+    }
+
+    // Someone turned away for a throwaway address tends to come straight back
+    // with one the lists don't know yet — that is how yahipox240@deertees.com
+    // unlocked a minute after esmdsezogaqtijlute@vtmpj.net was refused. On
+    // probation, only a domain a mainstream provider receives mail for passes.
+    const onProbation =
+      countRecentOutcomes(caller.ip, THROWAWAY_OUTCOMES, hoursAgo(THROWAWAY_PROBATION_HOURS)) > 0;
+    if (onProbation && !isMainstreamHosted(domainOf(email) ?? "", mail.hosts)) {
+      track(caller, { ...base, kind: "request", outcome: "throwaway_retry", mxHosts });
       return reply.code(400).send({ ok: false, error: "disposable" });
     }
 
@@ -500,7 +656,8 @@ export async function registerRoutes(app: FastifyInstance) {
    * entirely when the env var is unset, so it can't be left open by accident.
    *
    * `?format=html` renders a table in the browser, otherwise JSON.
-   * Filters: `kind`, `outcome`, `email` (substring), `limit`, `offset`.
+   * Filters: `kind`, `outcome`, `email` (substring), `who` (real / you / test),
+   * `limit`, `offset`. Every mailbox and event carries `who` and `why`.
    */
   app.get("/v1/admin/requests", async (req, reply) => {
     if (!adminAuthorized(req)) {
@@ -517,19 +674,26 @@ export async function registerRoutes(app: FastifyInstance) {
     });
     const emails = listEmailActivity(query.emails ? Number(query.emails) : 200);
     const totals = requestTotals();
+    const { mailboxes, events } = labelActivity(emails, recent);
+    const whoFilter = WHO_ORDER.find((who) => who === query.who);
 
     if (query.format === "html") {
       return reply
         .header("content-type", "text/html; charset=utf-8")
         .header("cache-control", "no-store")
-        .send(adminHtml(totals, emails, recent));
+        .send(adminHtml(totals, mailboxes, events, query, whoFilter));
     }
 
+    const keep = <T extends { who: Who }>(rows: T[]) =>
+      whoFilter ? rows.filter((r) => r.who === whoFilter) : rows;
     return reply.header("cache-control", "no-store").send({
       ok: true,
       ...totals,
-      emails,
-      recent,
+      byWho: Object.fromEntries(
+        WHO_ORDER.map((who) => [who, mailboxes.filter((m) => m.who === who).length])
+      ),
+      emails: keep(mailboxes),
+      recent: keep(events),
     });
   });
 }

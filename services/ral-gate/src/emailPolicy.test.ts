@@ -6,6 +6,7 @@ import {
   isDisposableDomain,
   isDisposableEmail,
   isDisposableMailHost,
+  isMainstreamHosted,
   isValidEmailFormat,
   loadDisposableDomains,
   normalizeEmail,
@@ -176,5 +177,26 @@ describe("isDisposableMailHost", () => {
 
   it("lets the allowlist win over the blocklist", () => {
     expect(isAllowedDomain("mx1.improvmx.com")).toBe(true);
+  });
+});
+
+describe("the deertees.com bypass", () => {
+  it("is on the lists now, by domain and by mail backend", () => {
+    expect(isDisposableEmail("yahipox240@deertees.com")).toBe(true);
+    expect(isDisposableMailHost("mail.wabblywabble.com")).toBe(true);
+    expect(isDisposableMailHost("mail.wallywatts.com")).toBe(true);
+  });
+});
+
+describe("isMainstreamHosted", () => {
+  it("passes mainstream providers and domains whose mail they receive", () => {
+    expect(isMainstreamHosted("gmail.com", [])).toBe(true);
+    expect(isMainstreamHosted("reply.it", ["reply-it.mail.protection.outlook.com"])).toBe(true);
+    expect(isMainstreamHosted("startup.dev", ["aspmx.l.google.com"])).toBe(true);
+  });
+
+  it("fails a domain that runs its own mail, as fresh throwaways do", () => {
+    expect(isMainstreamHosted("deertees.com", ["mail.deertees.com"])).toBe(false);
+    expect(isMainstreamHosted("tiny.example.org", [])).toBe(false);
   });
 });

@@ -3,7 +3,7 @@
 #
 # Source: github.com/disposable-email-domains/disposable-email-domains
 # minus data/allowed-domains.txt, plus data/disposable-extra.txt.
-# 8254 domains.
+# 8255 domains.
 0-mail.com
 0-mailer.dynv6.net
 000-webmail.myhome-server.de
@@ -1795,6 +1795,7 @@ deepmails.org
 deepmaster.fun
 deepneko.xyz
 deepyinc.com
+deertees.com
 defomail.com
 degap.fr.nf
 degar.xyz

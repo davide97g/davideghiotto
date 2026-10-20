@@ -1,0 +1,9 @@
+# The owner's own mailboxes. Anything they request is a test, so the admin view
+# labels it "you" — along with every other address asked for from an IP one of
+# these was seen on. Canonical or as typed, either works.
+#
+# These addresses are already public as commit authors in this repository.
+
+ghiotto.davidenko@gmail.com
+davide.ghiotto@bitrock.it
+dghiotto.dev@gmail.com

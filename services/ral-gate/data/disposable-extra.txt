@@ -627,3 +627,6 @@ zippymail.info
 zoaxe.com
 zoemail.org
 zomg.info
+
+# Seen in the request log, missing upstream at the time.
+deertees.com

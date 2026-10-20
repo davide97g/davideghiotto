@@ -64,3 +64,9 @@ mohmal.com
 tempmailaddress.com
 byom.de
 muellmail.com
+
+# --- seen in the request log ---------------------------------------------------
+# deertees.com (temp-mail rotation) answered with mail.deertees.com on the day it
+# got through, and points here now.
+wabblywabble.com
+wallywatts.com

@@ -300,7 +300,13 @@ export function listEmailActivity(limit = 200) {
          SUM(kind LIKE '%_blocked')       AS blocked,
          COUNT(DISTINCT ip)               AS distinct_ips,
          MAX(country)                     AS country,
-         MAX(email_domain)                AS domain
+         MAX(email_domain)                AS domain,
+         MAX(outcome IN ('disposable_domain', 'disposable_mx', 'jev_disposable', 'throwaway_retry'))
+                                          AS throwaway,
+         -- Every browser still opens its user agent with Mozilla/; curl does not.
+         MAX(user_agent IS NOT NULL AND user_agent NOT LIKE 'Mozilla/%')
+                                          AS scripted,
+         GROUP_CONCAT(DISTINCT ip)        AS ips
        FROM request_log
        WHERE COALESCE(canonical_email, email) IS NOT NULL
        GROUP BY COALESCE(canonical_email, email)
@@ -308,6 +314,25 @@ export function listEmailActivity(limit = 200) {
        LIMIT ?`
     )
     .all(Math.min(Math.max(limit, 1), 1000));
+}
+
+/**
+ * Client IPs the given mailboxes were seen on. Only rows where the IP came from
+ * a trusted header (it differs from the hop that forwarded it): before the
+ * tunnel, some rows recorded a Cloudflare edge, which every visitor shares.
+ */
+export function ipsSeenWith(emails: string[]): string[] {
+  if (!emails.length) return [];
+  const marks = emails.map(() => "?").join(", ");
+  const rows = db
+    .prepare(
+      `SELECT DISTINCT ip FROM request_log
+        WHERE ip IS NOT NULL
+          AND forwarded_for IS NOT NULL AND forwarded_for <> ip
+          AND (canonical_email IN (${marks}) OR email IN (${marks}))`
+    )
+    .all(...emails, ...emails) as { ip: string }[];
+  return rows.map((r) => r.ip);
 }
 
 export function requestTotals() {
@@ -346,6 +371,20 @@ export function countRecent(kind: string, key: RateKey, value: string, sinceIso:
          WHERE kind = ? AND ${key} = ? AND created_at >= ?`
       )
       .get(kind, value, sinceIso) as { n: number }
+  ).n;
+}
+
+/** Rows from this IP that ended in one of `outcomes` since `sinceIso`. */
+export function countRecentOutcomes(ip: string, outcomes: readonly string[], sinceIso: string) {
+  if (!outcomes.length) return 0;
+  return (
+    db
+      .prepare(
+        `SELECT COUNT(*) AS n FROM request_log
+         WHERE ip = ? AND created_at >= ?
+           AND outcome IN (${outcomes.map(() => "?").join(", ")})`
+      )
+      .get(ip, sinceIso, ...outcomes) as { n: number }
   ).n;
 }
 

@@ -99,7 +99,7 @@ out.
 
 ## Anti temp-mail
 
-Four layers, cheapest first. Each one rejects with `error: "disposable"` or `"invalid"`.
+Five layers, cheapest first. Each one rejects with `error: "disposable"` or `"invalid"`.
 
 **1. Shape.** Format, RFC length caps (64 local / 254 total), placeholder local parts (`test@`,
 `qwerty@`), reserved TLDs (`.invalid`, `.local`, `.test`, `.example`, `.onion`, …). Domains are
@@ -127,6 +127,15 @@ Either probability at or above `JEV_THRESHOLD` (default **0.75**) blocks. On the
 tuned against, real mailboxes (names, `hr@`, `careers@`, `recruiting@`) scored at most 0.10 and junk
 at least 0.77, so the threshold sits in a wide gap. It costs one call (~300 ms) per request that
 survives the lists.
+
+**5. Probation.** Someone refused for a throwaway address tends to come straight back with one no
+list knows yet: `yahipox240@deertees.com` unlocked a minute after `esmdsezogaqtijlute@vtmpj.net` was
+refused, from the same IP. So any `disposable_domain`, `disposable_mx` or `jev_disposable` outcome
+puts the IP on probation for 24 hours, and while it lasts only a domain a mainstream provider
+receives mail for passes — gmail, outlook, or a company domain whose MX is Google or Microsoft
+(`reply.it` on `protection.outlook.com`). A self-hosted MX is refused with `"disposable"` (outcome
+`throwaway_retry`, which keeps the probation running). The check runs before Jev, so it never costs
+a call.
 
 It **fails open**: no `JEV_API_KEY`, a non-2xx, a malformed answer or a timeout past
 `JEV_TIMEOUT_MS` lets the request through, since the OTP still proves the mailbox and locking out a
@@ -185,7 +194,21 @@ curl -H "Authorization: Bearer $ADMIN_TOKEN" \
   "https://ral-api.davideghiotto.it/v1/admin/requests?limit=200"
 ```
 
-Filters: `kind`, `outcome`, `email` (substring), `limit`, `offset`, `format=html`. The endpoint is
+Filters: `kind`, `outcome`, `email` (substring), `who`, `limit`, `offset`, `format=html`.
+
+**Real or test, at a glance.** Most of the log is the owner poking at their own gate, so every
+mailbox and event carries `who` and `why` (`src/visitors.ts`), first rule wins:
+
+- `you` — a mailbox in `data/owner-emails.txt`, or any address asked for from an IP one of them was
+  seen on (only trusted client IPs count, never a Cloudflare edge from before the tunnel)
+- `test` — sent by something that is not a browser (curl), a reserved domain (`.invalid`, `.local`,
+  `example.com`), or a placeholder local part (`test`, `testozzo`, `pippo`, `asdfgh`, `someone`, …)
+- `real` — everyone else. In the HTML view these rows are lit up in lime and the rest are dimmed;
+  a real visitor who tried a throwaway address, or used one a later list caught, is `real ·
+  throwaway` in amber. The chips at the top count each group and filter with `?who=real`.
+
+The label is a reading aid — nothing is gated on it — and `why` names the rule, so a wrong call
+shows up as one. The endpoint is
 closed entirely when `ADMIN_TOKEN` is unset, and the response is `no-store`.
 
 These rows are personal data. `LOG_RETENTION_DAYS` (default 180) sweeps them hourly.

@@ -24,6 +24,8 @@ export const config = {
   disposablePath: path.resolve(root, "./data/disposable-domains.txt"),
   disposableMxPath: path.resolve(root, "./data/disposable-mx-hosts.txt"),
   allowlistPath: path.resolve(root, "./data/allowed-domains.txt"),
+  /** Mailboxes that are the owner testing — labelled "you" in the admin view. */
+  ownerEmailsPath: path.resolve(root, "./data/owner-emails.txt"),
   /** DNS deadline — a blackholed resolver must not hold a request open. */
   dnsTimeoutMs: Number(process.env.DNS_TIMEOUT_MS ?? 3000),
   dnsCacheTtlSeconds: Number(process.env.DNS_CACHE_TTL_SECONDS ?? 600),

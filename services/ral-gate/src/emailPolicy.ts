@@ -165,6 +165,16 @@ export function isDisposableDomain(host: string): boolean {
   return selfAndParents(canonical).some((candidate) => disposableDomains.has(candidate));
 }
 
+/**
+ * The domain is a mainstream provider, or hands its mail to one: `reply.it`
+ * passes on `reply-it.mail.protection.outlook.com`. A throwaway domain the lists
+ * have never heard of runs its own MX, so this is the bar a caller who has just
+ * tried a throwaway address has to clear.
+ */
+export function isMainstreamHosted(domain: string, mxHosts: string[]): boolean {
+  return isAllowedDomain(domain) || mxHosts.some(isAllowedDomain);
+}
+
 export function isDisposableEmail(email: string): boolean {
   const at = email.lastIndexOf("@");
   if (at < 1) return true;
